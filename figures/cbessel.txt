@@ -13,3 +13,11 @@
 \begin{align*}
   K_{\nu} (z) = (\cos(\pi \nu) - i \sin(\pi \nu) ) K_{\nu} (-z) - i \pi I_{\nu} (-z)
 \end{align*}
+
+\begin{align*}
+  H^{(1)}_{\nu} (z) = (-\cos(\pi \nu) + i \sin(\pi \nu) ) J_{\nu} (-z) + (\sin(\pi \nu) + i \cos(\pi \nu) ) Y_{\nu} (-z)
+\end{align*}
+
+\begin{align*}
+  H^{(2)}_{\nu} (z) = (3 \cos(\pi \nu) + i \sin(\pi \nu) ) J_{\nu} (-z) - (\sin(\pi \nu) + i \cos(\pi \nu) ) Y_{\nu} (-z)
+\end{align*}
