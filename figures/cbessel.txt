@@ -21,3 +21,7 @@
 \begin{align*}
   H^{(2)}_{\nu} (z) = (3 \cos(\pi \nu) + i \sin(\pi \nu) ) J_{\nu} (-z) - (\sin(\pi \nu) + i \cos(\pi \nu) ) Y_{\nu} (-z)
 \end{align*}
+
+\begin{align*}
+  I_{\nu}(z)=i^{-\nu} J_{\nu} (i z)
+\end{align*}

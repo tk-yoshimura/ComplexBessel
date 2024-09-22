@@ -10,6 +10,11 @@
 ![hankel1 minus rez](figures/hankel1_minus_rez.svg)  
 ![hankel2 minus rez](figures/hankel2_minus_rez.svg)  
 
+## Asymptotic
+
+[DLMF 10.17](https://dlmf.nist.gov/10.17)  
+[DLMF 10.40](https://dlmf.nist.gov/10.40)  
+
 ## Reference
 [DLMF](https://dlmf.nist.gov/10)  
 [Wolfram Math World](https://mathworld.wolfram.com/BesselFunction.html)
