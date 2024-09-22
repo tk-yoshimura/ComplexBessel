@@ -5,6 +5,8 @@
 
 ![besselj minus rez](figures/besselj_minus_rez.svg)  
 ![bessely minus rez](figures/bessely_minus_rez.svg)  
+![besseli minus rez](figures/besseli_minus_rez.svg)  
+![besselk minus rez](figures/besselk_minus_rez.svg)  
 
 ## Reference
 [DLMF](https://dlmf.nist.gov/10)  
