@@ -5,3 +5,7 @@
 \begin{align*}
   Y_{\nu} (z) = (\cos(\pi \nu) - i \sin(\pi \nu) ) Y_{\nu} (-z) + 2 i \cos(\pi \nu) J_{\nu} (-z)
 \end{align*}
+
+\begin{align*}
+  I_{\nu} (z) = (\cos(\pi \nu) + i \sin(\pi \nu) ) I_{\nu} (-z)
+\end{align*}
