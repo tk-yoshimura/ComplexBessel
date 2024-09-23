@@ -25,3 +25,41 @@
 \begin{align*}
   I_{\nu}(z)=i^{-\nu} J_{\nu} (i z)
 \end{align*}
+
+\begin{align*}
+  a_k (\nu) = \frac{ \prod_{m=1}^{k} 4 \nu^2 - (2m-1)^2  }{k! 8^k}
+\end{align*}
+
+\begin{align*}
+  \omega = z - \frac{\pi}{4} \left( 2 \nu + 1  \right)
+\end{align*}
+
+\begin{align*}
+  J_{\nu}(z) \sim \sqrt{ \frac{2}{\pi z} } \left( 
+    \cos \omega \sum_{k=0}^{\infty} (-1)^k \frac{a_{2k} (\nu)}{z^{2k}} -
+    \sin \omega \sum_{k=0}^{\infty} (-1)^k \frac{a_{2k+1} (\nu)}{z^{2k+1}}
+  \right) ~~~ |\mathrm{ph} ~ z| < \pi
+\end{align*}
+
+\begin{align*}
+  Y_{\nu}(z) \sim \sqrt{ \frac{2}{\pi z} } \left( 
+    \sin \omega \sum_{k=0}^{\infty} (-1)^k \frac{a_{2k} (\nu)}{z^{2k}} +
+    \cos \omega \sum_{k=0}^{\infty} (-1)^k \frac{a_{2k+1} (\nu)}{z^{2k+1}}
+  \right) ~~~ |\mathrm{ph} ~ z| < \pi
+\end{align*}
+
+\begin{align*}
+  I_{\nu}(z) \sim \sqrt{ \frac{1}{2 \pi z} } e^{z} \sum_{k=0}^{\infty} (-1)^k \frac{a_k(\nu)}{z^k} ~~~ |\mathrm{ph} ~ z| < \frac{1}{2} \pi
+\end{align*}
+
+\begin{align*}
+  K_{\nu}(z) \sim \sqrt{ \frac{\pi}{2 z} } e^{-z} \sum_{k=0}^{\infty} \frac{a_k(\nu)}{z^k} ~~~ |\mathrm{ph} ~ z| < \frac{3}{2} \pi
+\end{align*}
+
+\begin{align*}
+  H^{(1)}_{\nu}(z) \sim \sqrt{ \frac{2}{\pi z} } e^{i \omega} \sum_{k=0}^{\infty} i^k \frac{a_k(\nu)}{z^k} ~~~ |\mathrm{ph} ~ z| < \pi
+\end{align*}
+
+\begin{align*}
+  H^{(2)}_{\nu}(z) \sim \sqrt{ \frac{2}{\pi z} } e^{i \omega} \sum_{k=0}^{\infty} (-i)^k \frac{a_k(\nu)}{z^k} ~~~ |\mathrm{ph} ~ z| < \pi
+\end{align*}

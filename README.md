@@ -12,6 +12,13 @@
 
 ## Asymptotic
 
+![besselj asymp](figures/besselj_asymp.svg)  
+![bessely asymp](figures/bessely_asymp.svg)  
+![besseli asymp](figures/besseli_asymp.svg)  
+![besselk asymp](figures/besselk_asymp.svg)  
+![hankel1 asymp](figures/hankel1_asymp.svg)  
+![hankel2 asymp](figures/hankel2_asymp.svg)  
+
 [DLMF 10.17](https://dlmf.nist.gov/10.17)  
 [DLMF 10.40](https://dlmf.nist.gov/10.40)  
 
