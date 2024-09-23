@@ -12,6 +12,9 @@
 
 ## Asymptotic
 
+![hankel coef](figures/hankel_coef.svg)  
+![hankel omega](figures/hankel_omega.svg)  
+
 ![besselj asymp](figures/besselj_asymp.svg)  
 ![bessely asymp](figures/bessely_asymp.svg)  
 ![besseli asymp](figures/besseli_asymp.svg)  
