@@ -49,7 +49,8 @@
 \end{align*}
 
 \begin{align*}
-  I_{\nu}(z) \sim \sqrt{ \frac{1}{2 \pi z} } e^{z} \sum_{k=0}^{\infty} (-1)^k \frac{a_k(\nu)}{z^k} ~~~ |\mathrm{ph} ~ z| < \frac{1}{2} \pi
+  I_{\nu}(z) \sim \sqrt{ \frac{1}{2 \pi z} } \left( e^{z} \sum_{k=0}^{\infty} (-1)^k \frac{a_k(\nu)}{z^k} - (\sin(\pi \nu) - i \cos(\pi \nu) ) e^{-z} \sum_{k=0}^{\infty} \frac{a_k(\nu)}{z^k} \right) 
+  ~~~ -\frac{1}{2} \pi < \mathrm{ph} ~ z < \frac{3}{2} \pi
 \end{align*}
 
 \begin{align*}
