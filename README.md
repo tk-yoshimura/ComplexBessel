@@ -19,6 +19,9 @@ Complex Bessel functions are defined to be discontinuous on the negative real ax
 ![hankel1 minus rez](figures/hankel1_minus_rez.svg)  
 ![hankel2 minus rez](figures/hankel2_minus_rez.svg)  
 
+[DLMF 10.11](https://dlmf.nist.gov/10.11)  
+[DLMF 10.34](https://dlmf.nist.gov/10.34)  
+
 ## Re(z) &geq; 0, Im(z) &geq; 0, Asymptotic Expansion
 
 ![hankel coef](figures/hankel_coef.svg)  
