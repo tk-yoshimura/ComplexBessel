@@ -96,8 +96,12 @@ namespace ComplexBessel {
         }
 
         public Complex<N> BesselJ(Complex<N> z) {
+            if (z.I.Sign == Sign.Minus) {
+                return BesselJ(z.Conj).Conj;
+            }
+
             if (z.R.Sign == Sign.Minus) {
-                return (cospi_nu, (z.I.Sign == Sign.Plus) ? sinpi_nu : -sinpi_nu) * BesselJ(-z);
+                return (cospi_nu, sinpi_nu) * BesselJ(-z);
             }
 
             (Complex<N> c_even, Complex<N> c_odd) = BesselJYCoef(z);
@@ -115,9 +119,12 @@ namespace ComplexBessel {
         }
 
         public Complex<N> BesselY(Complex<N> z) {
+            if (z.I.Sign == Sign.Minus) {
+                return BesselY(z.Conj).Conj;
+            }
+
             if (z.R.Sign == Sign.Minus) {
-                return (cospi_nu, (z.I.Sign == Sign.Plus) ? -sinpi_nu : sinpi_nu) * BesselY(-z) +
-                       (0, (z.I.Sign == Sign.Plus) ? 2 * cospi_nu : -2 * cospi_nu) * BesselJ(-z);
+                return (cospi_nu, -sinpi_nu) * BesselY(-z) + (0, 2 * cospi_nu) * BesselJ(-z);
             }
 
             (Complex<N> c_even, Complex<N> c_odd) = BesselJYCoef(z);
@@ -135,8 +142,12 @@ namespace ComplexBessel {
         }
 
         public Complex<N> BesselI(Complex<N> z) {
+            if (z.I.Sign == Sign.Minus) {
+                return BesselI(z.Conj).Conj;
+            }
+
             if (z.R.Sign == Sign.Minus) {
-                return (cospi_nu, (z.I.Sign == Sign.Plus) ? sinpi_nu : -sinpi_nu) * BesselI(-z);
+                return (cospi_nu, sinpi_nu) * BesselI(-z);
             }
 
             Complex<N> ci = BesselICoef(z), ck = BesselKCoef(z);
@@ -146,16 +157,19 @@ namespace ComplexBessel {
 
             Complex<N> y = Complex<N>.Sqrt(1 / (2 * MultiPrecision<N>.PI * z)) * (
                 Complex<N>.Exp(z) * ci -
-                (sinpi_nu, (z.I.Sign == Sign.Plus) ? -cospi_nu : cospi_nu) * Complex<N>.Exp(-z) * ck
+                (sinpi_nu, -cospi_nu) * Complex<N>.Exp(-z) * ck
             );
 
             return y;
         }
 
         public Complex<N> BesselK(Complex<N> z) {
+            if (z.I.Sign == Sign.Minus) {
+                return BesselK(z.Conj).Conj;
+            }
+
             if (z.R.Sign == Sign.Minus) {
-                return (cospi_nu, (z.I.Sign == Sign.Plus) ? -sinpi_nu : sinpi_nu) * BesselK(-z) -
-                    (0, (z.I.Sign == Sign.Plus) ? MultiPrecision<N>.PI : -MultiPrecision<N>.PI) * BesselI(-z);
+                return (cospi_nu, -sinpi_nu) * BesselK(-z) - (0, MultiPrecision<N>.PI) * BesselI(-z);
             }
 
             Complex<N> c = BesselKCoef(z);
