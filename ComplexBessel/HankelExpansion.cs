@@ -1,7 +1,7 @@
 ﻿using MultiPrecision;
 using MultiPrecisionComplex;
 
-namespace BesselWorkbench {
+namespace ComplexBessel {
     public class HankelExpansion<N> where N : struct, IConstant {
         public MultiPrecision<N> Nu { get; }
 
@@ -49,24 +49,55 @@ namespace BesselWorkbench {
                     return (c_even, c_odd / z);
                 }
 
-                if (k > max_term / 8) {
-                    if (c_even.Exponent < dc_even.Exponent) {
-                        break;
-                    }
-                    if (c_odd.Exponent < dc_odd.Exponent) {
-                        break;
-                    }
-                }
-
                 w *= -v;
             }
 
             return (MultiPrecision<N>.NaN, MultiPrecision<N>.NaN);
         }
 
+        public Complex<N> BesselICoef(Complex<N> z, int max_term = 256) {
+            Complex<N> v = 1 / z, w = -v;
+
+            Complex<N> c = ACoef(0);
+
+            for (int k = 1; k <= max_term; k++) {
+                Complex<N> dc = w * ACoef(k);
+
+                c += dc;
+
+                if (c.Exponent - dc.Exponent >= MultiPrecision<N>.Bits) {
+                    return c;
+                }
+
+                w *= -v;
+            }
+
+            return MultiPrecision<N>.NaN;
+        }
+
+        public Complex<N> BesselKCoef(Complex<N> z, int max_term = 256) {
+            Complex<N> v = 1 / z, w = v;
+
+            Complex<N> c = ACoef(0);
+
+            for (int k = 1; k <= max_term; k++) {
+                Complex<N> dc = w * ACoef(k);
+
+                c += dc;
+
+                if (c.Exponent - dc.Exponent >= MultiPrecision<N>.Bits) {
+                    return c;
+                }
+
+                w *= v;
+            }
+
+            return MultiPrecision<N>.NaN;
+        }
+
         public Complex<N> BesselJ(Complex<N> z) {
             if (z.R.Sign == Sign.Minus) {
-                return (cospi_nu, sinpi_nu) * BesselJ(-z);
+                return (cospi_nu, (z.I.Sign == Sign.Plus) ? sinpi_nu : -sinpi_nu) * BesselJ(-z);
             }
 
             (Complex<N> c_even, Complex<N> c_odd) = BesselJYCoef(z);
@@ -85,7 +116,8 @@ namespace BesselWorkbench {
 
         public Complex<N> BesselY(Complex<N> z) {
             if (z.R.Sign == Sign.Minus) {
-                return (cospi_nu, -sinpi_nu) * BesselY(-z) + (0, 2 * cospi_nu) * BesselJ(-z);
+                return (cospi_nu, (z.I.Sign == Sign.Plus) ? -sinpi_nu : sinpi_nu) * BesselY(-z) +
+                       (0, (z.I.Sign == Sign.Plus) ? 2 * cospi_nu : -2 * cospi_nu) * BesselJ(-z);
             }
 
             (Complex<N> c_even, Complex<N> c_odd) = BesselJYCoef(z);
@@ -98,6 +130,40 @@ namespace BesselWorkbench {
             Complex<N> cos = Complex<N>.Cos(omega), sin = Complex<N>.Sin(omega);
 
             Complex<N> y = Complex<N>.Sqrt(2 / (MultiPrecision<N>.PI * z)) * (sin * c_even + cos * c_odd);
+
+            return y;
+        }
+
+        public Complex<N> BesselI(Complex<N> z) {
+            if (z.R.Sign == Sign.Minus) {
+                return (cospi_nu, (z.I.Sign == Sign.Plus) ? sinpi_nu : -sinpi_nu) * BesselI(-z);
+            }
+
+            Complex<N> ci = BesselICoef(z), ck = BesselKCoef(z);
+            if (Complex<N>.IsNaN(ci) || Complex<N>.IsNaN(ck)) {
+                return Complex<N>.NaN;
+            }
+
+            Complex<N> y = Complex<N>.Sqrt(1 / (2 * MultiPrecision<N>.PI * z)) * (
+                Complex<N>.Exp(z) * ci -
+                (sinpi_nu, (z.I.Sign == Sign.Plus) ? -cospi_nu : cospi_nu) * Complex<N>.Exp(-z) * ck
+            );
+
+            return y;
+        }
+
+        public Complex<N> BesselK(Complex<N> z) {
+            if (z.R.Sign == Sign.Minus) {
+                return (cospi_nu, (z.I.Sign == Sign.Plus) ? -sinpi_nu : sinpi_nu) * BesselK(-z) -
+                    (0, (z.I.Sign == Sign.Plus) ? MultiPrecision<N>.PI : -MultiPrecision<N>.PI) * BesselI(-z);
+            }
+
+            Complex<N> c = BesselKCoef(z);
+            if (Complex<N>.IsNaN(c)) {
+                return Complex<N>.NaN;
+            }
+
+            Complex<N> y = Complex<N>.Sqrt(MultiPrecision<N>.PI / (2 * z)) * Complex<N>.Exp(-z) * c;
 
             return y;
         }

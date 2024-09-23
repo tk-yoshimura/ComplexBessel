@@ -2,6 +2,7 @@
  Complex Bessel Function Numerical Evaluation Note
  
 ## Re(z) &lt; 0
+In general, complex Bessel functions are defined to be discontinuous on the negative real axis.
 
 ![besselj minus rez](figures/besselj_minus_rez.svg)  
 ![bessely minus rez](figures/bessely_minus_rez.svg)  
