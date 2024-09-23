@@ -63,3 +63,12 @@
 \begin{align*}
   H^{(2)}_{\nu}(z) \sim \sqrt{ \frac{2}{\pi z} } e^{i \omega} \sum_{k=0}^{\infty} (-i)^k \frac{a_k(\nu)}{z^k} ~~~ |\mathrm{ph} ~ z| < \pi
 \end{align*}
+
+\begin{eqnarray*}
+&& J_{\nu}(\bar{z}) = \overline{J_{\nu}(z)}, ~
+Y_{\nu}(\bar{z}) = \overline{Y_{\nu}(z)}, ~
+I_{\nu}(\bar{z}) = \overline{I_{\nu}(z)}, ~
+K_{\nu}(\bar{z}) = \overline{K_{\nu}(z)}, \\
+&& H^{(1)}_{\nu} (\bar{z}) = \overline{H^{(2)}_{\nu}(z)}, ~
+H^{(2)}_{\nu} (\bar{z}) = \overline{H^{(1)}_{\nu}(z)}
+\end{eqnarray*}

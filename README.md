@@ -1,8 +1,16 @@
 # ComplexBessel
  Complex Bessel Function Numerical Evaluation Note
  
-## Re(z) &lt; 0
-In general, complex Bessel functions are defined to be discontinuous on the negative real axis.
+## Im(z) &lt; 0
+Complex Bessel functions are analytically connected so that they are complex conjugate symmetrically about the real axis.
+
+![bessel conj](figures/bessel_conj.svg)  
+
+[DLMF 10.11](https://dlmf.nist.gov/10.11)  
+[DLMF 10.34](https://dlmf.nist.gov/10.34)  
+ 
+## Re(z) &lt; 0, Im(z) &geq; 0
+Complex Bessel functions are defined to be discontinuous on the negative real axis.
 
 ![besselj minus rez](figures/besselj_minus_rez.svg)  
 ![bessely minus rez](figures/bessely_minus_rez.svg)  
