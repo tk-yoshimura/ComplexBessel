@@ -43,8 +43,8 @@ namespace ComplexBessel {
                 c_even += dc_even;
                 c_odd += dc_odd;
 
-                if ((c_even.Exponent - dc_even.Exponent >= MultiPrecision<N>.Bits) &&
-                    (c_odd.Exponent - dc_odd.Exponent >= MultiPrecision<N>.Bits)) {
+                if ((c_even.Exponent - dc_even.Exponent >= MultiPrecision<N>.Bits || Complex<N>.IsZero(dc_even)) &&
+                    (c_odd.Exponent - dc_odd.Exponent >= MultiPrecision<N>.Bits || Complex<N>.IsZero(dc_odd))) {
 
                     return (c_even, c_odd / z);
                 }
@@ -65,7 +65,7 @@ namespace ComplexBessel {
 
                 c += dc;
 
-                if (c.Exponent - dc.Exponent >= MultiPrecision<N>.Bits) {
+                if (c.Exponent - dc.Exponent >= MultiPrecision<N>.Bits || Complex<N>.IsZero(dc)) {
                     return c;
                 }
 
@@ -85,7 +85,7 @@ namespace ComplexBessel {
 
                 c += dc;
 
-                if (c.Exponent - dc.Exponent >= MultiPrecision<N>.Bits) {
+                if (c.Exponent - dc.Exponent >= MultiPrecision<N>.Bits || Complex<N>.IsZero(dc)) {
                     return c;
                 }
 
