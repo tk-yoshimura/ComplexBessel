@@ -23,7 +23,7 @@
 \end{align*}
 
 \begin{align*}
-  I_{\nu}(z)=i^{-\nu} J_{\nu} (i z)
+  I_{\nu}(z)=i^{-\nu} J_{\nu} (i z), ~~ J_{\nu}(z)=i^{-\nu} I_{\nu} (i z)
 \end{align*}
 
 \begin{align*}
