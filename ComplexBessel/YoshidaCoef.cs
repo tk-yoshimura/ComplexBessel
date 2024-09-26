@@ -1,6 +1,4 @@
 ﻿using MultiPrecision;
-using System.Collections.ObjectModel;
-using System;
 using System.Numerics;
 
 namespace ComplexBessel {
