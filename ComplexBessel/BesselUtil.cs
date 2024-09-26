@@ -1,9 +1,4 @@
 ﻿using MultiPrecision;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ComplexBessel {
     static class BesselUtil<N> where N : struct, IConstant {
