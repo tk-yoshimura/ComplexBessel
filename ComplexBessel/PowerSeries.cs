@@ -198,8 +198,8 @@ namespace ComplexBessel {
             long exp_sum = 0;
 
             for (int k = 1; k < n; k++) {
-                long exp = long.Max(y0.Exponent, y1.Exponent);
-                (y0, y1) = (Complex<N>.Ldexp(y0, -exp), Complex<N>.Ldexp(y1, -exp));
+                long exp = -long.Max(y0.Exponent, y1.Exponent);
+                (y0, y1) = (Complex<N>.Ldexp(y0, exp), Complex<N>.Ldexp(y1, exp));
                 (y1, y0) = ((2 * k) * v * y1 - y0, y1);
 
                 exp_sum += exp;
