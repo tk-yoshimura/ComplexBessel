@@ -39,14 +39,9 @@ Complex Bessel functions are defined to be discontinuous on the negative real ax
 
 ## Numerical Evaluation Stability
 
-### BesselJ, BesselY
-![besseljy convergence](figures/besseljy_convergence.svg)  
-
-### BesselI
-![besseli convergence](figures/besseli_convergence.svg)  
-
-### BesselK
-![besselk convergence](figures/besselk_convergence.svg)  
+|BesselJ, BesselY|BesselI|BesselK|
+|---|---|---|
+|![besseljy convergence](figures/besseljy_convergence.svg)|![besseli convergence](figures/besseli_convergence.svg)|![besselk convergence](figures/besselk_convergence.svg)|
 
 ## BesselJ &lt;-&gt; BesselI
 
