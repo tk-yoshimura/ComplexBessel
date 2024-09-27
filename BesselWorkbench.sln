@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplexBesselBenchmark", "C
 		{D99B1853-1A26-43DE-9F67-86039C0921BE} = {D99B1853-1A26-43DE-9F67-86039C0921BE}
 	EndProjectSection
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "VisBenchmark", "VisBenchmark\VisBenchmark.pyproj", "{7ED18429-0E89-4FF2-A614-150A8BA208A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,8 @@ Global
 		{20C9E2C9-E587-4427-B649-EFFBD5821FEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20C9E2C9-E587-4427-B649-EFFBD5821FEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20C9E2C9-E587-4427-B649-EFFBD5821FEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7ED18429-0E89-4FF2-A614-150A8BA208A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7ED18429-0E89-4FF2-A614-150A8BA208A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
