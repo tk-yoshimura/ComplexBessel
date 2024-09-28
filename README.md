@@ -43,7 +43,7 @@ Complex Bessel functions are defined to be discontinuous on the negative real ax
 |---|---|---|
 |![besseljy convergence](figures/besseljy_convergence.svg)|![besseli convergence](figures/besseli_convergence.svg)|![besselk convergence](figures/besselk_convergence.svg)|
 
-## Connection Formulas
+## Connection Formula
 
 ![besselji](figures/besselji.svg)  
 ![besselyk](figures/besselyk.svg)  
