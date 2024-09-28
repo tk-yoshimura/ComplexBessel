@@ -47,7 +47,9 @@ Complex Bessel functions are defined to be discontinuous on the negative real ax
 
 ![besselji](figures/besselji.svg)  
 ![besselyk](figures/besselyk.svg)  
+![besselyk](figures/besselyk2.svg)  
 ![bessel itoj](figures/bessel_itoj.svg)  
+![bessel ktoy](figures/bessel_ktoy.svg)  
 
 [DLMF 10.27](https://dlmf.nist.gov/10.27)  
  

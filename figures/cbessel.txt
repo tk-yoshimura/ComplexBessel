@@ -35,6 +35,14 @@
 \end{align*}
 
 \begin{align*}
+  Y_{\nu}(z) = i^{\nu+1} I_{\nu} (-i z) - \frac{2}{\pi} i^{-\nu} K_{\nu}(-i z)
+\end{align*}
+
+\begin{align*}
+  Y_{\nu}(a+b i) = i^{\nu+1} \overline{ I_{\nu} (b+a i) } - \frac{2}{\pi} \overline{ i^{\nu}  K_{\nu}(b+a i) }
+\end{align*}
+
+\begin{align*}
   a_k (\nu) = \frac{ \prod_{m=1}^{k} 4 \nu^2 - (2m-1)^2  }{k! 8^k}
 \end{align*}
 
