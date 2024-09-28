@@ -27,6 +27,10 @@
 \end{align*}
 
 \begin{align*}
+  Y_{\nu} (z) = -\frac{1}{\pi} \left( i^{-\nu} K_{\nu}(-i z) + i^{\nu} K_{\nu}(i z) \right)
+\end{align*}
+
+\begin{align*}
   J_{\nu}(a+bi) = \overline{i^{-\nu} I_{\nu} (b + ai) } \\
 \end{align*}
 
