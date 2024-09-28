@@ -64,8 +64,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="154.39011"
-     inkscape:cy="247.66424"
+     inkscape:cx="298.25088"
+     inkscape:cy="63.701039"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -216,10 +216,10 @@
        d="M 89.999768,87.000019 H 10 v -15.00012 c 9.83384,-3.80665 19.848658,-7.14492 29.999718,-9.9999 16.378,-4.60632 33.11023,-7.95266 50.00005,-9.99991 z"
        id="path5400" />
     <path
-       style="fill:#00ff00;fill-opacity:0.36078431;stroke:#000000;stroke-width:0.2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="m 10.000188,7.000251 v 79.999768 h 9.999906 V 77.000113 A 10,10 0 0 1 30,87.000019 H 89.999964 V 7.000251 Z"
-       id="rect4789"
-       inkscape:connector-curvature="0" />
+       style="fill:#00ff00;fill-opacity:0.36078431;stroke:#000000;stroke-width:0.75590551;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 43.140625 40.652344 L 43.140625 335.45508 A 7.5590551 7.5590551 0 0 1 50.699219 343.01367 L 80.935547 343.01367 L 80.935547 305.21875 A 37.795276 37.795276 0 0 1 118.73047 343.01367 L 345.50195 343.01367 L 345.50195 40.652344 L 43.140625 40.652344 z "
+       transform="matrix(0.26458333,0,0,0.26458333,-1.4142116,-3.7559181)"
+       id="rect4789" />
     <g
        aria-label="Hankel"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52777767px;line-height:1.25;font-family:Tahoma;-inkscape-font-specification:Tahoma;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"

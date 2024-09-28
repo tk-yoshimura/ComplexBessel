@@ -12,7 +12,7 @@ namespace ComplexBesselTests {
 
         [TestMethod()]
         public void BesselItoJTest() {
-            for (double nu = -8; nu <= 8; nu += 0.25) {
+            for (double nu = -8; nu <= 8; nu += 0.125) {
                 Console.WriteLine(nu);
 
                 Complex<Pow2.N4> c = (MultiPrecision<Pow2.N4>.CosPI(nu / 2), -MultiPrecision<Pow2.N4>.SinPI(nu / 2));
