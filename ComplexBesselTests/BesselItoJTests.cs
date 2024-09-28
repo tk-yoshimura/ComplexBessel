@@ -15,13 +15,13 @@ namespace ComplexBesselTests {
             for (double nu = -8; nu <= 8; nu += 0.125) {
                 Console.WriteLine(nu);
 
-                Complex<Pow2.N4> c = (MultiPrecision<Pow2.N4>.CosPI(nu / 2), -MultiPrecision<Pow2.N4>.SinPI(nu / 2));
+                Complex<Pow2.N4> c = (MultiPrecision<Pow2.N4>.CosPI(nu / 2), MultiPrecision<Pow2.N4>.SinPI(nu / 2));
 
                 foreach (Complex<Pow2.N4> z in zs) {
                     Complex<Pow2.N4> bj = PowerSeries<Pow2.N4>.BesselJ(nu, z);
                     Complex<Pow2.N4> bi = PowerSeries<Pow2.N4>.BesselI(nu, (z.I, z.R));
 
-                    Complex<Pow2.N4> y = (c * bi).Conj;
+                    Complex<Pow2.N4> y = c * bi.Conj;
 
                     Console.WriteLine($"{z}\n {bj}\n {y}");
 
