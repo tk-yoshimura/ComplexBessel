@@ -43,6 +43,10 @@
 \end{align*}
 
 \begin{align*}
+  K_{\nu}(a+b i) = \frac{\pi}{2} \left( i^{-2\nu-1} I_{\nu}(a+b i) - \overline{i^{\nu} Y_{\nu}(b+a i)} \right)
+\end{align*}
+
+\begin{align*}
   a_k (\nu) = \frac{ \prod_{m=1}^{k} 4 \nu^2 - (2m-1)^2  }{k! 8^k}
 \end{align*}
 
