@@ -41,6 +41,7 @@ Complex Bessel functions are defined to be discontinuous on the negative real ax
 
 |BesselJ, BesselY|BesselI|BesselK|
 |---|---|---|
+|![besseljy stat](figures/besseljy_stat.svg)|![besseli stat](figures/besseli_stat.svg)|![besselk stat](figures/besselk_stat.svg)|
 |![besseljy convergence](figures/besseljy_convergence.svg)|![besseli convergence](figures/besseli_convergence.svg)|![besselk convergence](figures/besselk_convergence.svg)|
 
 ## Connection Formula
