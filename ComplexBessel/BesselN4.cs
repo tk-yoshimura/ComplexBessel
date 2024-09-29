@@ -51,7 +51,7 @@ namespace ComplexBessel {
                 return MillerBackward<Pow2.N4>.BesselJ(nu, z);
             }
             else {
-                return (CosPI(nu / 2), SinPI(nu / 2)) * MillerBackward<Pow2.N4>.BesselI(nu, (z.I, z.R)).Conj;
+                return (CosPI(nu / 2), SinPI(nu / 2)) * BesselI(nu, (z.I, z.R)).Conj;
             }
         }
 
@@ -79,14 +79,9 @@ namespace ComplexBessel {
                 return MillerBackward<Pow2.N4>.BesselY(nu, z);
             }
             else {
-                if (!pade_table.TryGetValue(nu, out YoshidaPade<Pow2.N4> pade)) {
-                    pade = new(nu);
-                    pade_table[nu] = pade;
-                }
-
                 CMP4 c = (CosPI(nu / 2), SinPI(nu / 2));
-                CMP4 bi = MillerBackward<Pow2.N4>.BesselI(nu, (z.I, z.R));
-                CMP4 bk = pade.BesselK(z);
+                CMP4 bi = BesselI(nu, (z.I, z.R));
+                CMP4 bk = BesselK(nu, (z.I, z.R));
 
                 CMP4 y = (0, 1) * c * bi.Conj - 2 * MP4.RcpPI * (c * bk).Conj;
 
@@ -151,8 +146,8 @@ namespace ComplexBessel {
             }
             else {
                 CMP4 c = (CosPI(nu / 2), -SinPI(nu / 2));
-                CMP4 bi = MillerBackward<Pow2.N4>.BesselI(nu, z);
-                CMP4 by = MillerBackward<Pow2.N4>.BesselY(nu, (z.I, z.R));
+                CMP4 bi = BesselI(nu, z);
+                CMP4 by = BesselY(nu, (z.I, z.R));
 
                 CMP4 y = c * ((0, -1) * c * bi - by.Conj) * MP4.PI / 2;
 

@@ -55,6 +55,8 @@ nugetpack.bat
 /**/*.nupkg
 /results/
 
+/mpmath_expected/*
+
 # Resource AutoGen
 
 
