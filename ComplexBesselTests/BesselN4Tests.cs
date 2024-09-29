@@ -126,7 +126,7 @@ namespace ComplexBesselTests {
                     Console.WriteLine(expected);
                     Console.WriteLine(actual);
 
-                    Assert.IsTrue(err < 1e-32, $"\n{nu}, {z}\n{expected}\n{actual}\n{err}");
+                    Assert.IsTrue(err < 1e-34, $"\n{nu}, {z}\n{expected}\n{actual}\n{err}");
                 }
             }
         }

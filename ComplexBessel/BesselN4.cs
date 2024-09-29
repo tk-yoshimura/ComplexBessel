@@ -44,7 +44,7 @@ namespace ComplexBessel {
 
                 return hankel.BesselJ(z);
             }
-            else if (z.R <= z.I * 0.4 + 5) {
+            else if (z.R <= PowerSeriesThreshold(nu, z.I)) {
                 return PowerSeries<Pow2.N4>.BesselJ(nu, z);
             }
             else if (z.I <= 8) {
@@ -72,7 +72,7 @@ namespace ComplexBessel {
 
                 return hankel.BesselY(z);
             }
-            else if (z.R <= z.I * 0.4 + 5) {
+            else if (z.R <= PowerSeriesThreshold(nu, z.I)) {
                 return PowerSeries<Pow2.N4>.BesselY(nu, z);
             }
             else if (z.I <= 8) {
@@ -106,7 +106,7 @@ namespace ComplexBessel {
 
                 return hankel.BesselI(z);
             }
-            else if (z.I <= z.R * 0.4 + 5) {
+            else if (z.I <= PowerSeriesThreshold(nu, z.R)) {
                 return PowerSeries<Pow2.N4>.BesselI(nu, z);
             }
             else {
@@ -153,6 +153,11 @@ namespace ComplexBessel {
 
                 return y;
             }
+        }
+        
+        static MP4 PowerSeriesThreshold(MP4 nu, MP4 x) {
+            MP4 nu_abs = MP4.Abs(nu);
+            return x * (4.20e-1 - nu_abs * 1.44e-2) + nu_abs * 4.59e-1 + 6;
         }
     }
 }
