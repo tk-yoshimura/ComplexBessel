@@ -65,14 +65,14 @@ namespace ComplexBesselTests {
             for (double nu = -8; nu <= 8; nu += 0.125) {
                 Console.WriteLine(nu);
 
-                Complex<Pow2.N4> c = (MultiPrecision<Pow2.N4>.CosPI(nu / 2), MultiPrecision<Pow2.N4>.SinPI(nu / 2));
+                Complex<Pow2.N4> c = (MultiPrecision<Pow2.N4>.CosPI(nu / 2), -MultiPrecision<Pow2.N4>.SinPI(nu / 2));
 
                 foreach (Complex<Pow2.N4> z in zs) {
                     Complex<Pow2.N4> by = PowerSeries<Pow2.N4>.BesselY(nu, (z.I, z.R));
                     Complex<Pow2.N4> bi = PowerSeries<Pow2.N4>.BesselI(nu, z);
                     Complex<Pow2.N4> bk = PowerSeries<Pow2.N4>.BesselK(MultiPrecision<Pow2.N4>.Abs(nu), z);
 
-                    Complex<Pow2.N4> y = (Complex<Pow2.N4>.Pow((0, 1), - 2 * nu - 1) * bi - (c * by).Conj) * MultiPrecision<Pow2.N4>.PI / 2;
+                    Complex<Pow2.N4> y = c * ((0, -1) * c * bi - by.Conj) * MultiPrecision<Pow2.N4>.PI / 2;
 
                     Console.WriteLine($"{z}\n {bk}\n {y}");
 
