@@ -27,6 +27,8 @@ namespace ComplexBessel {
         }
 
         public static CMP4 BesselJ(MP4 nu, CMP4 z) {
+            BesselUtil<Pow2.N4>.CheckNu(nu);
+
             if (z.I.Sign == Sign.Minus) {
                 return BesselJ(nu, z.Conj).Conj;
             }
@@ -55,6 +57,8 @@ namespace ComplexBessel {
         }
 
         public static CMP4 BesselY(MP4 nu, CMP4 z) {
+            BesselUtil<Pow2.N4>.CheckNu(nu);
+
             if (z.I.Sign == Sign.Minus) {
                 return BesselY(nu, z.Conj).Conj;
             }
@@ -89,6 +93,8 @@ namespace ComplexBessel {
         }
 
         public static CMP4 BesselI(MP4 nu, CMP4 z) {
+            BesselUtil<Pow2.N4>.CheckNu(nu);
+
             if (z.I.Sign == Sign.Minus) {
                 return BesselI(nu, z.Conj).Conj;
             }
@@ -114,6 +120,8 @@ namespace ComplexBessel {
         }
 
         public static CMP4 BesselK(MP4 nu, CMP4 z) {
+            BesselUtil<Pow2.N4>.CheckNu(nu);
+
             nu = MP4.Abs(nu);
 
             if (z.I.Sign == Sign.Minus) {
