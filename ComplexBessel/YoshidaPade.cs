@@ -62,7 +62,7 @@ namespace ComplexBessel {
                 tn *= t;
             }
 
-            Complex<N> y = Complex<N>.Sqrt(t * MultiPrecision<N>.PI / 2) * c / d;
+            Complex<N> y = Complex<N>.Sqrt(t * (MultiPrecision<N>.PI / 2)) * c / d;
             y *= Complex<N>.Exp(-z);
 
             return y;

@@ -312,7 +312,7 @@ namespace ComplexBessel {
             }
             c /= -v;
 
-            Complex<N> h = 2 * (Complex<N>.Log(z / 2) + MultiPrecision<N>.EulerGamma);
+            Complex<N> h = Complex<N>.Ldexp(Complex<N>.Log(Complex<N>.Ldexp(z, -1)) + MultiPrecision<N>.EulerGamma, 1);
 
             for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
                 Complex<N> dc = u * r[k] * ((h - MultiPrecision<N>.HarmonicNumber(2 * k) - MultiPrecision<N>.HarmonicNumber(2 * k + n)) * (1d - z2 * d[k]) + z2 * q[k]);
@@ -330,7 +330,7 @@ namespace ComplexBessel {
                 u *= z4;
             }
 
-            Complex<N> y = c * MultiPrecision<N>.RcpPI * Complex<N>.Pow(z / 2, n);
+            Complex<N> y = c * MultiPrecision<N>.RcpPI * Complex<N>.Pow(Complex<N>.Ldexp(z, -1), n);
 
             return y;
         }
