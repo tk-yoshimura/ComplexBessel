@@ -158,7 +158,7 @@ namespace ComplexBessel {
             GammaTable g = gamma_table;
             GammaPNTable gpn = gammapn_table;
 
-            MultiPrecision<N> cos = MultiPrecision<N>.CosPI(nu), sin = MultiPrecision<N>.SinPI(nu);
+            MultiPrecision<N> cos = SinCosPICache<N>.CosPI(nu), sin = SinCosPICache<N>.SinPI(nu);
             Complex<N> p = Complex<N>.IsZero(cos) ? 0d : Complex<N>.Pow(z, Complex<N>.Ldexp(nu, 1)) * cos, s = Complex<N>.Ldexp(Complex<N>.Pow(Complex<N>.Ldexp(z, 1), nu), 2);
 
             Complex<N> z2 = z * z, z4 = z2 * z2;

@@ -13,8 +13,8 @@ namespace ComplexBessel {
         public HankelExpansion(MultiPrecision<N> nu) {
             Nu = nu;
             a_coef = [1];
-            cospi_nu = MultiPrecision<N>.CosPI(Nu);
-            sinpi_nu = MultiPrecision<N>.SinPI(Nu);
+            cospi_nu = SinCosPICache<N>.CosPI(Nu);
+            sinpi_nu = SinCosPICache<N>.SinPI(Nu);
         }
 
         public MultiPrecision<N> ACoef(int n) {
