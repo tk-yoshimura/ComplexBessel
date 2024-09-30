@@ -1,7 +1,6 @@
 ﻿using MultiPrecision;
-
-using MP4 = MultiPrecision.MultiPrecision<MultiPrecision.Pow2.N4>;
 using CMP4 = MultiPrecisionComplex.Complex<MultiPrecision.Pow2.N4>;
+using MP4 = MultiPrecision.MultiPrecision<MultiPrecision.Pow2.N4>;
 
 namespace ComplexBessel {
     public static class BesselN4 {
@@ -154,7 +153,7 @@ namespace ComplexBessel {
                 return y;
             }
         }
-        
+
         static MP4 PowerSeriesThreshold(MP4 nu, MP4 x) {
             MP4 nu_abs = MP4.Abs(nu);
             return x * (4.20e-1 - nu_abs * 1.44e-2) + nu_abs * 4.59e-1 + 6;
