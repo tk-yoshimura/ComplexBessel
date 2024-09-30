@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 
 namespace ComplexBessel {
-    internal class ShiftedLegendre {
+    class ShiftedLegendre {
         private static readonly Dictionary<(int m, int n), BigInteger> table;
 
         static ShiftedLegendre() {
@@ -12,7 +12,7 @@ namespace ComplexBessel {
 
         public static BigInteger Table(int n, int k) {
             if (n < 0 || k < 0 || n < k) {
-                throw new ArgumentOutOfRangeException($"{nameof(n)}>={nameof(k)}>=0");
+                throw new ArgumentOutOfRangeException($"{nameof(n)},{nameof(k)}", $"{nameof(n)}>={nameof(k)}>=0");
             }
 
             if (table.ContainsKey((n, k))) {

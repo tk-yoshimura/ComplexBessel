@@ -1,5 +1,6 @@
 ﻿using MultiPrecision;
 using MultiPrecisionComplex;
+using System.Diagnostics;
 
 namespace ComplexBessel {
     public class HankelExpansion<N> where N : struct, IConstant {
@@ -25,13 +26,13 @@ namespace ComplexBessel {
             return a_coef[n];
         }
 
-        public Complex<N> Omega(Complex<N> z) {
+        private Complex<N> Omega(Complex<N> z) {
             Complex<N> omega = z - MultiPrecision<N>.Ldexp(2 * Nu + 1, -2) * MultiPrecision<N>.PI;
 
             return omega;
         }
 
-        public (Complex<N> c_even, Complex<N> c_odd) BesselJYCoef(Complex<N> z, int max_term = 256) {
+        private (Complex<N> c_even, Complex<N> c_odd) BesselJYCoef(Complex<N> z, int max_term = 256) {
             Complex<N> v = 1 / (z * z), w = -v;
 
             Complex<N> c_even = ACoef(0), c_odd = ACoef(1);
@@ -55,7 +56,7 @@ namespace ComplexBessel {
             return (MultiPrecision<N>.NaN, MultiPrecision<N>.NaN);
         }
 
-        public Complex<N> BesselICoef(Complex<N> z, int max_term = 256) {
+        private Complex<N> BesselICoef(Complex<N> z, int max_term = 256) {
             Complex<N> v = 1 / z, w = -v;
 
             Complex<N> c = ACoef(0);
@@ -75,7 +76,7 @@ namespace ComplexBessel {
             return MultiPrecision<N>.NaN;
         }
 
-        public Complex<N> BesselKCoef(Complex<N> z, int max_term = 256) {
+        private Complex<N> BesselKCoef(Complex<N> z, int max_term = 256) {
             Complex<N> v = 1 / z, w = v;
 
             Complex<N> c = ACoef(0);
@@ -96,13 +97,8 @@ namespace ComplexBessel {
         }
 
         public Complex<N> BesselJ(Complex<N> z) {
-            if (z.I.Sign == Sign.Minus) {
-                return BesselJ(z.Conj).Conj;
-            }
-
-            if (z.R.Sign == Sign.Minus) {
-                return (cospi_nu, sinpi_nu) * BesselJ(-z);
-            }
+            Debug.Assert(z.R.Sign == Sign.Plus);
+            Debug.Assert(z.I.Sign == Sign.Plus);
 
             (Complex<N> c_even, Complex<N> c_odd) = BesselJYCoef(z);
             if (Complex<N>.IsNaN(c_even) || Complex<N>.IsNaN(c_odd)) {
@@ -119,13 +115,8 @@ namespace ComplexBessel {
         }
 
         public Complex<N> BesselY(Complex<N> z) {
-            if (z.I.Sign == Sign.Minus) {
-                return BesselY(z.Conj).Conj;
-            }
-
-            if (z.R.Sign == Sign.Minus) {
-                return (cospi_nu, -sinpi_nu) * BesselY(-z) + (0, 2 * cospi_nu) * BesselJ(-z);
-            }
+            Debug.Assert(z.R.Sign == Sign.Plus);
+            Debug.Assert(z.I.Sign == Sign.Plus);
 
             (Complex<N> c_even, Complex<N> c_odd) = BesselJYCoef(z);
             if (Complex<N>.IsNaN(c_even) || Complex<N>.IsNaN(c_odd)) {
@@ -142,13 +133,8 @@ namespace ComplexBessel {
         }
 
         public Complex<N> BesselI(Complex<N> z) {
-            if (z.I.Sign == Sign.Minus) {
-                return BesselI(z.Conj).Conj;
-            }
-
-            if (z.R.Sign == Sign.Minus) {
-                return (cospi_nu, sinpi_nu) * BesselI(-z);
-            }
+            Debug.Assert(z.R.Sign == Sign.Plus);
+            Debug.Assert(z.I.Sign == Sign.Plus);
 
             Complex<N> ci = BesselICoef(z), ck = BesselKCoef(z);
             if (Complex<N>.IsNaN(ci) || Complex<N>.IsNaN(ck)) {
@@ -164,13 +150,9 @@ namespace ComplexBessel {
         }
 
         public Complex<N> BesselK(Complex<N> z) {
-            if (z.I.Sign == Sign.Minus) {
-                return BesselK(z.Conj).Conj;
-            }
-
-            if (z.R.Sign == Sign.Minus) {
-                return (cospi_nu, -sinpi_nu) * BesselK(-z) - (0, MultiPrecision<N>.PI) * BesselI(-z);
-            }
+            Debug.Assert(Nu.Sign == Sign.Plus);
+            Debug.Assert(z.R.Sign == Sign.Plus);
+            Debug.Assert(z.I.Sign == Sign.Plus);
 
             Complex<N> c = BesselKCoef(z);
             if (Complex<N>.IsNaN(c)) {

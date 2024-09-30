@@ -1,5 +1,6 @@
 ﻿using MultiPrecision;
 using MultiPrecisionComplex;
+using System.Diagnostics;
 
 namespace ComplexBessel {
     public class YoshidaPade<N> where N : struct, IConstant {
@@ -20,14 +21,17 @@ namespace ComplexBessel {
             (cs1, ds1) = YoshidaCoef<N>.Table(Nu - MultiPrecision<N>.Floor(Nu) + 1, dss);
         }
 
-        public Complex<N> BesselK(Complex<N> x, bool scale = false) {
+        public Complex<N> BesselK(Complex<N> z) {
+            Debug.Assert(z.R.Sign == Sign.Plus);
+            Debug.Assert(z.I.Sign == Sign.Plus);
+
             if (Nu < 1d) {
-                Complex<N> y = Value(x, cs0, ds0);
+                Complex<N> y = Value(z, cs0, ds0);
 
                 return y;
             }
             else if (Nu < 2d) {
-                Complex<N> y = Value(x, cs1, ds1);
+                Complex<N> y = Value(z, cs1, ds1);
 
                 return y;
             }
@@ -35,10 +39,10 @@ namespace ComplexBessel {
                 int n = (int)MultiPrecision<N>.Floor(Nu);
                 MultiPrecision<N> alpha = Nu - n;
 
-                Complex<N> y0 = Value(x, cs0, ds0);
-                Complex<N> y1 = Value(x, cs1, ds1);
+                Complex<N> y0 = Value(z, cs0, ds0);
+                Complex<N> y1 = Value(z, cs1, ds1);
 
-                Complex<N> v = 1d / x;
+                Complex<N> v = 1d / z;
 
                 for (int k = 1; k < n; k++) {
                     (y1, y0) = (Complex<N>.Ldexp(k + alpha, 1) * v * y1 + y0, y1);
@@ -60,6 +64,7 @@ namespace ComplexBessel {
 
             Complex<N> y = Complex<N>.Sqrt(t * MultiPrecision<N>.PI / 2) * c / d;
             y *= Complex<N>.Exp(-z);
+
             return y;
         }
     }

@@ -1,6 +1,7 @@
 ﻿using MultiPrecision;
 using MultiPrecisionComplex;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace ComplexBessel {
     public class PowerSeries<N> where N : struct, IConstant {
@@ -18,6 +19,9 @@ namespace ComplexBessel {
         private static readonly K1CoefTable k1_coef_table = new();
 
         public static Complex<N> BesselJ(MultiPrecision<N> nu, Complex<N> z) {
+            Debug.Assert(z.R.Sign == Sign.Plus);
+            Debug.Assert(z.I.Sign == Sign.Plus);
+
             if (MultiPrecision<N>.IsNegative(nu) && BesselUtil<N>.NearlyInteger(nu, out int n)) {
                 Complex<N> y = BesselJ(-nu, z);
 
@@ -31,6 +35,9 @@ namespace ComplexBessel {
         }
 
         public static Complex<N> BesselY(MultiPrecision<N> nu, Complex<N> z) {
+            Debug.Assert(z.R.Sign == Sign.Plus);
+            Debug.Assert(z.I.Sign == Sign.Plus);
+
             if (BesselUtil<N>.NearlyInteger(nu, out int n)) {
                 Complex<N> y = BesselYKernel(n, z, terms: 256);
 
@@ -49,6 +56,9 @@ namespace ComplexBessel {
         }
 
         public static Complex<N> BesselI(MultiPrecision<N> nu, Complex<N> z, bool scale = false) {
+            Debug.Assert(z.R.Sign == Sign.Plus);
+            Debug.Assert(z.I.Sign == Sign.Plus);
+
             if (MultiPrecision<N>.IsNegative(nu) && BesselUtil<N>.NearlyInteger(nu, out _)) {
                 Complex<N> y = BesselI(-nu, z);
 
@@ -70,6 +80,9 @@ namespace ComplexBessel {
         }
 
         public static Complex<N> BesselK(MultiPrecision<N> nu, Complex<N> z, bool scale = false) {
+            Debug.Assert(z.R.Sign == Sign.Plus);
+            Debug.Assert(z.I.Sign == Sign.Plus);
+
             if (BesselUtil<N>.NearlyInteger(nu, out int n)) {
                 Complex<N> y = BesselKKernel(n, z, terms: 256);
 
@@ -451,7 +464,7 @@ namespace ComplexBessel {
             public MultiPrecision<N> this[int n] => Value(n);
 
             public MultiPrecision<N> Value(int n) {
-                ArgumentOutOfRangeException.ThrowIfNegative(n, nameof(n));
+                Debug.Assert(n >= 0);
 
                 if (n < table.Count) {
                     return table[n];
@@ -481,7 +494,7 @@ namespace ComplexBessel {
             public MultiPrecision<N> this[int n] => Value(n);
 
             public MultiPrecision<N> Value(int n) {
-                ArgumentOutOfRangeException.ThrowIfNegative(n, nameof(n));
+                Debug.Assert(n >= 0);
 
                 if (n < table.Count) {
                     return table[n];
@@ -511,7 +524,7 @@ namespace ComplexBessel {
             public MultiPrecision<N> this[int n] => Value(n);
 
             public MultiPrecision<N> Value(int n) {
-                ArgumentOutOfRangeException.ThrowIfNegative(n, nameof(n));
+                Debug.Assert(n >= 0);
 
                 if (n < table.Count) {
                     return table[n];
@@ -541,7 +554,7 @@ namespace ComplexBessel {
             public MultiPrecision<N> this[int n] => Value(n);
 
             public MultiPrecision<N> Value(int n) {
-                ArgumentOutOfRangeException.ThrowIfNegative(n, nameof(n));
+                Debug.Assert(n >= 0);
 
                 if (n < table.Count) {
                     return table[n];
@@ -571,7 +584,7 @@ namespace ComplexBessel {
             public MultiPrecision<N> this[int n] => Value(n);
 
             public MultiPrecision<N> Value(int n) {
-                ArgumentOutOfRangeException.ThrowIfNegative(n, nameof(n));
+                Debug.Assert(n >= 0);
 
                 if (n < table.Count) {
                     return table[n];
@@ -599,7 +612,7 @@ namespace ComplexBessel {
             public MultiPrecision<N> this[int n] => Value(n);
 
             public MultiPrecision<N> Value(int n) {
-                ArgumentOutOfRangeException.ThrowIfNegative(n, nameof(n));
+                Debug.Assert(n >= 0);
 
                 if (n < table.Count) {
                     return table[n];
@@ -625,7 +638,7 @@ namespace ComplexBessel {
             public MultiPrecision<N> this[int n] => Value(n);
 
             public MultiPrecision<N> Value(int n) {
-                ArgumentOutOfRangeException.ThrowIfNegative(n, nameof(n));
+                Debug.Assert(n >= 0);
 
                 if (n < table.Count) {
                     return table[n];
@@ -652,7 +665,7 @@ namespace ComplexBessel {
             public MultiPrecision<N> this[int n] => Value(n);
 
             public MultiPrecision<N> Value(int n) {
-                ArgumentOutOfRangeException.ThrowIfNegative(n, nameof(n));
+                Debug.Assert(n >= 0);
 
                 if (n < table.Count) {
                     return table[n];
@@ -671,7 +684,7 @@ namespace ComplexBessel {
 
         private static class YNFiniteCoefTable {
             public static ReadOnlyCollection<MultiPrecision<N>> Value(int nu) {
-                ArgumentOutOfRangeException.ThrowIfNegative(nu, nameof(nu));
+                Debug.Assert(nu >= 0);
 
                 List<MultiPrecision<N>> frac = [1], coef = [];
 
@@ -699,7 +712,7 @@ namespace ComplexBessel {
             public MultiPrecision<N> this[int n] => Value(n);
 
             public MultiPrecision<N> Value(int n) {
-                ArgumentOutOfRangeException.ThrowIfNegative(n, nameof(n));
+                Debug.Assert(n >= 0);
 
                 if (n < table.Count) {
                     return table[n];
@@ -727,7 +740,7 @@ namespace ComplexBessel {
             public MultiPrecision<N> this[int n] => Value(n);
 
             public MultiPrecision<N> Value(int n) {
-                ArgumentOutOfRangeException.ThrowIfNegative(n, nameof(n));
+                Debug.Assert(n >= 0);
 
                 if (n < table.Count) {
                     return table[n];
@@ -755,7 +768,7 @@ namespace ComplexBessel {
             public MultiPrecision<N> this[int n] => Value(n);
 
             public MultiPrecision<N> Value(int n) {
-                ArgumentOutOfRangeException.ThrowIfNegative(n, nameof(n));
+                Debug.Assert(n >= 0);
 
                 if (n < table.Count) {
                     return table[n];
