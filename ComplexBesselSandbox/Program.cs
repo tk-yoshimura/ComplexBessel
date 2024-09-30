@@ -4,7 +4,7 @@ using MultiPrecisionComplex;
 namespace ComplexBesselSandbox {
     internal class Program {
         static void Main() {
-            Complex<Pow2.N4> c = BesselY<Pow2.N4>(16, (8, 7.5));
+            Complex<Pow2.N4> c = BesselY<Pow2.N4>(2, 2);
 
             Console.WriteLine("END");
             Console.Read();

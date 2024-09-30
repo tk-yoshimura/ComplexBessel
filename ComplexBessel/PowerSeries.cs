@@ -1,6 +1,7 @@
 ﻿using MultiPrecision;
 using MultiPrecisionComplex;
 using System.Collections.ObjectModel;
+using System.Data;
 
 namespace ComplexBessel {
     public class PowerSeries<N> where N : struct, IConstant {
@@ -11,7 +12,8 @@ namespace ComplexBessel {
         private static readonly Dictionary<MultiPrecision<N>, GammaPNTable> gammapn_coef_table = [];
         private static readonly YCoefTable y_coef_table = new();
         private static readonly Y0CoefTable y0_coef_table = new();
-        private static readonly Y1CoefTable y1_coef_table = new();
+        private static readonly Dictionary<int, YNCoefTable> yn_coef_table = [];
+        private static readonly Dictionary<int, ReadOnlyCollection<MultiPrecision<N>>> yn_finitecoef_table = [];
         private static readonly KCoefTable k_coef_table = new();
         private static readonly K0CoefTable k0_coef_table = new();
         private static readonly K1CoefTable k1_coef_table = new();
@@ -183,32 +185,15 @@ namespace ComplexBessel {
 
                 return ((n & 1) == 0) ? y : -y;
             }
+            else if (n == 0) {
+                return BesselY0Kernel(z, terms);
+            }
+            else if (n == 1) {
+                return BesselY1Kernel(z, terms);
+            }
             else {
-                if (n == 0) {
-                    return BesselY0Kernel(z, terms);
-                }
-                if (n == 1) {
-                    return BesselY1Kernel(z, terms);
-                }
+                return BesselYNKernel(n, z, terms);
             }
-
-            Complex<N> v = 1d / z;
-            Complex<N> y0 = BesselY0Kernel(z, terms);
-            Complex<N> y1 = BesselY1Kernel(z, terms);
-
-            long exp_sum = 0;
-
-            for (int k = 1; k < n; k++) {
-                long exp = -long.Max(y0.Exponent, y1.Exponent);
-                (y0, y1) = (Complex<N>.Ldexp(y0, exp), Complex<N>.Ldexp(y1, exp));
-                (y1, y0) = (2 * k * v * y1 - y0, y1);
-
-                exp_sum += exp;
-            }
-
-            y1 = Complex<N>.Ldexp(y1, -exp_sum);
-
-            return y1;
         }
 
         private static Complex<N> BesselY0Kernel(Complex<N> z, int terms) {
@@ -257,8 +242,10 @@ namespace ComplexBessel {
                 d = new X2DenomTable(1);
                 x2denom_coef_table.Add(1, d);
             }
-
-            Y1CoefTable q = y1_coef_table;
+            if (!yn_coef_table.TryGetValue(1, out YNCoefTable q)) {
+                q = new YNCoefTable(1);
+                yn_coef_table.Add(1, q);
+            }
 
             Complex<N> h = Complex<N>.Ldexp(Complex<N>.Log(Complex<N>.Ldexp(z, -1)) + MultiPrecision<N>.EulerGamma, 1);
 
@@ -294,25 +281,29 @@ namespace ComplexBessel {
                 d = new X2DenomTable(n);
                 x2denom_coef_table.Add(n, d);
             }
+            if (!yn_coef_table.TryGetValue(n, out YNCoefTable q)) {
+                q = new YNCoefTable(n);
+                yn_coef_table.Add(n, q);
+            }
+            if (!yn_finitecoef_table.TryGetValue(n, out ReadOnlyCollection<MultiPrecision<N>> f)) {
+                f = YNFiniteCoefTable.Value(n);
+                yn_finitecoef_table.Add(n, f);
+            }
 
             Complex<N> c = 0;
-            Complex<N> u = 1, v = 1, w = z * z / 4;
-
-            MultiPrecision<N>[] fs = (new MultiPrecision<N>[n]).Select(
-                (_, k) => MultiPrecision<N>.Gamma(n - k) / MultiPrecision<N>.Gamma(k + 1)
-            ).ToArray();
+            Complex<N> z2 = z * z, z4 = z2 * z2;
+            Complex<N> u = 1, v = 1, w = z2 / 4;
 
             for (int k = 0; k < n; k++) {
-                c += v * fs[k];
+                c += v * f[k];
                 v *= w;
             }
             c /= -v;
 
             Complex<N> h = 2 * (Complex<N>.Log(z / 2) + MultiPrecision<N>.EulerGamma);
-            MultiPrecision<N> frac = 1 / MultiPrecision<N>.Gamma(n + 1);
 
             for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                Complex<N> dc = u * frac * (h - MultiPrecision<N>.HarmonicNumber(k) - MultiPrecision<N>.HarmonicNumber(k + n));
+                Complex<N> dc = u * r[k] * ((h - MultiPrecision<N>.HarmonicNumber(2 * k) - MultiPrecision<N>.HarmonicNumber(2 * k + n)) * (1d - z2 * d[k]) + z2 * q[k]);
 
                 Complex<N> c_next = c + dc;
 
@@ -324,8 +315,7 @@ namespace ComplexBessel {
                 }
 
                 c = c_next;
-                u *= -w;
-                frac /= (k + 1) * (n + k + 1);
+                u *= z4;
             }
 
             Complex<N> y = c * MultiPrecision<N>.RcpPI * Complex<N>.Pow(z / 2, n);
@@ -652,11 +642,12 @@ namespace ComplexBessel {
             }
         }
 
-        private class Y1CoefTable {
+        private class YNCoefTable {
+            private readonly int nu;
             private readonly List<MultiPrecision<N>> table = [];
 
-            public Y1CoefTable() {
-                this.table.Add(MultiPrecision<N>.Ldexp(3, -4));
+            public YNCoefTable(int nu) {
+                this.nu = nu;
             }
 
             public MultiPrecision<N> this[int n] => Value(n);
@@ -669,8 +660,8 @@ namespace ComplexBessel {
                 }
 
                 for (long k = table.Count; k <= n; k++) {
-                    MultiPrecision<N> c = (MultiPrecision<N>)(4 * k + 3) /
-                        (MultiPrecision<N>)checked(4 * (2 * k + 1) * (2 * k + 1) * (2 * k + 2) * (2 * k + 2));
+                    MultiPrecision<N> c = (MultiPrecision<N>)(nu + 4 * k + 2) /
+                        (MultiPrecision<N>)checked(4 * (2 * k + 1) * (2 * k + 1) * (nu + 2 * k + 1) * (nu + 2 * k + 1));
 
                     table.Add(c);
                 }
@@ -679,17 +670,17 @@ namespace ComplexBessel {
             }
         }
 
-        private class YNFiniteCoefTable {
-            public ReadOnlyCollection<MultiPrecision<N>> Value(int n) {
-                ArgumentOutOfRangeException.ThrowIfNegative(n, nameof(n));
+        private static class YNFiniteCoefTable {
+            public static ReadOnlyCollection<MultiPrecision<N>> Value(int nu) {
+                ArgumentOutOfRangeException.ThrowIfNegative(nu, nameof(nu));
 
                 List<MultiPrecision<N>> frac = [1], coef = [];
 
-                for (int k = 2; k <= n; k++) {
+                for (int k = 1; k < nu; k++) {
                     frac.Add(k * frac[^1]);
                 }
 
-                for (int k = 0; k < n; k++) {
+                for (int k = 0; k < nu; k++) {
                     coef.Add(frac[^(k + 1)] / frac[k]);
                 }
 

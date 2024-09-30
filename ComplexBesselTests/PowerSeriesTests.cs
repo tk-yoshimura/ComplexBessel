@@ -667,6 +667,66 @@ namespace ComplexBesselTests {
         }
 
         [TestMethod()]
+        public void BesselYNu3Test() {
+            Complex<Pow2.N4>[] expecteds = [
+                "-1.127783776840427786081583957731792383224",
+                "-0.5733392579107138999628262915049119107823+0.5162467026092957773418931149613548439588i",
+                "0.2127399592398526552723543933759320372918-0.4121383402198171297880249050538994234127i",
+                "0.2901532942395457763871757442020303126210-0.2121187704792577770265382295850442087236i"
+            ];
+
+            foreach ((Complex<Pow2.N4> z, Complex<Pow2.N4> expected) in zs_mini.Zip(expecteds)) {
+                Complex<Pow2.N4> actual = PowerSeries<Pow2.N4>.BesselY(3, z);
+
+                Console.WriteLine(z);
+                Console.WriteLine(expected);
+                Console.WriteLine(actual);
+
+                Assert.IsTrue((actual - expected).Magnitude / expected.Magnitude < 1e-30);
+            }
+        }
+
+        [TestMethod()]
+        public void BesselYNu4Test() {
+            Complex<Pow2.N4>[] expecteds = [
+                "-2.765943226330600691759774508190742639716",
+                "-0.182777441894927882523806570353393017778+1.516586097499888460927489506565048854230i",
+                "-1.3979634978473471831684025467278014271419+0.0507285699791802382378868356840709934561i",
+                "0.5903443912049278464461352181970511926279-0.8269603237809054951126244724967967923178i"
+            ];
+
+            foreach ((Complex<Pow2.N4> z, Complex<Pow2.N4> expected) in zs_mini.Zip(expecteds)) {
+                Complex<Pow2.N4> actual = PowerSeries<Pow2.N4>.BesselY(4, z);
+
+                Console.WriteLine(z);
+                Console.WriteLine(expected);
+                Console.WriteLine(actual);
+
+                Assert.IsTrue((actual - expected).Magnitude / expected.Magnitude < 1e-30);
+            }
+        }
+
+        [TestMethod()]
+        public void BesselYNu5Test() {
+            Complex<Pow2.N4>[] expecteds = [
+                "-9.935989128481974980957514075031178175639",
+                "2.414989199846766213370628476878132420661+4.629272716422231909664163818612230318021i",
+                "-0.009825679323131702320807050639648063467+6.003992331609205862461635091965105131980i",
+                "-1.991875304410558806433757707076498139833-3.000119799425960123781293624640394475394i"
+            ];
+
+            foreach ((Complex<Pow2.N4> z, Complex<Pow2.N4> expected) in zs_mini.Zip(expecteds)) {
+                Complex<Pow2.N4> actual = PowerSeries<Pow2.N4>.BesselY(5, z);
+
+                Console.WriteLine(z);
+                Console.WriteLine(expected);
+                Console.WriteLine(actual);
+
+                Assert.IsTrue((actual - expected).Magnitude / expected.Magnitude < 1e-30);
+            }
+        }
+
+        [TestMethod()]
         public void BesselINu2Test() {
             Complex<Pow2.N4>[] expecteds = [
                 "0.6889484476987382040549500158118671053314",
