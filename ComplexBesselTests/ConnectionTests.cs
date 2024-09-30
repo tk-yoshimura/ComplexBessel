@@ -5,7 +5,7 @@ using MultiPrecisionComplex;
 namespace ComplexBesselTests {
     [TestClass()]
     public class ConnectionTests {
-        
+
         readonly Complex<Pow2.N4>[] zs = [
             (1, 0), (1, 0.5), (2, 0), (2, 0.5), (2, 1), (0, 1), (0.5, 1), (0, 2), (0.5, 2), (1, 2)
         ];
@@ -51,7 +51,7 @@ namespace ComplexBesselTests {
                     if (nu - double.Floor(nu) != 0.5) {
                         Assert.IsTrue((y - by).Magnitude / by.Magnitude < 1e-30);
                     }
-                    else { 
+                    else {
                         Assert.IsTrue((y - by).Magnitude / by.Magnitude < 1e-20);
                     }
                 }
@@ -79,7 +79,7 @@ namespace ComplexBesselTests {
                     if (nu - double.Floor(nu) != 0.5) {
                         Assert.IsTrue((y - bk).Magnitude / bk.Magnitude < 1e-30);
                     }
-                    else { 
+                    else {
                         Assert.IsTrue((y - bk).Magnitude / bk.Magnitude < 1e-20);
                     }
                 }

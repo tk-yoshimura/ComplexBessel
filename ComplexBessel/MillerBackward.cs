@@ -4,10 +4,10 @@ using System.Diagnostics;
 
 namespace ComplexBessel {
     public class MillerBackward<N> where N : struct, IConstant {
-        private static readonly Dictionary<MultiPrecision<N>, BesselJPhiTable> phi_coef_table = new();
-        private static readonly Dictionary<MultiPrecision<N>, BesselIPsiTable> psi_coef_table = new();
-        private static readonly Dictionary<MultiPrecision<N>, BesselYEtaTable> eta_coef_table = new();
-        private static readonly Dictionary<MultiPrecision<N>, BesselYXiTable> xi_coef_table = new();
+        private static readonly Dictionary<MultiPrecision<N>, BesselJPhiTable> phi_coef_table = [];
+        private static readonly Dictionary<MultiPrecision<N>, BesselIPsiTable> psi_coef_table = [];
+        private static readonly Dictionary<MultiPrecision<N>, BesselYEtaTable> eta_coef_table = [];
+        private static readonly Dictionary<MultiPrecision<N>, BesselYXiTable> xi_coef_table = [];
 
         public static Complex<N> BesselJ(int n, Complex<N> x) {
             int m = BesselJYIterM((double)x.Magnitude);
@@ -109,7 +109,7 @@ namespace ComplexBessel {
                     lambda += f0;
                 }
 
-                (f0, f1) = ((2 * k) * v * f0 - f1, f0);
+                (f0, f1) = (2 * k * v * f0 - f1, f0);
 
                 if (k - 1 == n) {
                     fn = f0;
@@ -202,7 +202,7 @@ namespace ComplexBessel {
                     lambda += f0;
                 }
 
-                (f0, f1) = ((2 * k) * v * f0 - f1, f0);
+                (f0, f1) = (2 * k * v * f0 - f1, f0);
             }
 
             lambda = Complex<N>.Ldexp(lambda, 1) + f0;
@@ -225,7 +225,7 @@ namespace ComplexBessel {
                     lambda += f0;
                 }
 
-                (f0, f1) = ((2 * k) * v * f0 - f1, f0);
+                (f0, f1) = (2 * k * v * f0 - f1, f0);
             }
 
             lambda = Complex<N>.Ldexp(lambda, 1) + f0;
@@ -276,7 +276,7 @@ namespace ComplexBessel {
                     sx += f0 * xi[k];
                 }
 
-                (f0, f1) = ((2 * k) * v * f0 - f1, f0);
+                (f0, f1) = (2 * k * v * f0 - f1, f0);
             }
 
             lambda = Complex<N>.Ldexp(lambda, 1) + f0;
@@ -287,7 +287,7 @@ namespace ComplexBessel {
             Complex<N> y1 = sx - v * f0 + (c - 1d) * f1;
 
             for (int k = 1; k < n; k++) {
-                (y1, y0) = ((2 * k) * v * y1 - y0, y1);
+                (y1, y0) = (2 * k * v * y1 - y0, y1);
             }
 
             Complex<N> yn = Complex<N>.Ldexp(y1 / (lambda * MultiPrecision<N>.PI), 1);
@@ -440,11 +440,11 @@ namespace ComplexBessel {
                 - g * (lnhalfxm1 * 2d + g) * 4d
                 - 6d;
             Complex<N> r2 =
-                (-cbln2 * 4d + sqln2 * lnxm1 * 12d + lnx * (18d + lnx * (-12d + lnx * 4d)))
+                -cbln2 * 4d + sqln2 * lnxm1 * 12d + lnx * (18d + lnx * (-12d + lnx * 4d))
                 + ln2 * (lnx * (2d - lnx) * 12d - 18d)
                 + MultiPrecision<N>.Zeta3 * 2d
                 + sqpi * (lnhalfxm1 + g)
-                + g * ((((sqln2 - ln2 * lnxm1 * 2d) + lnx * (-2d + lnx)) * 12d + 18d)
+                + g * ((sqln2 - ln2 * lnxm1 * 2d + lnx * (-2d + lnx)) * 12d + 18d
                 + g * (lnhalfxm1 * 12d
                 + g * 4d))
                 - 9d;
@@ -455,9 +455,9 @@ namespace ComplexBessel {
                 + ln2 * (lnx * (9d + lnx * (-6d + lnx * 2d)) * 32d - 144d)
                 + lnx * (9d + lnx * (-9d + lnx * (4d - lnx))) * 16d
                 + MultiPrecision<N>.Zeta3 * (lnhalfxm1 + g) * -32d
-                + sqpi * (((-sqln2 + ln2 * lnxm1 * 2d + lnx * (2d - lnx) - g * (lnhalfxm1 * 2d + g)) * 8d - 12d) - sqpi)
-                + g * (((cbln2 - sqln2 * lnxm1 * 3d) * 64d + ln2 * (lnx * (-2d + lnx) * 192d + 288d) + lnx * (-9d + lnx * (6d - lnx * 2d)) * 32d + 144d)
-                + g * (((-sqln2 + ln2 * lnxm1 * 2d + lnx * (2d - lnx)) * 96d - 144d)
+                + sqpi * ((-sqln2 + ln2 * lnxm1 * 2d + lnx * (2d - lnx) - g * (lnhalfxm1 * 2d + g)) * 8d - 12d - sqpi)
+                + g * ((cbln2 - sqln2 * lnxm1 * 3d) * 64d + ln2 * (lnx * (-2d + lnx) * 192d + 288d) + lnx * (-9d + lnx * (6d - lnx * 2d)) * 32d + 144d
+                + g * ((-sqln2 + ln2 * lnxm1 * 2d + lnx * (2d - lnx)) * 96d - 144d
                 + g * (lnhalfxm1 * -64d
                 - g * 16d)))
                 - 72d;
@@ -490,7 +490,7 @@ namespace ComplexBessel {
                     se += f0 * eta[k / 2];
                 }
 
-                (f0, f1) = ((2 * k) * v * f0 - f1, f0);
+                (f0, f1) = (2 * k * v * f0 - f1, f0);
             }
 
             lambda = Complex<N>.Ldexp(lambda, 1) + f0;
@@ -527,7 +527,7 @@ namespace ComplexBessel {
                     sx += f0 * xi[k];
                 }
 
-                (f0, f1) = ((2 * k) * v * f0 - f1, f0);
+                (f0, f1) = (2 * k * v * f0 - f1, f0);
             }
 
             lambda = Complex<N>.Ldexp(lambda, 1) + f0;
@@ -557,7 +557,7 @@ namespace ComplexBessel {
             for (int k = m; k >= 1; k--) {
                 lambda += f0;
 
-                (f0, f1) = ((2 * k) * v * f0 + f1, f0);
+                (f0, f1) = (2 * k * v * f0 + f1, f0);
 
                 if (k - 1 == n) {
                     fn = f0;
@@ -656,7 +656,7 @@ namespace ComplexBessel {
             for (int k = m; k >= 1; k--) {
                 lambda += g0;
 
-                (g0, g1) = ((2 * k) * v * g0 + g1, g0);
+                (g0, g1) = (2 * k * v * g0 + g1, g0);
             }
 
             lambda = Complex<N>.Ldexp(lambda, 1) + g0;
@@ -681,7 +681,7 @@ namespace ComplexBessel {
             for (int k = m; k >= 1; k--) {
                 lambda += g0;
 
-                (g0, g1) = ((2 * k) * v * g0 + g1, g0);
+                (g0, g1) = (2 * k * v * g0 + g1, g0);
             }
 
             lambda = Complex<N>.Ldexp(lambda, 1) + g0;
@@ -697,12 +697,12 @@ namespace ComplexBessel {
 
         private class BesselJPhiTable {
             private readonly MultiPrecision<N> alpha;
-            private readonly List<MultiPrecision<N>> table = new();
+            private readonly List<MultiPrecision<N>> table = [];
 
             private MultiPrecision<N> g;
 
             public BesselJPhiTable(MultiPrecision<N> alpha) {
-                Debug.Assert((alpha > 0d && alpha < 1d), nameof(alpha));
+                Debug.Assert(alpha > 0d && alpha < 1d, nameof(alpha));
 
                 this.alpha = alpha;
 
@@ -738,12 +738,12 @@ namespace ComplexBessel {
 
         private class BesselIPsiTable {
             private readonly MultiPrecision<N> alpha;
-            private readonly List<MultiPrecision<N>> table = new();
+            private readonly List<MultiPrecision<N>> table = [];
 
             private MultiPrecision<N> g;
 
             public BesselIPsiTable(MultiPrecision<N> alpha) {
-                Debug.Assert((alpha > 0d && alpha < 1d), nameof(alpha));
+                Debug.Assert(alpha > 0d && alpha < 1d, nameof(alpha));
 
                 this.alpha = alpha;
 
@@ -779,12 +779,12 @@ namespace ComplexBessel {
 
         private class BesselYEtaTable {
             private readonly MultiPrecision<N> alpha;
-            private readonly List<MultiPrecision<N>> table = new();
+            private readonly List<MultiPrecision<N>> table = [];
 
             private MultiPrecision<N> g;
 
             public BesselYEtaTable(MultiPrecision<N> alpha) {
-                Debug.Assert((alpha >= 0d && alpha < 1d), nameof(alpha));
+                Debug.Assert(alpha >= 0d && alpha < 1d, nameof(alpha));
 
                 this.alpha = alpha;
                 this.table.Add(MultiPrecision<N>.NaN);
@@ -830,11 +830,11 @@ namespace ComplexBessel {
 
         private class BesselYXiTable {
             private readonly MultiPrecision<N> alpha;
-            private readonly List<MultiPrecision<N>> table = new();
+            private readonly List<MultiPrecision<N>> table = [];
             private readonly BesselYEtaTable eta;
 
             public BesselYXiTable(MultiPrecision<N> alpha, BesselYEtaTable eta) {
-                Debug.Assert((alpha >= 0d && alpha < 1d), nameof(alpha));
+                Debug.Assert(alpha >= 0d && alpha < 1d, nameof(alpha));
 
                 this.alpha = alpha;
                 this.table.Add(MultiPrecision<N>.NaN);
@@ -863,7 +863,7 @@ namespace ComplexBessel {
                     }
                     else {
                         if ((m & 1) == 1) {
-                            MultiPrecision<N> xi = (MultiPrecision<N>)(2 * (m / 2) + 1) / ((m / 2) * ((m / 2) + 1));
+                            MultiPrecision<N> xi = (MultiPrecision<N>)(2 * (m / 2) + 1) / (m / 2 * ((m / 2) + 1));
                             table.Add(((m & 2) > 0) ? xi : -xi);
                         }
                         else {
