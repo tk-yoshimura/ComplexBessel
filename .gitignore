@@ -54,6 +54,7 @@ nugetpack.bat
 /**/*.nuspec
 /**/*.nupkg
 /results/
+/results_ddouble/
 
 /mpmath_expected/*
 
