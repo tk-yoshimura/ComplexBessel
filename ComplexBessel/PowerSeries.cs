@@ -1,7 +1,6 @@
 ﻿using MultiPrecision;
 using MultiPrecisionComplex;
 using System.Collections.ObjectModel;
-using System.Data;
 
 namespace ComplexBessel {
     public class PowerSeries<N> where N : struct, IConstant {
