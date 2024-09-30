@@ -7,8 +7,6 @@ namespace ComplexBesselTests {
     public class BesselN4Tests {
         [TestMethod()]
         public void BesselJTest() {
-            BesselN4.BesselJ(-15.5, (8.5, 7.5));
-
             for (double nu = -16; nu <= 16; nu += 0.25) {
                 Console.WriteLine(nu);
 
@@ -242,7 +240,7 @@ namespace ComplexBesselTests {
                     Console.WriteLine(expected);
                     Console.WriteLine(actual);
 
-                    Assert.IsTrue(err < 1e-33, $"\n{nu}, {z}\n{expected}\n{actual}\n{err}");
+                    Assert.IsTrue(err < 1e-34, $"\n{nu}, {z}\n{expected}\n{actual}\n{err}");
                 }
             }
         }

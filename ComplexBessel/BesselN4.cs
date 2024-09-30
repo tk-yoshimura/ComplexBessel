@@ -135,7 +135,7 @@ namespace ComplexBessel {
             else if (z.Magnitude <= 4) {
                 return PowerSeries<Pow2.N4>.BesselK(nu, z);
             }
-            else if (z.R >= MP4.Min(8, z.I / 2)) {
+            else if (z.R >= MP4.Min(2, z.I / 2)) {
                 if (!pade_table.TryGetValue(nu, out YoshidaPade<Pow2.N4> pade)) {
                     pade = new(nu);
                     pade_table[nu] = pade;
