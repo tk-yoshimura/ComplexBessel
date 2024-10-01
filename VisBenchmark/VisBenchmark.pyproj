@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>7ed18429-0e89-4ff2-a614-150a8ba208a6</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>besselk.py</StartupFile>
+    <StartupFile>bessely_accuracy.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -21,6 +21,11 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="bessely_accuracy.py" />
+    <Compile Include="besselk_accuracy.py" />
+    <Compile Include="besseli_accuracy.py" />
+    <Compile Include="besselj_accuracy.py" />
+    <Compile Include="besselj_regress.py" />
     <Compile Include="besselk.py" />
     <Compile Include="bessely.py" />
     <Compile Include="besseli.py" />

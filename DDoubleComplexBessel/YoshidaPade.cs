@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace DDoubleComplexBessel {
     public class YoshidaPade {
-        const int m = 32;
+        const int m = 36;
         private static readonly ddouble[][] dss;
 
         public ddouble Nu { get; }

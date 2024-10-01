@@ -145,7 +145,7 @@ namespace ComplexBessel {
 
         static MP4 PowerSeriesThreshold(MP4 nu, MP4 x) {
             MP4 nu_abs = MP4.Abs(nu);
-            return x * (4.20e-1 - nu_abs * 1.44e-2) + nu_abs * 4.59e-1 + 6;
+            return 6 + nu_abs * 4.59e-1 + x * (4.20e-1 - nu_abs * 1.44e-2);
         }
     }
 }

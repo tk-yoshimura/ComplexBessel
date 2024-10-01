@@ -23,14 +23,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComplexBesselPowerSeriesRan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComplexBesselSandbox", "ComplexBesselSandbox\ComplexBesselSandbox.csproj", "{C4B9DC8B-0595-4BD0-B41C-447F010BF1C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDoubleComplexBessel", "DDoubleComplexBessel\DDoubleComplexBessel.csproj", "{0197D371-77D7-4DFE-858A-EBB92B528072}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDoubleComplexBessel", "DDoubleComplexBessel\DDoubleComplexBessel.csproj", "{0197D371-77D7-4DFE-858A-EBB92B528072}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D99B1853-1A26-43DE-9F67-86039C0921BE} = {D99B1853-1A26-43DE-9F67-86039C0921BE}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDoubleComplexBesselBenchmark", "DDoubleComplexBesselBenchmark\DDoubleComplexBesselBenchmark.csproj", "{9B4416CF-C714-45DE-B684-B6F4D0B39E1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDoubleComplexBesselBenchmark", "DDoubleComplexBesselBenchmark\DDoubleComplexBesselBenchmark.csproj", "{9B4416CF-C714-45DE-B684-B6F4D0B39E1A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0197D371-77D7-4DFE-858A-EBB92B528072} = {0197D371-77D7-4DFE-858A-EBB92B528072}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDoubleComplexBesselTests", "DDoubleComplexBesselTests\DDoubleComplexBesselTests.csproj", "{BD8B7B77-314D-4FD2-B5EE-FC00272A97C1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0197D371-77D7-4DFE-858A-EBB92B528072} = {0197D371-77D7-4DFE-858A-EBB92B528072}
+		{D99B1853-1A26-43DE-9F67-86039C0921BE} = {D99B1853-1A26-43DE-9F67-86039C0921BE}
 	EndProjectSection
 EndProject
 Global
@@ -71,6 +77,10 @@ Global
 		{9B4416CF-C714-45DE-B684-B6F4D0B39E1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B4416CF-C714-45DE-B684-B6F4D0B39E1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B4416CF-C714-45DE-B684-B6F4D0B39E1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD8B7B77-314D-4FD2-B5EE-FC00272A97C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD8B7B77-314D-4FD2-B5EE-FC00272A97C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD8B7B77-314D-4FD2-B5EE-FC00272A97C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD8B7B77-314D-4FD2-B5EE-FC00272A97C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

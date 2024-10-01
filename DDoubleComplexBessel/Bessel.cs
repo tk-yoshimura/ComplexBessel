@@ -3,6 +3,8 @@ using DoubleDoubleComplex;
 
 namespace DDoubleComplexBessel {
     public static class Bessel {
+        private const double hankel_threshold = 38.75, miller_backward_threshold = 6;
+        private const double besselk_pade_threshold = 1, besselk_nz_threshold = 4;
         private static readonly Dictionary<ddouble, HankelExpansion> hankel_table = [];
         private static readonly Dictionary<ddouble, YoshidaPade> pade_table = [];
 
@@ -17,7 +19,7 @@ namespace DDoubleComplexBessel {
                 return (SinCosPICache.CosPI(nu), SinCosPICache.SinPI(nu)) * BesselJ(nu, -z);
             }
 
-            if (z.Magnitude >= 46.5) {
+            if (z.Magnitude >= hankel_threshold) {
                 if (!hankel_table.TryGetValue(nu, out HankelExpansion hankel)) {
                     hankel = new(nu);
                     hankel_table[nu] = hankel;
@@ -28,7 +30,7 @@ namespace DDoubleComplexBessel {
             else if (z.R <= PowerSeriesThreshold(nu, z.I)) {
                 return PowerSeries.BesselJ(nu, z);
             }
-            else if (z.I <= 8) {
+            else if (z.I <= miller_backward_threshold) {
                 return MillerBackward.BesselJ(nu, z);
             }
             else {
@@ -44,10 +46,11 @@ namespace DDoubleComplexBessel {
             }
 
             if (ddouble.IsNegative(z.R)) {
-                return (SinCosPICache.CosPI(nu), -SinCosPICache.SinPI(nu)) * BesselY(nu, -z) + (0, 2 * SinCosPICache.CosPI(nu)) * BesselJ(nu, -z);
+                return (SinCosPICache.CosPI(nu), -SinCosPICache.SinPI(nu)) * BesselY(nu, -z) 
+                     + (0, 2 * SinCosPICache.CosPI(nu)) * BesselJ(nu, -z);
             }
 
-            if (z.Magnitude >= 46.5) {
+            if (z.Magnitude >= hankel_threshold) {
                 if (!hankel_table.TryGetValue(nu, out HankelExpansion hankel)) {
                     hankel = new(nu);
                     hankel_table[nu] = hankel;
@@ -55,10 +58,10 @@ namespace DDoubleComplexBessel {
 
                 return hankel.BesselY(z);
             }
-            else if (z.R <= PowerSeriesThreshold(nu, z.I)) {
+            else if (z.R <= PowerSeriesThreshold(nu, z.I) - 2) {
                 return PowerSeries.BesselY(nu, z);
             }
-            else if (z.I <= 8) {
+            else if (z.I <= miller_backward_threshold) {
                 return MillerBackward.BesselY(nu, z);
             }
             else {
@@ -83,7 +86,7 @@ namespace DDoubleComplexBessel {
                 return (SinCosPICache.CosPI(nu), SinCosPICache.SinPI(nu)) * BesselI(nu, -z);
             }
 
-            if (z.Magnitude >= 46.25) {
+            if (z.Magnitude >= hankel_threshold) {
                 if (!hankel_table.TryGetValue(nu, out HankelExpansion hankel)) {
                     hankel = new(nu);
                     hankel_table[nu] = hankel;
@@ -109,10 +112,11 @@ namespace DDoubleComplexBessel {
             }
 
             if (ddouble.IsNegative(z.R)) {
-                return (SinCosPICache.CosPI(nu), -SinCosPICache.SinPI(nu)) * BesselK(nu, -z) - (0, ddouble.PI) * BesselI(nu, -z);
+                return (SinCosPICache.CosPI(nu), -SinCosPICache.SinPI(nu)) * BesselK(nu, -z)
+                     - (0, ddouble.PI) * BesselI(nu, -z);
             }
 
-            if (z.Magnitude >= 44.5) {
+            if (z.Magnitude >= hankel_threshold) {
                 if (!hankel_table.TryGetValue(nu, out HankelExpansion hankel)) {
                     hankel = new(nu);
                     hankel_table[nu] = hankel;
@@ -120,10 +124,10 @@ namespace DDoubleComplexBessel {
 
                 return hankel.BesselK(z);
             }
-            else if (z.Magnitude <= 4) {
+            else if (z.Magnitude <= besselk_nz_threshold) {
                 return PowerSeries.BesselK(nu, z);
             }
-            else if (z.R >= ddouble.Min(2, z.I / 2)) {
+            else if (z.R >= besselk_pade_threshold) {
                 if (!pade_table.TryGetValue(nu, out YoshidaPade pade)) {
                     pade = new(nu);
                     pade_table[nu] = pade;
@@ -144,7 +148,8 @@ namespace DDoubleComplexBessel {
 
         static ddouble PowerSeriesThreshold(ddouble nu, ddouble x) {
             ddouble nu_abs = ddouble.Abs(nu);
-            return x * (4.20e-1 - nu_abs * 1.44e-2) + nu_abs * 4.59e-1 + 6;
+
+            return 7.5 + nu_abs * (3.57e-1 + nu_abs * 5.23e-3) + x * (4.67e-1 - nu_abs * 1.51e-2);
         }
     }
 }

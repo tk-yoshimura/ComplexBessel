@@ -36,7 +36,7 @@ namespace DDoubleComplexBesselBenchmark {
 
                         ddouble err = (z4 - z5).Magnitude / z5.Magnitude;
 
-                        if (err > 1e-30) {
+                        if (err > 3.16e-30) {
                             sw.WriteLine($"{r - 0.125},{i}");
                             break;
                         }

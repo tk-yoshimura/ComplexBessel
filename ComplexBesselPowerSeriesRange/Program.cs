@@ -5,10 +5,10 @@ using Regression;
 namespace ComplexBesselPowerSeriesRange {
     internal class Program {
         static void Main() {
-            List<double> xs = [], ys = [], nus = [], ws = [];
+            List<double> xs = [], ys = [], nus = [];
 
             for (double nu = 0; nu <= 16; nu += 0.25) {
-                using StreamReader sr = new($"../../../../results/besselj_nu{nu}_powerseries_range.csv");
+                using StreamReader sr = new($"../../../../results_ddouble/besselj_nu{nu}_powerseries_range.csv");
 
                 sr.ReadLine();
 
@@ -26,19 +26,17 @@ namespace ComplexBesselPowerSeriesRange {
                     xs.Add(i);
                     ys.Add(r);
                     nus.Add(nu);
-                    ws.Add(1 / (i + 1));
                 }
             }
 
             {
                 Vector x = xs.ToArray();
                 Vector nu = nus.ToArray();
-                Vector w = ws.ToArray();
                 Vector y = ys.ToArray();
 
-                Regressor fitter = new([x, nu, x * nu], y - 6, intercept: false);
+                RobustRegressor fitter = new([nu, nu * nu, x, x * nu], y - 7.5, intercept: false);
 
-                Vector param = fitter.Fit(w);
+                Vector param = fitter.Fit();
 
                 Console.WriteLine($"{param:e2}");
             }
