@@ -4,7 +4,7 @@ using DoubleDoubleComplex;
 namespace DDoubleComplexBessel {
     public static class Bessel {
         private const double hankel_threshold = 38.75, miller_backward_threshold = 6;
-        private const double besselk_pade_threshold = 1, besselk_nz_threshold = 4;
+        private const double besselk_pade_threshold = 1, besselk_nz_threshold = 4, besseljy_powerseries_bias = 2;
         private static readonly Dictionary<ddouble, HankelExpansion> hankel_table = [];
         private static readonly Dictionary<ddouble, YoshidaPade> pade_table = [];
 
@@ -58,7 +58,7 @@ namespace DDoubleComplexBessel {
 
                 return hankel.BesselY(z);
             }
-            else if (z.R <= PowerSeriesThreshold(nu, z.I) - 2) {
+            else if (z.R <= PowerSeriesThreshold(nu, z.I) - besseljy_powerseries_bias) {
                 return PowerSeries.BesselY(nu, z);
             }
             else if (z.I <= miller_backward_threshold) {
