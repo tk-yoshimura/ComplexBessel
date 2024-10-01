@@ -13,7 +13,7 @@ namespace DDoubleComplexBessel {
             Debug.Assert(ddouble.IsPositive(z.R));
             Debug.Assert(ddouble.IsPositive(z.I));
 
-            int m = BesselJYIterM((double)z.Magnitude);
+            int m = BesselJYIterM((double)z.R);
 
             Complex y = BesselJKernel(n, z, m);
 
@@ -24,7 +24,7 @@ namespace DDoubleComplexBessel {
             Debug.Assert(ddouble.IsPositive(z.R));
             Debug.Assert(ddouble.IsPositive(z.I));
 
-            int m = BesselJYIterM((double)z.Magnitude);
+            int m = BesselJYIterM((double)z.R);
 
             if (BesselUtil.NearlyInteger(nu, out int n)) {
                 Complex y = BesselJKernel(n, z, m);
@@ -42,7 +42,7 @@ namespace DDoubleComplexBessel {
             Debug.Assert(ddouble.IsPositive(z.R));
             Debug.Assert(ddouble.IsPositive(z.I));
 
-            int m = BesselJYIterM((double)z.Magnitude);
+            int m = BesselJYIterM((double)z.R);
 
             Complex y = BesselYKernel(n, z, m);
 
@@ -53,7 +53,7 @@ namespace DDoubleComplexBessel {
             Debug.Assert(ddouble.IsPositive(z.R));
             Debug.Assert(ddouble.IsPositive(z.I));
 
-            int m = BesselJYIterM((double)z.Magnitude);
+            int m = BesselJYIterM((double)z.R);
 
             if (BesselUtil.NearlyInteger(nu, out int n)) {
                 Complex y = BesselYKernel(n, z, m);
@@ -67,15 +67,17 @@ namespace DDoubleComplexBessel {
             }
         }
 
-        private static int BesselJYIterM(double x) {
-            return 256;//(int)double.Ceiling(74 + 1.36 * x - 54.25 / double.Sqrt(double.Sqrt(x))) & ~1;
+        private static int BesselJYIterM(double r) {
+            int m = (int)double.Ceiling(3.8029e1 + r * 1.6342e0);
+
+            return (m + 1) / 2 * 2;
         }
 
         public static Complex BesselI(int n, Complex z, bool scale = false) {
             Debug.Assert(ddouble.IsPositive(z.R));
             Debug.Assert(ddouble.IsPositive(z.I));
 
-            int m = BesselIIterM((double)z.Magnitude);
+            int m = BesselIIterM((double)z.R, (double)z.I);
 
             Complex y = BesselIKernel(n, z, m, scale);
 
@@ -86,7 +88,7 @@ namespace DDoubleComplexBessel {
             Debug.Assert(ddouble.IsPositive(z.R));
             Debug.Assert(ddouble.IsPositive(z.I));
 
-            int m = BesselIIterM((double)z.Magnitude);
+            int m = BesselIIterM((double)z.R, (double)z.I);
 
             if (BesselUtil.NearlyInteger(nu, out int n)) {
                 Complex y = BesselIKernel(n, z, m, scale);
@@ -100,8 +102,10 @@ namespace DDoubleComplexBessel {
             }
         }
 
-        private static int BesselIIterM(double x) {
-            return 256; // (int)double.Ceiling(86 + 0.75 * x - 67.25 / double.Sqrt(double.Sqrt(x))) & ~1;
+        private static int BesselIIterM(double r, double i) {
+            int m = (int)double.Ceiling(3.3612e1 + r * 1.3557e0 + i * 1.8485e0 - r * i * 4.3649e-2);
+
+            return (m + 1) / 2 * 2;
         }
 
         private static Complex BesselJKernel(int n, Complex z, int m) {
@@ -139,7 +143,7 @@ namespace DDoubleComplexBessel {
             return yn;
         }
 
-        private static Complex BesselJKernel(ddouble nu, Complex z, int m) {
+        public static Complex BesselJKernel(ddouble nu, Complex z, int m) {
             int n = (int)ddouble.Floor(nu);
             ddouble alpha = nu - n;
 
@@ -303,7 +307,7 @@ namespace DDoubleComplexBessel {
             return yn;
         }
 
-        private static Complex BesselYKernel(ddouble nu, Complex z, int m) {
+        public static Complex BesselYKernel(ddouble nu, Complex z, int m) {
             int n = (int)ddouble.Floor(nu);
             ddouble alpha = nu - n;
 
@@ -575,7 +579,7 @@ namespace DDoubleComplexBessel {
             return yn;
         }
 
-        private static Complex BesselIKernel(ddouble nu, Complex z, int m, bool scale = false) {
+        public static Complex BesselIKernel(ddouble nu, Complex z, int m, bool scale = false) {
             int n = (int)ddouble.Floor(nu);
             ddouble alpha = nu - n;
 
