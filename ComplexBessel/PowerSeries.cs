@@ -43,11 +43,6 @@ namespace ComplexBessel {
 
                 return y;
             }
-            else if (nu < 0d && MultiPrecision<N>.Abs(nu - MultiPrecision<N>.Floor(nu) - 0.5d) < 0.0625d) {
-                Complex<N> y = BesselYKernel(nu, z, terms: 256);
-
-                return y;
-            }
             else {
                 Complex<N> y = BesselYKernel(nu, z, terms: 256);
 
@@ -104,17 +99,14 @@ namespace ComplexBessel {
         }
 
         private static Complex<N> BesselJIKernel(MultiPrecision<N> nu, Complex<N> z, bool sign_switch, int terms) {
-            if (!dfactdenom_coef_table.TryGetValue(nu, out DoubleFactDenomTable dfactdenom_table)) {
-                dfactdenom_table = new DoubleFactDenomTable(nu);
-                dfactdenom_coef_table.Add(nu, dfactdenom_table);
+            if (!dfactdenom_coef_table.TryGetValue(nu, out DoubleFactDenomTable r)) {
+                r = new DoubleFactDenomTable(nu);
+                dfactdenom_coef_table.Add(nu, r);
             }
-            if (!x2denom_coef_table.TryGetValue(nu, out X2DenomTable x2denom_table)) {
-                x2denom_table = new X2DenomTable(nu);
-                x2denom_coef_table.Add(nu, x2denom_table);
+            if (!x2denom_coef_table.TryGetValue(nu, out X2DenomTable d)) {
+                d = new X2DenomTable(nu);
+                x2denom_coef_table.Add(nu, d);
             }
-
-            DoubleFactDenomTable r = dfactdenom_table;
-            X2DenomTable d = x2denom_table;
 
             Complex<N> z2 = z * z, z4 = z2 * z2;
 
@@ -145,18 +137,16 @@ namespace ComplexBessel {
         }
 
         private static Complex<N> BesselYKernel(MultiPrecision<N> nu, Complex<N> z, int terms) {
-            if (!gamma_coef_table.TryGetValue(nu, out GammaTable gamma_table)) {
-                gamma_table = new GammaTable(nu);
-                gamma_coef_table.Add(nu, gamma_table);
+            if (!gamma_coef_table.TryGetValue(nu, out GammaTable g)) {
+                g = new GammaTable(nu);
+                gamma_coef_table.Add(nu, g);
             }
-            if (!gammapn_coef_table.TryGetValue(nu, out GammaPNTable gammapn_table)) {
-                gammapn_table = new GammaPNTable(nu);
-                gammapn_coef_table.Add(nu, gammapn_table);
+            if (!gammapn_coef_table.TryGetValue(nu, out GammaPNTable gpn)) {
+                gpn = new GammaPNTable(nu);
+                gammapn_coef_table.Add(nu, gpn);
             }
 
             YCoefTable r = y_coef_table;
-            GammaTable g = gamma_table;
-            GammaPNTable gpn = gammapn_table;
 
             MultiPrecision<N> cos = SinCosPICache<N>.CosPI(nu), sin = SinCosPICache<N>.SinPI(nu);
             Complex<N> p = Complex<N>.IsZero(cos) ? 0d : Complex<N>.Pow(z, Complex<N>.Ldexp(nu, 1)) * cos, s = Complex<N>.Ldexp(Complex<N>.Pow(Complex<N>.Ldexp(z, 1), nu), 2);
@@ -336,17 +326,16 @@ namespace ComplexBessel {
         }
 
         private static Complex<N> BesselKKernel(MultiPrecision<N> nu, Complex<N> z, int terms) {
-            if (!gammadenom_coef_table.TryGetValue(nu, out GammaDenomTable gammadenomp_table)) {
-                gammadenomp_table = new GammaDenomTable(nu);
-                gammadenom_coef_table.Add(nu, gammadenomp_table);
+            if (!gammadenom_coef_table.TryGetValue(nu, out GammaDenomTable gp)) {
+                gp = new GammaDenomTable(nu);
+                gammadenom_coef_table.Add(nu, gp);
             }
-            if (!gammadenom_coef_table.TryGetValue(-nu, out GammaDenomTable gammadenomn_table)) {
-                gammadenomn_table = new GammaDenomTable(-nu);
-                gammadenom_coef_table.Add(-nu, gammadenomn_table);
+            if (!gammadenom_coef_table.TryGetValue(-nu, out GammaDenomTable gn)) {
+                gn = new GammaDenomTable(-nu);
+                gammadenom_coef_table.Add(-nu, gn);
             }
 
             KCoefTable r = k_coef_table;
-            GammaDenomTable gp = gammadenomp_table, gn = gammadenomn_table;
 
             Complex<N> tp = Complex<N>.Pow(Complex<N>.Ldexp(z, -1), nu), tn = 1d / tp;
 

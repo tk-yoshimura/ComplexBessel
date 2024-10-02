@@ -3,7 +3,7 @@ using Regression;
 
 namespace ComplexBesselMillerBackwardIteration {
     internal class Program {
-        static void Main(string[] args) {
+        static void Main() {
             List<double> reals = [], imags = [], nus = [], ms = [];
 
             for (double nu = 0; nu <= 16; nu += 0.25) {

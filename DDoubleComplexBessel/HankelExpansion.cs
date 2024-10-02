@@ -46,6 +46,8 @@ namespace DDoubleComplexBessel {
 
                 if (((long)Complex.ILogB(c_even) - Complex.ILogB(dc_even) >= 106L || Complex.IsZero(dc_even)) &&
                     ((long)Complex.ILogB(c_odd) - Complex.ILogB(dc_odd) >= 106L || Complex.IsZero(dc_odd))) {
+                    
+                    IterationLogger.Log("BesselJY Hankel", k);
 
                     return (c_even, c_odd / z);
                 }
@@ -67,6 +69,8 @@ namespace DDoubleComplexBessel {
                 c += dc;
 
                 if ((long)Complex.ILogB(c) - Complex.ILogB(dc) >= 106L || Complex.IsZero(dc)) {
+                    IterationLogger.Log("BesselI Hankel", k);
+
                     return c;
                 }
 
@@ -87,6 +91,8 @@ namespace DDoubleComplexBessel {
                 c += dc;
 
                 if ((long)Complex.ILogB(c) - Complex.ILogB(dc) >= 106L || Complex.IsZero(dc)) {
+                    IterationLogger.Log("BesselK Hankel", k);
+
                     return c;
                 }
 
