@@ -49,10 +49,20 @@ namespace DDoubleOptimizedBessel {
                 return Limit.BesselY(nu, z);
             }
             else if (z.R <= PowerSeriesThreshold(nu, z.I) - BesselJYPowerseriesBias) {
-                return PowerSeries.BesselY(nu, z);
+                if (NearlyInteger(nu, out _) || ddouble.Abs(ddouble.Round(nu) - nu) >= InterpolationThreshold) {
+                    return PowerSeries.BesselY(nu, z);
+                }
+                else {
+                    return CubicInterpolate.BesselYPowerSeries(nu, z);
+                }
             }
             else if (z.I <= MillerBackwardThreshold) {
-                return MillerBackward.BesselY(nu, z);
+                if (NearlyInteger(nu, out _) || ddouble.Abs(ddouble.Ceiling(nu) - nu) >= InterpolationThreshold) {
+                    return MillerBackward.BesselY(nu, z);
+                }
+                else {
+                    return CubicInterpolate.BesselYMillerBackward(nu, z);
+                }
             }
             else {
                 Complex c = (SinCosPICache.CosPI(nu / 2), SinCosPICache.SinPI(nu / 2));
@@ -105,7 +115,12 @@ namespace DDoubleOptimizedBessel {
                 return Limit.BesselK(nu, z);
             }
             else if (z.Magnitude <= BesselKNearZeroThreshold) {
-                return PowerSeries.BesselK(nu, z);
+                if (NearlyInteger(nu, out _) || ddouble.Abs(ddouble.Round(nu) - nu) >= InterpolationThreshold) {
+                    return PowerSeries.BesselK(nu, z);
+                }
+                else {
+                    return CubicInterpolate.BesselKPowerSeries(nu, z, scale: false);
+                }
             }
             else if (z.R >= BesselKPadeThreshold) {
                 return YoshidaPade.BesselK(nu, z);
@@ -2027,7 +2042,7 @@ namespace DDoubleOptimizedBessel {
                 ess_coef_table = Array.AsReadOnly(es.ToArray());
             }
 
-            public static Complex BesselK(ddouble nu, Complex x, bool scale = false) {
+            public static Complex BesselK(ddouble nu, Complex z, bool scale = false) {
                 if (nu < 2d) {
                     if (!cds_coef_table.TryGetValue(nu, out ReadOnlyCollection<(ddouble c, ddouble s)> cds_table)) {
                         cds_table = Table(nu);
@@ -2036,7 +2051,7 @@ namespace DDoubleOptimizedBessel {
 
                     ReadOnlyCollection<(ddouble, ddouble)> cds = cds_table;
 
-                    Complex y = Value(x, cds, scale);
+                    Complex y = Value(z, cds, scale);
 
                     return y;
                 }
@@ -2044,10 +2059,10 @@ namespace DDoubleOptimizedBessel {
                     int n = (int)ddouble.Floor(nu);
                     ddouble alpha = nu - n;
 
-                    Complex y0 = BesselK(alpha, x, scale);
-                    Complex y1 = BesselK(alpha + 1d, x, scale);
+                    Complex y0 = BesselK(alpha, z, scale);
+                    Complex y1 = BesselK(alpha + 1d, z, scale);
 
-                    Complex v = 1d / x;
+                    Complex v = 1d / z;
 
                     for (int k = 1; k < n; k++) {
                         (y1, y0) = (Complex.Ldexp(k + alpha, 1) * v * y1 + y0, y1);
@@ -2057,8 +2072,8 @@ namespace DDoubleOptimizedBessel {
                 }
             }
 
-            private static Complex Value(Complex x, ReadOnlyCollection<(ddouble c, ddouble d)> cds, bool scale = false) {
-                Complex t = 1d / x;
+            private static Complex Value(Complex z, ReadOnlyCollection<(ddouble c, ddouble d)> cds, bool scale = false) {
+                Complex t = 1d / z;
                 (Complex sc, Complex sd) = cds[0];
 
                 for (int i = 1; i < cds.Count; i++) {
@@ -2071,7 +2086,7 @@ namespace DDoubleOptimizedBessel {
                 Complex y = Complex.Sqrt(Complex.Ldexp(t * ddouble.PI, -1)) * sc / sd;
 
                 if (!scale) {
-                    y *= Complex.Exp(-x);
+                    y *= Complex.Exp(-z);
                 }
 
                 return y;
@@ -2111,6 +2126,65 @@ namespace DDoubleOptimizedBessel {
                 cds.Reverse();
 
                 return Array.AsReadOnly(cds.ToArray());
+            }
+        }
+
+        public static class CubicInterpolate {
+            public static Complex BesselYPowerSeries(ddouble nu, Complex x) {
+                int n = (int)ddouble.Round(nu);
+                ddouble alpha = nu - n;
+
+                Complex y0 = PowerSeries.BesselY(n, x);
+                Complex y1 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold, x);
+                Complex y2 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5, x);
+                Complex y3 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 2, x);
+
+                ddouble t = ddouble.Abs(alpha) / InterpolationThreshold;
+                Complex y = Interpolate(t, y0, y1, y2, y3);
+
+                return y;
+            }
+
+            public static Complex BesselYMillerBackward(ddouble nu, Complex x) {
+                int n = (int)ddouble.Round(nu);
+                ddouble alpha = nu - n;
+
+                Complex y0 = MillerBackward.BesselY(n, x);
+                Complex y1 = MillerBackward.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold, x);
+                Complex y2 = MillerBackward.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5, x);
+                Complex y3 = MillerBackward.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 2, x);
+
+                ddouble t = ddouble.Abs(alpha) / InterpolationThreshold;
+                Complex y = Interpolate(t, y0, y1, y2, y3);
+
+                return y;
+            }
+
+            public static Complex BesselKPowerSeries(ddouble nu, Complex x, bool scale) {
+                int n = (int)ddouble.Round(nu);
+                ddouble alpha = nu - n;
+
+                Complex y0 = PowerSeries.BesselK(n, x);
+                Complex y1 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold, x);
+                Complex y2 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5, x);
+                Complex y3 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold * 2, x);
+
+                ddouble t = ddouble.Abs(alpha) / InterpolationThreshold;
+                Complex y = Interpolate(t, y0, y1, y2, y3);
+
+                if (!scale) {
+                    y *= Complex.Exp(-x);
+                }
+
+                return y;
+            }
+
+            private static Complex Interpolate(ddouble t, Complex y0, Complex y1, Complex y2, Complex y3) {
+                return y0 + (
+                    -(13d + t * (-9d + t * 2d)) / 6d * y0
+                    + (6d + t * (-7d + t * 2d)) * y1
+                    - (16d + t * (-24d + t * 8d)) / 3d * y2
+                    + (3d + t * (-5d + t * 2d)) / 2d * y3) * t;
             }
         }
     }
