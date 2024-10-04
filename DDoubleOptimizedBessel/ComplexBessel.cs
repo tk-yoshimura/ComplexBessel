@@ -119,7 +119,7 @@ namespace DDoubleOptimizedBessel {
                     return PowerSeries.BesselK(nu, z);
                 }
                 else {
-                    return CubicInterpolate.BesselKPowerSeries(nu, z, scale: false);
+                    return CubicInterpolate.BesselKPowerSeries(nu, z);
                 }
             }
             else if (z.R >= BesselKPadeThreshold) {
@@ -2160,7 +2160,7 @@ namespace DDoubleOptimizedBessel {
                 return y;
             }
 
-            public static Complex BesselKPowerSeries(ddouble nu, Complex x, bool scale) {
+            public static Complex BesselKPowerSeries(ddouble nu, Complex x) {
                 int n = (int)ddouble.Round(nu);
                 ddouble alpha = nu - n;
 
@@ -2171,10 +2171,6 @@ namespace DDoubleOptimizedBessel {
 
                 ddouble t = ddouble.Abs(alpha) / InterpolationThreshold;
                 Complex y = Interpolate(t, y0, y1, y2, y3);
-
-                if (!scale) {
-                    y *= Complex.Exp(-x);
-                }
 
                 return y;
             }
