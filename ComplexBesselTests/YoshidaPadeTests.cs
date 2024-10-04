@@ -1,6 +1,7 @@
 ﻿using ComplexBessel;
 using MultiPrecision;
 using MultiPrecisionComplex;
+using System.Diagnostics;
 
 namespace ComplexBesselTests {
     [TestClass()]
@@ -159,6 +160,51 @@ namespace ComplexBesselTests {
 
                 Assert.IsTrue((actual - expected).Magnitude / expected.Magnitude < 1e-30);
             }
+        }
+
+        [TestMethod()]
+        public void YoshidaCoefPlot() {
+            const int m = 36;
+
+            MultiPrecision<Pow2.N16>[][] dss = YoshidaCoef<Pow2.N16>.Table(m);
+
+            for (int i = 0; i < dss.Length; i++) {
+                Console.WriteLine($"new ddouble[{dss[i].Length}]{{");
+                
+                for (int j = 0; j < dss[i].Length; j++) {
+                    Console.WriteLine($"    {ToFP128(dss[i][j] / dss[0][0])},");
+                }
+
+                Console.WriteLine("},");
+            }
+
+            (MultiPrecision<Pow2.N16>[] cs0, MultiPrecision<Pow2.N16>[] ds0) = YoshidaCoef<Pow2.N16>.Table(0, dss);
+            (MultiPrecision<Pow2.N16>[] cs1, MultiPrecision<Pow2.N16>[] ds1) = YoshidaCoef<Pow2.N16>.Table(1, dss);
+
+            Debug.Assert(cs0.Length == ds0.Length);
+            Debug.Assert(cs1.Length == ds1.Length);
+
+            Console.WriteLine($"new (ddouble c, ddouble d)[]{{");
+            for (int i = 0; i < cs0.Length; i++) { 
+                Console.WriteLine($"    ({ToFP128(cs0[i] / ds0[0])}, {ToFP128(ds0[i] / ds0[0])}),");
+            }
+            Console.WriteLine("},");
+
+            Console.WriteLine($"new (ddouble c, ddouble d)[]{{");
+            for (int i = 0; i < cs1.Length; i++) { 
+                Console.WriteLine($"    ({ToFP128(cs1[i] / ds1[0])}, {ToFP128(ds1[i] / ds1[0])}),");
+            }
+            Console.WriteLine("},");
+        }
+
+        public static string ToFP128<N>(MultiPrecision<N> x) where N: struct, IConstant {
+            Sign sign = x.Sign;
+            long exponent = x.Exponent;
+            uint[] mantissa = x.Mantissa.Reverse().ToArray();
+
+            string code = $"({(sign == Sign.Plus ? "+1" : "-1")}, {exponent}, 0x{mantissa[0]:X8}{mantissa[1]:X8}uL, 0x{mantissa[2]:X8}{mantissa[3]:X8}uL)";
+
+            return code;
         }
     }
 }

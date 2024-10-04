@@ -872,6 +872,6 @@ namespace DDoubleComplexBessel {
 
                 return table[n];
             }
-        };
+        }
     }
 }

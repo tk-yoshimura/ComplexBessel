@@ -15,10 +15,12 @@ namespace DDoubleComplexBessel {
         static YoshidaPade() {
             MultiPrecision<Pow2.N4>[][] dss_mp4 = YoshidaCoef<Pow2.N4>.Table(m);
 
+            MultiPrecision<Pow2.N4> n = dss_mp4[0][0];
+
             dss = new ddouble[dss_mp4.Length][];
 
             for (int i = 0; i < dss.Length; i++) {
-                dss[i] = dss_mp4[i].Select(v => (ddouble)v.ToString()).ToArray();
+                dss[i] = dss_mp4[i].Select(v => (ddouble)(v / n).ToString()).ToArray();
             }
         }
 
