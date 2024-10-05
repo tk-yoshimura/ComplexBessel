@@ -66,8 +66,12 @@ namespace DDoubleOptimizedBessel {
             }
             else {
                 Complex c = (SinCosPICache.CosPI(nu / 2), SinCosPICache.SinPI(nu / 2));
-                Complex bi = BesselI(nu, (z.I, z.R));
-                Complex bk = BesselK(nu, (z.I, z.R));
+
+                Complex bi = z.R <= PowerSeriesThreshold(nu, z.I)
+                    ? PowerSeries.BesselI(nu, (z.I, z.R))
+                    : MillerBackward.BesselI(nu, (z.I, z.R));
+
+                Complex bk = YoshidaPade.BesselK(nu, (z.I, z.R));
 
                 Complex y = (0, 1) * c * bi.Conj - 2 * ddouble.RcpPI * (c * bk).Conj;
 
@@ -127,6 +131,7 @@ namespace DDoubleOptimizedBessel {
             }
             else {
                 Complex c = (SinCosPICache.CosPI(nu / 2), -SinCosPICache.SinPI(nu / 2));
+
                 Complex bi = BesselI(nu, z);
                 Complex by = BesselY(nu, (z.I, z.R));
 
