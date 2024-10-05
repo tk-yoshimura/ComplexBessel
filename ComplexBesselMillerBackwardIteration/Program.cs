@@ -21,7 +21,7 @@ namespace ComplexBesselMillerBackwardIteration {
                     string[] items = line.Split(",");
 
                     double r = double.Parse(items[0]), i = double.Parse(items[1]);
-                    int m = int.Parse(items[2]); 
+                    int m = int.Parse(items[2]);
 
                     reals.Add(r);
                     imags.Add(i);

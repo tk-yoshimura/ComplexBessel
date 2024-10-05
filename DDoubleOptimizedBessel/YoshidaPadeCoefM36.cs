@@ -1,9 +1,4 @@
 ﻿using DoubleDouble;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDoubleOptimizedBessel {
     public static class YoshidaPadeCoefM36 {

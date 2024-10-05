@@ -170,7 +170,7 @@ namespace ComplexBesselTests {
 
             for (int i = 0; i < dss.Length; i++) {
                 Console.WriteLine($"new ddouble[{dss[i].Length}]{{");
-                
+
                 for (int j = 0; j < dss[i].Length; j++) {
                     Console.WriteLine($"    {ToFP128(dss[i][j] / dss[0][0])},");
                 }
@@ -185,19 +185,19 @@ namespace ComplexBesselTests {
             Debug.Assert(cs1.Length == ds1.Length);
 
             Console.WriteLine($"new (ddouble c, ddouble d)[]{{");
-            for (int i = 0; i < cs0.Length; i++) { 
+            for (int i = 0; i < cs0.Length; i++) {
                 Console.WriteLine($"    ({ToFP128(cs0[i] / ds0[0])}, {ToFP128(ds0[i] / ds0[0])}),");
             }
             Console.WriteLine("},");
 
             Console.WriteLine($"new (ddouble c, ddouble d)[]{{");
-            for (int i = 0; i < cs1.Length; i++) { 
+            for (int i = 0; i < cs1.Length; i++) {
                 Console.WriteLine($"    ({ToFP128(cs1[i] / ds1[0])}, {ToFP128(ds1[i] / ds1[0])}),");
             }
             Console.WriteLine("},");
         }
 
-        public static string ToFP128<N>(MultiPrecision<N> x) where N: struct, IConstant {
+        public static string ToFP128<N>(MultiPrecision<N> x) where N : struct, IConstant {
             Sign sign = x.Sign;
             long exponent = x.Exponent;
             uint[] mantissa = x.Mantissa.Reverse().ToArray();

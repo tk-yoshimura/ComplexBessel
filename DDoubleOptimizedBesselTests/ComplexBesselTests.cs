@@ -1,7 +1,6 @@
 ﻿using ComplexBessel;
 using DoubleDouble;
 using DoubleDoubleComplex;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DDoubleOptimizedBesselTests {
     [TestClass()]

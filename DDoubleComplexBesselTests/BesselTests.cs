@@ -15,8 +15,8 @@ namespace DDoubleComplexBesselTests {
             for (double nu = -16; nu <= 16; nu += 0.25) {
                 Console.WriteLine(nu);
 
-                for (double r = 0; r <= 42; r += 0.5 ) {
-                    for (double i = 0; i <= 42; i += 0.5 ) {
+                for (double r = 0; r <= 42; r += 0.5) {
+                    for (double i = 0; i <= 42; i += 0.5) {
                         if (r == 0 && i == 0) {
                             continue;
                         }
@@ -43,8 +43,8 @@ namespace DDoubleComplexBesselTests {
             for (double nu = -16; nu <= 16; nu += 0.25) {
                 Console.WriteLine(nu);
 
-                for (double r = 0; r <= 42; r += 0.5 ) {
-                    for (double i = 0; i <= 42; i += 0.5 ) {
+                for (double r = 0; r <= 42; r += 0.5) {
+                    for (double i = 0; i <= 42; i += 0.5) {
                         if (r == 0 && i == 0) {
                             continue;
                         }
@@ -71,8 +71,8 @@ namespace DDoubleComplexBesselTests {
             for (double nu = -16; nu <= 16; nu += 0.25) {
                 Console.WriteLine(nu);
 
-                for (double r = 0; r <= 42; r += 0.5 ) {
-                    for (double i = 0; i <= 42; i += 0.5 ) {
+                for (double r = 0; r <= 42; r += 0.5) {
+                    for (double i = 0; i <= 42; i += 0.5) {
                         if (r == 0 && i == 0) {
                             continue;
                         }
@@ -99,8 +99,8 @@ namespace DDoubleComplexBesselTests {
             for (double nu = 0; nu <= 16; nu += 0.25) {
                 Console.WriteLine(nu);
 
-                for (double r = 0; r <= 42; r += 0.5 ) {
-                    for (double i = 0; i <= 42; i += 0.5 ) {
+                for (double r = 0; r <= 42; r += 0.5) {
+                    for (double i = 0; i <= 42; i += 0.5) {
                         if (r == 0 && i == 0) {
                             continue;
                         }

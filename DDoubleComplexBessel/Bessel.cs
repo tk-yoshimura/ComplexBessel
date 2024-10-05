@@ -46,7 +46,7 @@ namespace DDoubleComplexBessel {
             }
 
             if (ddouble.IsNegative(z.R)) {
-                return (SinCosPICache.CosPI(nu), -SinCosPICache.SinPI(nu)) * BesselY(nu, -z) 
+                return (SinCosPICache.CosPI(nu), -SinCosPICache.SinPI(nu)) * BesselY(nu, -z)
                      + (0, 2 * SinCosPICache.CosPI(nu)) * BesselJ(nu, -z);
             }
 
