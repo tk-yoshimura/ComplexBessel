@@ -11,6 +11,10 @@ namespace DDoubleOptimizedBessel {
         public static Complex BesselJ(ddouble nu, Complex z) {
             CheckNu(nu);
 
+            if (!Complex.IsFinite(z)) {
+                return Complex.NaN;
+            }
+
             if (ddouble.IsNegative(z.I)) {
                 return BesselJ(nu, z.Conj).Conj;
             }
@@ -35,6 +39,10 @@ namespace DDoubleOptimizedBessel {
 
         public static Complex BesselY(ddouble nu, Complex z) {
             CheckNu(nu);
+
+            if (!Complex.IsFinite(z)) {
+                return Complex.NaN;
+            }
 
             if (ddouble.IsNegative(z.I)) {
                 return BesselY(nu, z.Conj).Conj;
@@ -82,6 +90,10 @@ namespace DDoubleOptimizedBessel {
         public static Complex BesselI(ddouble nu, Complex z) {
             CheckNu(nu);
 
+            if (!Complex.IsFinite(z)) {
+                return Complex.NaN;
+            }
+
             if (ddouble.IsNegative(z.I)) {
                 return BesselI(nu, z.Conj).Conj;
             }
@@ -103,6 +115,10 @@ namespace DDoubleOptimizedBessel {
 
         public static Complex BesselK(ddouble nu, Complex z) {
             CheckNu(nu);
+
+            if (!Complex.IsFinite(z)) {
+                return Complex.NaN;
+            }
 
             nu = ddouble.Abs(nu);
 
