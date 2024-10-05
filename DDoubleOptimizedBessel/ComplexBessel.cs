@@ -33,7 +33,7 @@ namespace DDoubleOptimizedBessel {
                 return MillerBackward.BesselJ(nu, z);
             }
             else {
-                return (SinCosPICache.CosPI(nu / 2), SinCosPICache.SinPI(nu / 2)) * MillerBackward.BesselI(nu, (z.I, z.R)).Conj;
+                return (SinCosPICache.CosPI(nu / 2d), SinCosPICache.SinPI(nu / 2d)) * MillerBackward.BesselI(nu, (z.I, z.R)).Conj;
             }
         }
 
@@ -50,7 +50,7 @@ namespace DDoubleOptimizedBessel {
 
             if (ddouble.IsNegative(z.R)) {
                 return (SinCosPICache.CosPI(nu), -SinCosPICache.SinPI(nu)) * BesselY(nu, -z)
-                        + (0, 2 * SinCosPICache.CosPI(nu)) * BesselJ(nu, -z);
+                        + (0d, 2d * SinCosPICache.CosPI(nu)) * BesselJ(nu, -z);
             }
 
             if (z.Magnitude >= HankelThreshold) {
@@ -65,7 +65,7 @@ namespace DDoubleOptimizedBessel {
                 }
             }
             else if (z.I <= MillerBackwardThreshold) {
-                if (NearlyInteger(nu, out _) || ddouble.Abs(ddouble.Ceiling(nu) - nu) >= InterpolationThreshold) {
+                if (NearlyInteger(nu, out _) || (ddouble.Ceiling(nu) - nu) >= InterpolationThreshold) {
                     return MillerBackward.BesselY(nu, z);
                 }
                 else {
@@ -73,7 +73,7 @@ namespace DDoubleOptimizedBessel {
                 }
             }
             else {
-                Complex c = (SinCosPICache.CosPI(nu / 2), SinCosPICache.SinPI(nu / 2));
+                Complex c = (SinCosPICache.CosPI(nu / 2d), SinCosPICache.SinPI(nu / 2d));
 
                 Complex bi = (z.R <= PowerSeriesThreshold(nu, z.I))
                     ? PowerSeries.BesselI(nu, (z.I, z.R))
@@ -81,7 +81,7 @@ namespace DDoubleOptimizedBessel {
 
                 Complex bk = YoshidaPade.BesselK(nu, (z.I, z.R));
 
-                Complex y = (0, 1) * c * bi.Conj - 2 * ddouble.RcpPI * (c * bk).Conj;
+                Complex y = Complex.ImaginaryOne * c * bi.Conj - 2d * ddouble.RcpPI * (c * bk).Conj;
 
                 return y;
             }
@@ -128,7 +128,7 @@ namespace DDoubleOptimizedBessel {
 
             if (ddouble.IsNegative(z.R)) {
                 return (SinCosPICache.CosPI(nu), -SinCosPICache.SinPI(nu)) * BesselK(nu, -z)
-                        - (0, ddouble.PI) * BesselI(nu, -z);
+                        - (0d, ddouble.PI) * BesselI(nu, -z);
             }
 
             if (z.Magnitude >= HankelThreshold) {
@@ -146,7 +146,7 @@ namespace DDoubleOptimizedBessel {
                 return YoshidaPade.BesselK(nu, z);
             }
             else {
-                Complex c = (SinCosPICache.CosPI(nu / 2), -SinCosPICache.SinPI(nu / 2));
+                Complex c = (SinCosPICache.CosPI(nu / 2d), -SinCosPICache.SinPI(nu / 2d));
 
                 Complex bi = (z.I <= PowerSeriesThreshold(nu, z.R))
                     ? PowerSeries.BesselI(nu, z)
@@ -160,7 +160,7 @@ namespace DDoubleOptimizedBessel {
                         ? MillerBackward.BesselY(nu, (z.I, z.R)) : CubicInterpolate.BesselYMillerBackward(nu, (z.I, z.R))
                     );
 
-                Complex y = c * ((0, -1) * c * bi - by.Conj) * ddouble.PI / 2;
+                Complex y = c * (-Complex.ImaginaryOne * c * bi - by.Conj) * ddouble.PI / 2d;
 
                 return y;
             }
@@ -518,7 +518,7 @@ namespace DDoubleOptimizedBessel {
 
                 Complex c = 0;
                 Complex z2 = z * z, z4 = z2 * z2;
-                Complex u = 1, v = 1, w = z2 / 4;
+                Complex u = 1, v = 1, w = Complex.Ldexp(z2, -2);
 
                 for (int k = 0; k < n; k++) {
                     c += v * f[k];
@@ -794,7 +794,7 @@ namespace DDoubleOptimizedBessel {
                 private readonly List<ddouble> table = [];
 
                 public GammaPNTable(ddouble nu) {
-                    this.r = ddouble.Pow(4, nu);
+                    this.r = ddouble.Pow(4d, nu);
                     this.positive_table = new(nu);
                     this.negative_table = new(-nu);
                 }
@@ -1021,7 +1021,7 @@ namespace DDoubleOptimizedBessel {
 
                 Complex cos = Complex.Cos(omega), sin = Complex.Sin(omega);
 
-                Complex y = Complex.Sqrt(2 / (ddouble.PI * z)) * (cos * c_even - sin * c_odd);
+                Complex y = Complex.Sqrt(2d / (ddouble.PI * z)) * (cos * c_even - sin * c_odd);
 
                 return y;
             }
@@ -1042,7 +1042,7 @@ namespace DDoubleOptimizedBessel {
 
                 Complex cos = Complex.Cos(omega), sin = Complex.Sin(omega);
 
-                Complex y = Complex.Sqrt(2 / (ddouble.PI * z)) * (sin * c_even + cos * c_odd);
+                Complex y = Complex.Sqrt(2d / (ddouble.PI * z)) * (sin * c_even + cos * c_odd);
 
                 return y;
             }
@@ -1058,7 +1058,7 @@ namespace DDoubleOptimizedBessel {
 
                 Complex ci = hankel.BesselICoef(z), ck = hankel.BesselKCoef(z);
 
-                Complex y = Complex.Sqrt(1 / (2 * ddouble.PI * z)) * (
+                Complex y = Complex.Sqrt(1d / (2d * ddouble.PI * z)) * (
                     Complex.Exp(z) * ci -
                     (SinCosPICache.SinPI(nu), -SinCosPICache.CosPI(nu)) * Complex.Exp(-z) * ck
                 );
@@ -1078,7 +1078,7 @@ namespace DDoubleOptimizedBessel {
 
                 Complex c = hankel.BesselKCoef(z);
 
-                Complex y = Complex.Sqrt(ddouble.PI / (2 * z)) * Complex.Exp(-z) * c;
+                Complex y = Complex.Sqrt(ddouble.PI / (2d * z)) * Complex.Exp(-z) * c;
 
                 return y;
             }
@@ -1095,7 +1095,7 @@ namespace DDoubleOptimizedBessel {
 
                 private ddouble ACoef(int n) {
                     for (int k = a_coef.Count; k <= n; k++) {
-                        ddouble a = a_coef.Last() * (4 * Nu * Nu - checked((2 * k - 1) * (2 * k - 1))) / (k * 8);
+                        ddouble a = a_coef.Last() * (4d * Nu * Nu - checked((2 * k - 1) * (2 * k - 1))) / (k * 8);
                         a_coef.Add(a);
                     }
 
@@ -1133,7 +1133,7 @@ namespace DDoubleOptimizedBessel {
                 }
 
                 public Complex BesselICoef(Complex z, int max_term = 81) {
-                    Complex v = 1 / z, w = -v;
+                    Complex v = 1d / z, w = -v;
 
                     Complex c = ACoef(0);
 
@@ -1153,7 +1153,7 @@ namespace DDoubleOptimizedBessel {
                 }
 
                 public Complex BesselKCoef(Complex z, int max_term = 59) {
-                    Complex v = 1 / z, w = v;
+                    Complex v = 1d / z, w = v;
 
                     Complex c = ACoef(0);
 
@@ -2162,8 +2162,8 @@ namespace DDoubleOptimizedBessel {
 
                 Complex y0 = PowerSeries.BesselY(n, z);
                 Complex y1 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold, z);
-                Complex y2 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5, z);
-                Complex y3 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 2, z);
+                Complex y2 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5d, z);
+                Complex y3 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 2d, z);
 
                 ddouble t = ddouble.Abs(alpha) / InterpolationThreshold;
                 Complex y = Interpolate(t, y0, y1, y2, y3);
@@ -2177,8 +2177,8 @@ namespace DDoubleOptimizedBessel {
 
                 Complex y0 = MillerBackward.BesselY(n, z);
                 Complex y1 = MillerBackward.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold, z);
-                Complex y2 = MillerBackward.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5, z);
-                Complex y3 = MillerBackward.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 2, z);
+                Complex y2 = MillerBackward.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5d, z);
+                Complex y3 = MillerBackward.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 2d, z);
 
                 ddouble t = ddouble.Abs(alpha) / InterpolationThreshold;
                 Complex y = Interpolate(t, y0, y1, y2, y3);
@@ -2192,8 +2192,8 @@ namespace DDoubleOptimizedBessel {
 
                 Complex y0 = PowerSeries.BesselK(n, x);
                 Complex y1 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold, x);
-                Complex y2 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5, x);
-                Complex y3 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold * 2, x);
+                Complex y2 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5d, x);
+                Complex y3 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold * 2d, x);
 
                 ddouble t = ddouble.Abs(alpha) / InterpolationThreshold;
                 Complex y = Interpolate(t, y0, y1, y2, y3);
