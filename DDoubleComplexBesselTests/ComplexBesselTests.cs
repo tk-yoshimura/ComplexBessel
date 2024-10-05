@@ -5,7 +5,7 @@ using DoubleDoubleComplex;
 
 namespace DDoubleComplexBesselTests {
     [TestClass()]
-    public class BesselTests {
+    public class ComplexBesselTests {
         readonly Complex[] zs_mini = [
             (64, -8), (64, 8), (-64, -8), (-64, 8), (-8, 64), (8, 64), (-8, -64), (8, -64)
         ];

@@ -28,7 +28,7 @@ namespace DDoubleComplexBessel {
                 return ((n & 1) == 0) ? y : -y;
             }
             else {
-                Complex y = BesselJIKernel(nu, z, sign_switch: true, terms: 256);
+                Complex y = BesselJKernel(nu, z, terms: 256);
 
                 return y;
             }
@@ -64,7 +64,7 @@ namespace DDoubleComplexBessel {
                 return y;
             }
             else {
-                Complex y = BesselJIKernel(nu, z, sign_switch: false, terms: 256);
+                Complex y = BesselIKernel(nu, z, terms: 256);
 
                 if (scale) {
                     y *= Complex.Exp(-z);
@@ -98,7 +98,7 @@ namespace DDoubleComplexBessel {
             }
         }
 
-        private static Complex BesselJIKernel(ddouble nu, Complex z, bool sign_switch, int terms) {
+        private static Complex BesselJKernel(ddouble nu, Complex z, int terms) {
             if (!dfactdenom_coef_table.TryGetValue(nu, out DoubleFactDenomTable r)) {
                 r = new DoubleFactDenomTable(nu);
                 dfactdenom_coef_table.Add(nu, r);
@@ -114,7 +114,7 @@ namespace DDoubleComplexBessel {
 
             for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
                 Complex w = z2 * d[k];
-                Complex dc = u * r[k] * (sign_switch ? (1d - w) : (1d + w));
+                Complex dc = u * r[k] * (1d - w);
 
                 Complex c_next = c + dc;
 
@@ -132,7 +132,7 @@ namespace DDoubleComplexBessel {
                     break;
                 }
 
-                IterationLogger.Log("BesselJI Series", k);
+                IterationLogger.Log("BesselJ Series", k);
             }
 
             return c;
@@ -333,6 +333,46 @@ namespace DDoubleComplexBessel {
             Complex y = c * ddouble.RcpPI * Complex.Pow(Complex.Ldexp(z, -1), n);
 
             return y;
+        }
+
+        private static Complex BesselIKernel(ddouble nu, Complex z, int terms) {
+            if (!dfactdenom_coef_table.TryGetValue(nu, out DoubleFactDenomTable r)) {
+                r = new DoubleFactDenomTable(nu);
+                dfactdenom_coef_table.Add(nu, r);
+            }
+            if (!x2denom_coef_table.TryGetValue(nu, out X2DenomTable d)) {
+                d = new X2DenomTable(nu);
+                x2denom_coef_table.Add(nu, d);
+            }
+
+            Complex z2 = z * z, z4 = z2 * z2;
+
+            Complex c = 0d, u = Complex.Pow(Complex.Ldexp(z, -1), nu);
+
+            for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
+                Complex w = z2 * d[k];
+                Complex dc = u * r[k] * (1d + w);
+
+                Complex c_next = c + dc;
+
+                if (c == c_next || !Complex.IsFinite(c_next)) {
+                    conv_times++;
+                }
+                else {
+                    conv_times = 0;
+                }
+
+                c = c_next;
+                u *= z4;
+
+                if (!Complex.IsFinite(c)) {
+                    break;
+                }
+
+                IterationLogger.Log("BesselI Series", k);
+            }
+
+            return c;
         }
 
         private static Complex BesselKKernel(ddouble nu, Complex z, int terms) {
