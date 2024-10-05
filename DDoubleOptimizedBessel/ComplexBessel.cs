@@ -658,22 +658,22 @@ namespace DDoubleOptimizedBessel {
                     this.table.Add(ddouble.Rcp(c));
                 }
 
-                public ddouble this[int n] => Value(n);
+                public ddouble this[int k] => Value(k);
 
-                public ddouble Value(int n) {
-                    Debug.Assert(n >= 0);
+                public ddouble Value(int k) {
+                    Debug.Assert(k >= 0);
 
-                    if (n < table.Count) {
-                        return table[n];
+                    if (k < table.Count) {
+                        return table[k];
                     }
 
-                    for (long k = table.Count; k <= n; k++) {
-                        c *= checked((nu + 2 * k) * (nu + (2 * k - 1)) * (32 * k * (2 * k - 1)));
+                    for (long i = table.Count; i <= k; i++) {
+                        c *= checked((nu + 2 * i) * (nu + (2 * i - 1)) * (32 * i * (2 * i - 1)));
 
                         table.Add(ddouble.Rcp(c));
                     }
 
-                    return table[n];
+                    return table[k];
                 }
             }
 
@@ -688,22 +688,22 @@ namespace DDoubleOptimizedBessel {
                     this.table.Add(a);
                 }
 
-                public ddouble this[int n] => Value(n);
+                public ddouble this[int k] => Value(k);
 
-                public ddouble Value(int n) {
-                    Debug.Assert(n >= 0);
+                public ddouble Value(int k) {
+                    Debug.Assert(k >= 0);
 
-                    if (n < table.Count) {
-                        return table[n];
+                    if (k < table.Count) {
+                        return table[k];
                     }
 
-                    for (long k = table.Count; k <= n; k++) {
-                        ddouble a = ddouble.Rcp(checked(4d * (2 * k + 1) * (2 * k + 1 + nu)));
+                    for (long i = table.Count; i <= k; i++) {
+                        ddouble a = ddouble.Rcp(checked(4d * (2 * i + 1) * (2 * i + 1 + nu)));
 
                         table.Add(a);
                     }
 
-                    return table[n];
+                    return table[k];
                 }
             }
 
@@ -718,22 +718,22 @@ namespace DDoubleOptimizedBessel {
                     this.table.Add(ddouble.Rcp(c));
                 }
 
-                public ddouble this[int n] => Value(n);
+                public ddouble this[int k] => Value(k);
 
-                public ddouble Value(int n) {
-                    Debug.Assert(n >= 0);
+                public ddouble Value(int k) {
+                    Debug.Assert(k >= 0);
 
-                    if (n < table.Count) {
-                        return table[n];
+                    if (k < table.Count) {
+                        return table[k];
                     }
 
-                    for (int k = table.Count; k <= n; k++) {
-                        c *= nu + k;
+                    for (int i = table.Count; i <= k; i++) {
+                        c *= nu + i;
 
                         table.Add(ddouble.Rcp(c));
                     }
 
-                    return table[n];
+                    return table[k];
                 }
             }
 
@@ -748,22 +748,22 @@ namespace DDoubleOptimizedBessel {
                     this.table.Add(c);
                 }
 
-                public ddouble this[int n] => Value(n);
+                public ddouble this[int k] => Value(k);
 
-                public ddouble Value(int n) {
-                    Debug.Assert(n >= 0);
+                public ddouble Value(int k) {
+                    Debug.Assert(k >= 0);
 
-                    if (n < table.Count) {
-                        return table[n];
+                    if (k < table.Count) {
+                        return table[k];
                     }
 
-                    for (int k = table.Count; k <= n; k++) {
-                        c *= nu + k;
+                    for (int i = table.Count; i <= k; i++) {
+                        c *= nu + i;
 
                         table.Add(c);
                     }
 
-                    return table[n];
+                    return table[k];
                 }
             }
 
@@ -778,22 +778,22 @@ namespace DDoubleOptimizedBessel {
                     this.negative_table = new(-nu);
                 }
 
-                public ddouble this[int n] => Value(n);
+                public ddouble this[int k] => Value(k);
 
-                public ddouble Value(int n) {
-                    Debug.Assert(n >= 0);
+                public ddouble Value(int k) {
+                    Debug.Assert(k >= 0);
 
-                    if (n < table.Count) {
-                        return table[n];
+                    if (k < table.Count) {
+                        return table[k];
                     }
 
-                    for (int k = table.Count; k <= n; k++) {
-                        ddouble c = r * positive_table[k] / negative_table[k];
+                    for (int i = table.Count; i <= k; i++) {
+                        ddouble c = r * positive_table[i] / negative_table[i];
 
                         table.Add(c);
                     }
 
-                    return table[n];
+                    return table[k];
                 }
             }
 
@@ -806,22 +806,22 @@ namespace DDoubleOptimizedBessel {
                     this.table.Add(1d);
                 }
 
-                public ddouble this[int n] => Value(n);
+                public ddouble this[int k] => Value(k);
 
-                public ddouble Value(int n) {
-                    Debug.Assert(n >= 0);
+                public ddouble Value(int k) {
+                    Debug.Assert(k >= 0);
 
-                    if (n < table.Count) {
-                        return table[n];
+                    if (k < table.Count) {
+                        return table[k];
                     }
 
-                    for (long k = table.Count; k <= n; k++) {
-                        c *= checked(32 * k * (2 * k - 1));
+                    for (long i = table.Count; i <= k; i++) {
+                        c *= checked(32 * i * (2 * i - 1));
 
                         table.Add(ddouble.Rcp(c));
                     }
 
-                    return table[n];
+                    return table[k];
                 }
             }
 
@@ -832,65 +832,65 @@ namespace DDoubleOptimizedBessel {
                     this.table.Add(ddouble.Rcp(4));
                 }
 
-                public ddouble this[int n] => Value(n);
+                public ddouble this[int k] => Value(k);
 
-                public ddouble Value(int n) {
-                    Debug.Assert(n >= 0);
+                public ddouble Value(int k) {
+                    Debug.Assert(k >= 0);
 
-                    if (n < table.Count) {
-                        return table[n];
+                    if (k < table.Count) {
+                        return table[k];
                     }
 
-                    for (long k = table.Count; k <= n; k++) {
-                        ddouble c = ddouble.Rcp(checked(4 * (2 * k + 1) * (2 * k + 1) * (2 * k + 1)));
+                    for (long i = table.Count; i <= k; i++) {
+                        ddouble c = ddouble.Rcp(checked(4 * (2 * i + 1) * (2 * i + 1) * (2 * i + 1)));
 
                         table.Add(c);
                     }
 
-                    return table[n];
+                    return table[k];
                 }
             }
 
             private class YNCoefTable {
-                private readonly int nu;
+                private readonly int n;
                 private readonly List<ddouble> table = [];
 
-                public YNCoefTable(int nu) {
-                    this.nu = nu;
+                public YNCoefTable(int n) {
+                    this.n = n;
                 }
 
-                public ddouble this[int n] => Value(n);
+                public ddouble this[int k] => Value(k);
 
-                public ddouble Value(int n) {
-                    Debug.Assert(n >= 0);
+                public ddouble Value(int k) {
+                    Debug.Assert(k >= 0);
 
-                    if (n < table.Count) {
-                        return table[n];
+                    if (k < table.Count) {
+                        return table[k];
                     }
 
-                    for (long k = table.Count; k <= n; k++) {
-                        ddouble c = (ddouble)(nu + 4 * k + 2) /
-                            (ddouble)checked(4 * (2 * k + 1) * (2 * k + 1) * (nu + 2 * k + 1) * (nu + 2 * k + 1));
+                    for (long i = table.Count; i <= k; i++) {
+                        ddouble c = (ddouble)(n + 4 * i + 2) /
+                            (ddouble)checked(4 * (2 * i + 1) * (2 * i + 1) * (n + 2 * i + 1) * (n + 2 * i + 1));
 
                         table.Add(c);
                     }
 
-                    return table[n];
+                    return table[k];
                 }
             }
 
             private static class YNFiniteCoefTable {
-                public static ReadOnlyCollection<ddouble> Value(int nu) {
-                    Debug.Assert(nu >= 0);
+                public static ReadOnlyCollection<ddouble> Value(int n) {
+                    Debug.Assert(n >= 0);
 
                     List<ddouble> frac = [1], coef = [];
 
-                    for (int k = 1; k < nu; k++) {
-                        frac.Add(k * frac[^1]);
+                    for (int i = 1; i < n; i++) {
+                        frac.Add(i * frac[^1]);
                     }
 
-                    for (int k = 0; k < nu; k++) {
-                        coef.Add(frac[^(k + 1)] / frac[k]);
+                    for (int i = 0; i < n; i++) {
+                        coef.Add(frac[^(i + 1)] / frac[i]);
                     }
 
                     return new(coef);
@@ -906,22 +906,22 @@ namespace DDoubleOptimizedBessel {
                     this.table.Add(1d);
                 }
 
-                public ddouble this[int n] => Value(n);
+                public ddouble this[int k] => Value(k);
 
-                public ddouble Value(int n) {
-                    Debug.Assert(n >= 0);
+                public ddouble Value(int k) {
+                    Debug.Assert(k >= 0);
 
-                    if (n < table.Count) {
-                        return table[n];
+                    if (k < table.Count) {
+                        return table[k];
                     }
 
-                    for (long k = table.Count; k <= n; k++) {
-                        c *= 4 * k;
+                    for (long i = table.Count; i <= k; i++) {
+                        c *= 4 * i;
 
                         table.Add(ddouble.Rcp(c));
                     }
 
-                    return table[n];
+                    return table[k];
                 }
             }
 
@@ -934,22 +934,22 @@ namespace DDoubleOptimizedBessel {
                     this.table.Add(1d);
                 }
 
-                public ddouble this[int n] => Value(n);
+                public ddouble this[int k] => Value(k);
 
-                public ddouble Value(int n) {
-                    Debug.Assert(n >= 0);
+                public ddouble Value(int k) {
+                    Debug.Assert(k >= 0);
 
-                    if (n < table.Count) {
-                        return table[n];
+                    if (k < table.Count) {
+                        return table[k];
                     }
 
-                    for (long k = table.Count; k <= n; k++) {
-                        c *= checked(4 * k * k);
+                    for (long i = table.Count; i <= k; i++) {
+                        c *= checked(4 * i * i);
 
                         table.Add(ddouble.Rcp(c));
                     }
 
-                    return table[n];
+                    return table[k];
                 }
             }
 
@@ -962,22 +962,22 @@ namespace DDoubleOptimizedBessel {
                     this.table.Add(1d);
                 }
 
-                public ddouble this[int n] => Value(n);
+                public ddouble this[int k] => Value(k);
 
-                public ddouble Value(int n) {
-                    Debug.Assert(n >= 0);
+                public ddouble Value(int k) {
+                    Debug.Assert(k >= 0);
 
-                    if (n < table.Count) {
-                        return table[n];
+                    if (k < table.Count) {
+                        return table[k];
                     }
 
-                    for (int k = table.Count; k <= n; k++) {
-                        c *= checked(4 * k * (k + 1));
+                    for (int i = table.Count; i <= k; i++) {
+                        c *= checked(4 * i * (i + 1));
 
                         table.Add(ddouble.Rcp(c));
                     }
 
-                    return table[n];
+                    return table[k];
                 }
             }
         }
@@ -1877,24 +1877,24 @@ namespace DDoubleOptimizedBessel {
                     this.table.Add(phi1);
                 }
 
-                public ddouble this[int n] => Value(n);
+                public ddouble this[int k] => Value(k);
 
-                private ddouble Value(int n) {
-                    Debug.Assert(n >= 0);
+                private ddouble Value(int k) {
+                    Debug.Assert(k >= 0);
 
-                    if (n < table.Count) {
-                        return table[n];
+                    if (k < table.Count) {
+                        return table[k];
                     }
 
-                    for (int m = table.Count; m <= n; m++) {
-                        g = g * (alpha + m - 1d) / m;
+                    for (int i = table.Count; i <= k; i++) {
+                        g = g * (alpha + i - 1d) / i;
 
-                        ddouble phi = g * (alpha + 2 * m);
+                        ddouble phi = g * (alpha + 2 * i);
 
                         table.Add(phi);
                     }
 
-                    return table[n];
+                    return table[k];
                 }
             };
 
@@ -1918,24 +1918,24 @@ namespace DDoubleOptimizedBessel {
                     this.table.Add(psi1);
                 }
 
-                public ddouble this[int n] => Value(n);
+                public ddouble this[int k] => Value(k);
 
-                private ddouble Value(int n) {
-                    Debug.Assert(n >= 0);
+                private ddouble Value(int k) {
+                    Debug.Assert(k >= 0);
 
-                    if (n < table.Count) {
-                        return table[n];
+                    if (k < table.Count) {
+                        return table[k];
                     }
 
-                    for (int m = table.Count; m <= n; m++) {
-                        g = g * (ddouble.Ldexp(alpha, 1) + m - 1d) / m;
+                    for (int i = table.Count; i <= k; i++) {
+                        g = g * (ddouble.Ldexp(alpha, 1) + i - 1d) / i;
 
-                        ddouble phi = g * (alpha + m);
+                        ddouble phi = g * (alpha + i);
 
                         table.Add(phi);
                     }
 
-                    return table[n];
+                    return table[k];
                 }
             };
 
@@ -1962,31 +1962,31 @@ namespace DDoubleOptimizedBessel {
                     }
                 }
 
-                public ddouble this[int n] => Value(n);
+                public ddouble this[int k] => Value(k);
 
-                private ddouble Value(int n) {
-                    Debug.Assert(n >= 0);
+                private ddouble Value(int k) {
+                    Debug.Assert(k >= 0);
 
-                    if (n < table.Count) {
-                        return table[n];
+                    if (k < table.Count) {
+                        return table[k];
                     }
 
-                    for (int m = table.Count; m <= n; m++) {
+                    for (int i = table.Count; i <= k; i++) {
                         if (alpha > 0d) {
-                            g = -g * (alpha + m - 1) * (ddouble.Ldexp(alpha, 1) + m - 1d) / (m * (m - alpha));
+                            g = -g * (alpha + i - 1) * (ddouble.Ldexp(alpha, 1) + i - 1d) / (i * (i - alpha));
 
-                            ddouble eta = g * (alpha + 2 * m);
+                            ddouble eta = g * (alpha + 2 * i);
 
                             table.Add(eta);
                         }
                         else {
-                            ddouble eta = (ddouble)2d / m;
+                            ddouble eta = (ddouble)2d / i;
 
-                            table.Add((m & 1) == 1 ? eta : -eta);
+                            table.Add((i & 1) == 1 ? eta : -eta);
                         }
                     }
 
-                    return table[n];
+                    return table[k];
                 }
             };
 
@@ -2005,28 +2005,28 @@ namespace DDoubleOptimizedBessel {
                     this.eta = eta;
                 }
 
-                public ddouble this[int n] => Value(n);
+                public ddouble this[int k] => Value(k);
 
-                private ddouble Value(int n) {
-                    Debug.Assert(n >= 0);
+                private ddouble Value(int k) {
+                    Debug.Assert(k >= 0);
 
-                    if (n < table.Count) {
-                        return table[n];
+                    if (k < table.Count) {
+                        return table[k];
                     }
 
-                    for (int m = table.Count; m <= n; m++) {
+                    for (int i = table.Count; i <= k; i++) {
                         if (alpha > 0d) {
-                            if ((m & 1) == 0) {
-                                table.Add(eta[m / 2]);
+                            if ((i & 1) == 0) {
+                                table.Add(eta[i / 2]);
                             }
                             else {
-                                table.Add((eta[m / 2] - eta[m / 2 + 1]) / 2);
+                                table.Add((eta[i / 2] - eta[i / 2 + 1]) / 2);
                             }
                         }
                         else {
-                            if ((m & 1) == 1) {
-                                ddouble xi = (ddouble)(2 * (m / 2) + 1) / (m / 2 * (m / 2 + 1));
-                                table.Add((m & 2) > 0 ? xi : -xi);
+                            if ((i & 1) == 1) {
+                                ddouble xi = (ddouble)(2 * (i / 2) + 1) / (i / 2 * (i / 2 + 1));
+                                table.Add((i & 2) > 0 ? xi : -xi);
                             }
                             else {
                                 table.Add(ddouble.NaN);
@@ -2034,7 +2034,7 @@ namespace DDoubleOptimizedBessel {
                         }
                     }
 
-                    return table[n];
+                    return table[k];
                 }
             }
         }
