@@ -274,49 +274,33 @@ namespace DDoubleOptimizedBessel {
                 }
             }
 
-            public static Complex BesselI(ddouble nu, Complex z, bool scale = false) {
+            public static Complex BesselI(ddouble nu, Complex z) {
                 Debug.Assert(ddouble.IsPositive(z.R));
                 Debug.Assert(ddouble.IsPositive(z.I));
 
                 if (ddouble.IsNegative(nu) && NearlyInteger(nu, out _)) {
                     Complex y = BesselI(-nu, z);
 
-                    if (scale) {
-                        y *= Complex.Exp(-z);
-                    }
-
                     return y;
                 }
                 else {
                     Complex y = BesselIKernel(nu, z, terms: 42);
 
-                    if (scale) {
-                        y *= Complex.Exp(-z);
-                    }
-
                     return y;
                 }
             }
 
-            public static Complex BesselK(ddouble nu, Complex z, bool scale = false) {
+            public static Complex BesselK(ddouble nu, Complex z) {
                 Debug.Assert(ddouble.IsPositive(z.R));
                 Debug.Assert(ddouble.IsPositive(z.I));
 
                 if (NearlyInteger(nu, out int n)) {
                     Complex y = BesselKKernel(n, z, terms: 27);
 
-                    if (scale) {
-                        y *= Complex.Exp(z);
-                    }
-
                     return y;
                 }
                 else {
                     Complex y = BesselKKernel(nu, z, terms: 30);
-
-                    if (scale) {
-                        y *= Complex.Exp(z);
-                    }
 
                     return y;
                 }
@@ -1284,30 +1268,30 @@ namespace DDoubleOptimizedBessel {
                 return (m + 1) / 2 * 2;
             }
 
-            public static Complex BesselI(int n, Complex z, bool scale = false) {
+            public static Complex BesselI(int n, Complex z) {
                 Debug.Assert(ddouble.IsPositive(z.R));
                 Debug.Assert(ddouble.IsPositive(z.I));
 
                 int m = BesselIIterM((double)z.R, (double)z.I);
 
-                Complex y = BesselIKernel(n, z, m, scale);
+                Complex y = BesselIKernel(n, z, m);
 
                 return y;
             }
 
-            public static Complex BesselI(ddouble nu, Complex z, bool scale = false) {
+            public static Complex BesselI(ddouble nu, Complex z) {
                 Debug.Assert(ddouble.IsPositive(z.R));
                 Debug.Assert(ddouble.IsPositive(z.I));
 
                 int m = BesselIIterM((double)z.R, (double)z.I);
 
                 if (NearlyInteger(nu, out int n)) {
-                    Complex y = BesselIKernel(n, z, m, scale);
+                    Complex y = BesselIKernel(n, z, m);
 
                     return y;
                 }
                 else {
-                    Complex y = BesselIKernel(nu, z, m, scale);
+                    Complex y = BesselIKernel(nu, z, m);
 
                     return y;
                 }
@@ -1756,23 +1740,23 @@ namespace DDoubleOptimizedBessel {
                 return yn;
             }
 
-            private static Complex BesselIKernel(int n, Complex z, int m, bool scale = false) {
+            private static Complex BesselIKernel(int n, Complex z, int m) {
                 Debug.Assert(m >= 2 && (m & 1) == 0 && n < m);
 
                 n = int.Abs(n);
 
                 if (n == 0) {
-                    return BesselI0Kernel(z, m, scale);
+                    return BesselI0Kernel(z, m);
                 }
                 else if (n == 1) {
-                    return BesselI1Kernel(z, m, scale);
+                    return BesselI1Kernel(z, m);
                 }
                 else {
-                    return BesselINKernel(n, z, m, scale);
+                    return BesselINKernel(n, z, m);
                 }
             }
 
-            private static Complex BesselIKernel(ddouble nu, Complex z, int m, bool scale = false) {
+            private static Complex BesselIKernel(ddouble nu, Complex z, int m) {
                 int n = (int)ddouble.Floor(nu);
                 ddouble alpha = nu - n;
 
@@ -1806,9 +1790,7 @@ namespace DDoubleOptimizedBessel {
 
                     Complex yn = gn / lambda;
 
-                    if (!scale) {
-                        yn *= Complex.Exp(z);
-                    }
+                    yn *= Complex.Exp(z);
 
                     return yn;
                 }
@@ -1828,15 +1810,13 @@ namespace DDoubleOptimizedBessel {
 
                     Complex yn = g0 / lambda;
 
-                    if (!scale) {
-                        yn *= Complex.Exp(z);
-                    }
+                    yn *= Complex.Exp(z);
 
                     return yn;
                 }
             }
 
-            private static Complex BesselI0Kernel(Complex z, int m, bool scale = false) {
+            private static Complex BesselI0Kernel(Complex z, int m) {
                 Debug.Assert(m >= 2 && (m & 1) == 0);
 
                 Complex g0 = 1e-256, g1 = 0d, lambda = 0d;
@@ -1852,14 +1832,12 @@ namespace DDoubleOptimizedBessel {
 
                 Complex y0 = g0 / lambda;
 
-                if (!scale) {
-                    y0 *= Complex.Exp(z);
-                }
+                y0 *= Complex.Exp(z);
 
                 return y0;
             }
 
-            private static Complex BesselI1Kernel(Complex z, int m, bool scale = false) {
+            private static Complex BesselI1Kernel(Complex z, int m) {
                 Debug.Assert(m >= 2 && (m & 1) == 0);
 
                 Complex g0 = 1e-256, g1 = 0d, lambda = 0d;
@@ -1875,14 +1853,12 @@ namespace DDoubleOptimizedBessel {
 
                 Complex y1 = g1 / lambda;
 
-                if (!scale) {
-                    y1 *= Complex.Exp(z);
-                }
+                y1 *= Complex.Exp(z);
 
                 return y1;
             }
 
-            private static Complex BesselINKernel(int n, Complex z, int m, bool scale) {
+            private static Complex BesselINKernel(int n, Complex z, int m) {
                 Complex f0 = 1e-256, f1 = 0d, lambda = 0d, fn = 0d;
                 Complex v = 1d / z;
 
@@ -1900,9 +1876,7 @@ namespace DDoubleOptimizedBessel {
 
                 Complex yn = fn / lambda;
 
-                if (!scale) {
-                    yn *= Complex.Exp(z);
-                }
+                yn *= Complex.Exp(z);
 
                 return yn;
             }
@@ -2106,7 +2080,7 @@ namespace DDoubleOptimizedBessel {
                 ess_coef_table = Array.AsReadOnly(es.ToArray());
             }
 
-            public static Complex BesselK(ddouble nu, Complex z, bool scale = false) {
+            public static Complex BesselK(ddouble nu, Complex z) {
                 if (nu < 2d) {
                     if (!cds_coef_table.TryGetValue(nu, out ReadOnlyCollection<(ddouble c, ddouble s)> cds_table)) {
                         cds_table = Table(nu);
@@ -2115,7 +2089,7 @@ namespace DDoubleOptimizedBessel {
 
                     ReadOnlyCollection<(ddouble, ddouble)> cds = cds_table;
 
-                    Complex y = Value(z, cds, scale);
+                    Complex y = Value(z, cds);
 
                     return y;
                 }
@@ -2123,8 +2097,8 @@ namespace DDoubleOptimizedBessel {
                     int n = (int)ddouble.Floor(nu);
                     ddouble alpha = nu - n;
 
-                    Complex y0 = BesselK(alpha, z, scale);
-                    Complex y1 = BesselK(alpha + 1d, z, scale);
+                    Complex y0 = BesselK(alpha, z);
+                    Complex y1 = BesselK(alpha + 1d, z);
 
                     Complex v = 1d / z;
 
@@ -2136,7 +2110,7 @@ namespace DDoubleOptimizedBessel {
                 }
             }
 
-            private static Complex Value(Complex z, ReadOnlyCollection<(ddouble c, ddouble d)> cds, bool scale = false) {
+            private static Complex Value(Complex z, ReadOnlyCollection<(ddouble c, ddouble d)> cds) {
                 Complex t = 1d / z;
                 (Complex sc, Complex sd) = cds[0];
 
@@ -2149,9 +2123,7 @@ namespace DDoubleOptimizedBessel {
 
                 Complex y = Complex.Sqrt(Complex.Ldexp(t * ddouble.PI, -1)) * sc / sd;
 
-                if (!scale) {
-                    y *= Complex.Exp(-z);
-                }
+                y *= Complex.Exp(-z);
 
                 return y;
             }
