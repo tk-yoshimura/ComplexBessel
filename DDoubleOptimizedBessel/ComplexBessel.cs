@@ -2144,14 +2144,14 @@ namespace DDoubleOptimizedBessel {
         }
 
         public static class CubicInterpolate {
-            public static Complex BesselYPowerSeries(ddouble nu, Complex x) {
+            public static Complex BesselYPowerSeries(ddouble nu, Complex z) {
                 int n = (int)ddouble.Round(nu);
                 ddouble alpha = nu - n;
 
-                Complex y0 = PowerSeries.BesselY(n, x);
-                Complex y1 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold, x);
-                Complex y2 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5, x);
-                Complex y3 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 2, x);
+                Complex y0 = PowerSeries.BesselY(n, z);
+                Complex y1 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold, z);
+                Complex y2 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5, z);
+                Complex y3 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 2, z);
 
                 ddouble t = ddouble.Abs(alpha) / InterpolationThreshold;
                 Complex y = Interpolate(t, y0, y1, y2, y3);
@@ -2159,14 +2159,14 @@ namespace DDoubleOptimizedBessel {
                 return y;
             }
 
-            public static Complex BesselYMillerBackward(ddouble nu, Complex x) {
+            public static Complex BesselYMillerBackward(ddouble nu, Complex z) {
                 int n = (int)ddouble.Round(nu);
                 ddouble alpha = nu - n;
 
-                Complex y0 = MillerBackward.BesselY(n, x);
-                Complex y1 = MillerBackward.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold, x);
-                Complex y2 = MillerBackward.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5, x);
-                Complex y3 = MillerBackward.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 2, x);
+                Complex y0 = MillerBackward.BesselY(n, z);
+                Complex y1 = MillerBackward.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold, z);
+                Complex y2 = MillerBackward.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5, z);
+                Complex y3 = MillerBackward.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 2, z);
 
                 ddouble t = ddouble.Abs(alpha) / InterpolationThreshold;
                 Complex y = Interpolate(t, y0, y1, y2, y3);
