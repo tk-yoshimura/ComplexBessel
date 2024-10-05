@@ -53,7 +53,7 @@ namespace DDoubleOptimizedBessel {
             }
         }
 
-        public static ddouble BesselI(ddouble nu, ddouble x) {
+        public static ddouble BesselI(ddouble nu, ddouble x, bool scale = false) {
             CheckNu(nu);
 
             if (ddouble.IsNegative(x) || ddouble.IsNaN(x)) {
@@ -61,14 +61,14 @@ namespace DDoubleOptimizedBessel {
             }
 
             if (x >= HankelThreshold) {
-                return Limit.BesselI(nu, x);
+                return Limit.BesselI(nu, x, scale);
             }
             else {
-                return PowerSeries.BesselI(nu, x);
+                return PowerSeries.BesselI(nu, x, scale);
             }
         }
 
-        public static ddouble BesselK(ddouble nu, ddouble x) {
+        public static ddouble BesselK(ddouble nu, ddouble x, bool scale = false) {
             CheckNu(nu);
 
             if (ddouble.IsNegative(x) || ddouble.IsNaN(x)) {
@@ -78,18 +78,18 @@ namespace DDoubleOptimizedBessel {
             nu = ddouble.Abs(nu);
 
             if (x >= HankelThreshold) {
-                return Limit.BesselK(nu, x);
+                return Limit.BesselK(nu, x, scale);
             }
             else if (x <= BesselKNearZeroThreshold) {
                 if (NearlyInteger(nu, out _) || ddouble.Abs(ddouble.Round(nu) - nu) >= InterpolationThreshold) {
-                    return PowerSeries.BesselK(nu, x);
+                    return PowerSeries.BesselK(nu, x, scale);
                 }
                 else {
-                    return CubicInterpolate.BesselKPowerSeries(nu, x);
+                    return CubicInterpolate.BesselKPowerSeries(nu, x, scale);
                 }
             }
             else {
-                return YoshidaPade.BesselK(nu, x);
+                return YoshidaPade.BesselK(nu, x, scale);
             }
         }
     }
@@ -1006,7 +1006,7 @@ namespace DDoubleOptimizedBessel {
                 return y;
             }
 
-            public static ddouble BesselI(ddouble nu, ddouble x) {
+            public static ddouble BesselI(ddouble nu, ddouble x, bool scale = false) {
                 Debug.Assert(ddouble.IsPositive(x));
 
                 if (!table.TryGetValue(nu, out HankelExpansion hankel)) {
@@ -1016,12 +1016,16 @@ namespace DDoubleOptimizedBessel {
 
                 ddouble c = hankel.BesselICoef(x);
 
-                ddouble y = ddouble.Sqrt(1d / (2d * ddouble.PI * x)) * ddouble.Exp(x) * c;
+                ddouble y = ddouble.Sqrt(1d / (2d * ddouble.PI * x)) * c;
+
+                if (!scale) {
+                    y *= ddouble.Exp(x);
+                }
 
                 return y;
             }
 
-            public static ddouble BesselK(ddouble nu, ddouble x) {
+            public static ddouble BesselK(ddouble nu, ddouble x, bool scale = false) {
                 Debug.Assert(ddouble.IsPositive(nu));
                 Debug.Assert(ddouble.IsPositive(x));
 
@@ -1032,7 +1036,11 @@ namespace DDoubleOptimizedBessel {
 
                 ddouble c = hankel.BesselKCoef(x);
 
-                ddouble y = ddouble.Sqrt(ddouble.PI / (2d * x)) * ddouble.Exp(-x) * c;
+                ddouble y = ddouble.Sqrt(ddouble.PI / (2d * x)) * c;
+
+                if (!scale) {
+                    y *= ddouble.Exp(-x);
+                }
 
                 return y;
             }
@@ -1194,33 +1202,6 @@ namespace DDoubleOptimizedBessel {
                 int m = (int)double.Ceiling(3.8029e1 + r * 1.6342e0);
 
                 return (m + 1) / 2 * 2;
-            }
-
-            public static ddouble BesselI(int n, ddouble x, bool scale = false) {
-                Debug.Assert(ddouble.IsPositive(x));
-
-                int m = BesselIIterM((double)x);
-
-                ddouble y = BesselIKernel(n, x, m, scale);
-
-                return y;
-            }
-
-            public static ddouble BesselI(ddouble nu, ddouble x, bool scale = false) {
-                Debug.Assert(ddouble.IsPositive(x));
-
-                int m = BesselIIterM((double)x);
-
-                if (NearlyInteger(nu, out int n)) {
-                    ddouble y = BesselIKernel(n, x, m, scale);
-
-                    return y;
-                }
-                else {
-                    ddouble y = BesselIKernel(nu, x, m, scale);
-
-                    return y;
-                }
             }
 
             private static int BesselIIterM(double r) {
@@ -1666,157 +1647,6 @@ namespace DDoubleOptimizedBessel {
                 return yn;
             }
 
-            private static ddouble BesselIKernel(int n, ddouble x, int m, bool scale = false) {
-                Debug.Assert(m >= 2 && (m & 1) == 0 && n < m);
-
-                n = int.Abs(n);
-
-                if (n == 0) {
-                    return BesselI0Kernel(x, m, scale);
-                }
-                else if (n == 1) {
-                    return BesselI1Kernel(x, m, scale);
-                }
-                else {
-                    return BesselINKernel(n, x, m, scale);
-                }
-            }
-
-            private static ddouble BesselIKernel(ddouble nu, ddouble x, int m, bool scale = false) {
-                int n = (int)ddouble.Floor(nu);
-                ddouble alpha = nu - n;
-
-                Debug.Assert(m >= 2 && (m & 1) == 0 && n < m);
-
-                if (!psi_coef_table.TryGetValue(alpha, out BesselIPsiTable psi_table)) {
-                    psi_table = new BesselIPsiTable(alpha);
-                    psi_coef_table.Add(alpha, psi_table);
-                }
-
-                BesselIPsiTable psi = psi_table;
-
-                ddouble g0 = 1e-256, g1 = 0d, lambda = 0d;
-                ddouble v = 1d / x;
-
-                if (n >= 0) {
-                    ddouble gn = 0d;
-
-                    for (int k = m; k >= 1; k--) {
-                        lambda += g0 * psi[k];
-
-                        (g0, g1) = (ddouble.Ldexp(k + alpha, 1) * v * g0 + g1, g0);
-
-                        if (k - 1 == n) {
-                            gn = g0;
-                        }
-                    }
-
-                    lambda += g0 * psi[0];
-                    lambda *= ddouble.Pow(ddouble.Ldexp(v, 1), alpha);
-
-                    ddouble yn = gn / lambda;
-
-                    if (!scale) {
-                        yn *= ddouble.Exp(x);
-                    }
-
-                    return yn;
-                }
-                else {
-                    for (int k = m; k >= 1; k--) {
-                        lambda += g0 * psi[k];
-
-                        (g0, g1) = (ddouble.Ldexp(k + alpha, 1) * v * g0 + g1, g0);
-                    }
-
-                    lambda += g0 * psi[0];
-                    lambda *= ddouble.Pow(ddouble.Ldexp(v, 1), alpha);
-
-                    for (int k = 0; k > n; k--) {
-                        (g0, g1) = (ddouble.Ldexp(k + alpha, 1) * v * g0 + g1, g0);
-                    }
-
-                    ddouble yn = g0 / lambda;
-
-                    if (!scale) {
-                        yn *= ddouble.Exp(x);
-                    }
-
-                    return yn;
-                }
-            }
-
-            private static ddouble BesselI0Kernel(ddouble x, int m, bool scale = false) {
-                Debug.Assert(m >= 2 && (m & 1) == 0);
-
-                ddouble g0 = 1e-256, g1 = 0d, lambda = 0d;
-                ddouble v = 1d / x;
-
-                for (int k = m; k >= 1; k--) {
-                    lambda += g0;
-
-                    (g0, g1) = (2 * k * v * g0 + g1, g0);
-                }
-
-                lambda = ddouble.Ldexp(lambda, 1) + g0;
-
-                ddouble y0 = g0 / lambda;
-
-                if (!scale) {
-                    y0 *= ddouble.Exp(x);
-                }
-
-                return y0;
-            }
-
-            private static ddouble BesselI1Kernel(ddouble x, int m, bool scale = false) {
-                Debug.Assert(m >= 2 && (m & 1) == 0);
-
-                ddouble g0 = 1e-256, g1 = 0d, lambda = 0d;
-                ddouble v = 1d / x;
-
-                for (int k = m; k >= 1; k--) {
-                    lambda += g0;
-
-                    (g0, g1) = (2 * k * v * g0 + g1, g0);
-                }
-
-                lambda = ddouble.Ldexp(lambda, 1) + g0;
-
-                ddouble y1 = g1 / lambda;
-
-                if (!scale) {
-                    y1 *= ddouble.Exp(x);
-                }
-
-                return y1;
-            }
-
-            private static ddouble BesselINKernel(int n, ddouble x, int m, bool scale) {
-                ddouble f0 = 1e-256, f1 = 0d, lambda = 0d, fn = 0d;
-                ddouble v = 1d / x;
-
-                for (int k = m; k >= 1; k--) {
-                    lambda += f0;
-
-                    (f0, f1) = (2 * k * v * f0 + f1, f0);
-
-                    if (k - 1 == n) {
-                        fn = f0;
-                    }
-                }
-
-                lambda = ddouble.Ldexp(lambda, 1) + f0;
-
-                ddouble yn = fn / lambda;
-
-                if (!scale) {
-                    yn *= ddouble.Exp(x);
-                }
-
-                return yn;
-            }
-
             private class BesselJPhiTable {
                 private readonly ddouble alpha;
                 private readonly List<ddouble> table = [];
@@ -2134,14 +1964,14 @@ namespace DDoubleOptimizedBessel {
                 return y;
             }
 
-            public static ddouble BesselKPowerSeries(ddouble nu, ddouble x) {
+            public static ddouble BesselKPowerSeries(ddouble nu, ddouble x, bool scale = false) {
                 int n = (int)ddouble.Round(nu);
                 ddouble alpha = nu - n;
 
-                ddouble y0 = PowerSeries.BesselK(n, x);
-                ddouble y1 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold, x);
-                ddouble y2 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5d, x);
-                ddouble y3 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold * 2d, x);
+                ddouble y0 = PowerSeries.BesselK(n, x, scale);
+                ddouble y1 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold, x, scale);
+                ddouble y2 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5d, x, scale);
+                ddouble y3 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold * 2d, x, scale);
 
                 ddouble t = ddouble.Abs(alpha) / InterpolationThreshold;
                 ddouble y = Interpolate(t, y0, y1, y2, y3);
