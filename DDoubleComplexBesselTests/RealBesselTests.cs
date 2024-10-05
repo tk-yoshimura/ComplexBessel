@@ -55,7 +55,7 @@ namespace DDoubleComplexBesselTests {
             for (double nu = -16; nu <= 16; nu += 0.25) {
                 Console.WriteLine(nu);
 
-                for (double r = 0.5; r <= 42; r += 0.5) {
+                for (double r = 0.125; r <= 42; r += 0.125) {
                     Complex expected = BesselN4.BesselI(nu, r).ToString();
                     Complex actual = Bessel.BesselI(nu, r);
 
@@ -77,7 +77,7 @@ namespace DDoubleComplexBesselTests {
             for (double nu = 0; nu <= 16; nu += 0.25) {
                 Console.WriteLine(nu);
 
-                for (double r = 0.5; r <= 42; r += 0.5) {
+                for (double r = 0.125; r <= 42; r += 0.125) {
                     Complex expected = BesselN4.BesselK(nu, r).ToString();
                     Complex actual = Bessel.BesselK(nu, r);
 

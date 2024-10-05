@@ -164,7 +164,7 @@ namespace ComplexBesselTests {
 
         [TestMethod()]
         public void YoshidaCoefPlot() {
-            const int m = 36;
+            const int m = 31;
 
             MultiPrecision<Pow2.N16>[][] dss = YoshidaCoef<Pow2.N16>.Table(m);
 
