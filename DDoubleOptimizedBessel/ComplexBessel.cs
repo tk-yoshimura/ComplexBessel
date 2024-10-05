@@ -995,9 +995,6 @@ namespace DDoubleOptimizedBessel {
                 }
 
                 (Complex c_even, Complex c_odd) = hankel.BesselJYCoef(z);
-                if (Complex.IsNaN(c_even) || Complex.IsNaN(c_odd)) {
-                    return Complex.NaN;
-                }
 
                 Complex omega = hankel.Omega(z);
 
@@ -1019,9 +1016,6 @@ namespace DDoubleOptimizedBessel {
 
 
                 (Complex c_even, Complex c_odd) = hankel.BesselJYCoef(z);
-                if (Complex.IsNaN(c_even) || Complex.IsNaN(c_odd)) {
-                    return Complex.NaN;
-                }
 
                 Complex omega = hankel.Omega(z);
 
@@ -1042,9 +1036,6 @@ namespace DDoubleOptimizedBessel {
                 }
 
                 Complex ci = hankel.BesselICoef(z), ck = hankel.BesselKCoef(z);
-                if (Complex.IsNaN(ci) || Complex.IsNaN(ck)) {
-                    return Complex.NaN;
-                }
 
                 Complex y = Complex.Sqrt(1 / (2 * ddouble.PI * z)) * (
                     Complex.Exp(z) * ci -
@@ -1065,9 +1056,6 @@ namespace DDoubleOptimizedBessel {
                 }
 
                 Complex c = hankel.BesselKCoef(z);
-                if (Complex.IsNaN(c)) {
-                    return Complex.NaN;
-                }
 
                 Complex y = Complex.Sqrt(ddouble.PI / (2 * z)) * Complex.Exp(-z) * c;
 
