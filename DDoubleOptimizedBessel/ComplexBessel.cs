@@ -516,9 +516,9 @@ namespace DDoubleOptimizedBessel {
                     yn_finitecoef_table.Add(n, f);
                 }
 
-                Complex c = 0;
+                Complex c = 0d;
                 Complex z2 = z * z, z4 = z2 * z2;
-                Complex u = 1, v = 1, w = Complex.Ldexp(z2, -2);
+                Complex u = 1d, v = 1d, w = Complex.Ldexp(z2, -2);
 
                 for (int k = 0; k < n; k++) {
                     c += v * f[k];
@@ -1605,37 +1605,37 @@ namespace DDoubleOptimizedBessel {
             }
 
             private static Complex BesselYXi1Eps(ddouble alpha, Complex z) {
-                Complex lnz = Complex.Log(z), lnhalfz = Complex.Log(Complex.Ldexp(z, -1)), lnxm1 = lnz - 1, lnhalfxm1 = lnhalfz - 1;
+                Complex lnz = Complex.Log(z), lnhalfz = Complex.Log(Complex.Ldexp(z, -1)), lnzm1 = lnz - 1, lnhalfzm1 = lnhalfz - 1;
                 ddouble pi = ddouble.PI, sqpi = pi * pi;
                 ddouble ln2 = ddouble.Ln2, sqln2 = ln2 * ln2, cbln2 = sqln2 * ln2, qdln2 = sqln2 * sqln2;
                 ddouble g = ddouble.EulerGamma;
 
-                Complex r0 = lnhalfxm1 + g;
+                Complex r0 = lnhalfzm1 + g;
                 Complex r1 =
-                    (-sqln2 + ln2 * lnxm1 * 2d + lnz * (2 - lnz)) * 4d
+                    (-sqln2 + ln2 * lnzm1 * 2d + lnz * (2 - lnz)) * 4d
                     - sqpi
-                    - g * (lnhalfxm1 * 2d + g) * 4d
+                    - g * (lnhalfzm1 * 2d + g) * 4d
                     - 6d;
                 Complex r2 =
-                    -cbln2 * 4d + sqln2 * lnxm1 * 12d + lnz * (18d + lnz * (-12d + lnz * 4d))
+                    -cbln2 * 4d + sqln2 * lnzm1 * 12d + lnz * (18d + lnz * (-12d + lnz * 4d))
                     + ln2 * (lnz * (2d - lnz) * 12d - 18d)
                     + ddouble.Zeta3 * 2d
-                    + sqpi * (lnhalfxm1 + g)
-                    + g * ((sqln2 - ln2 * lnxm1 * 2d + lnz * (-2d + lnz)) * 12d + 18d
-                    + g * (lnhalfxm1 * 12d
+                    + sqpi * (lnhalfzm1 + g)
+                    + g * ((sqln2 - ln2 * lnzm1 * 2d + lnz * (-2d + lnz)) * 12d + 18d
+                    + g * (lnhalfzm1 * 12d
                     + g * 4d))
                     - 9d;
                 Complex r3 =
                     -qdln2 * 16d
-                    + cbln2 * lnxm1 * 64d
+                    + cbln2 * lnzm1 * 64d
                     + sqln2 * (lnz * (2d - lnz) * 96d - 144d)
                     + ln2 * (lnz * (9d + lnz * (-6d + lnz * 2d)) * 32d - 144d)
                     + lnz * (9d + lnz * (-9d + lnz * (4d - lnz))) * 16d
-                    + ddouble.Zeta3 * (lnhalfxm1 + g) * -32d
-                    + sqpi * ((-sqln2 + ln2 * lnxm1 * 2d + lnz * (2d - lnz) - g * (lnhalfxm1 * 2d + g)) * 8d - 12d - sqpi)
-                    + g * ((cbln2 - sqln2 * lnxm1 * 3d) * 64d + ln2 * (lnz * (-2d + lnz) * 192d + 288d) + lnz * (-9d + lnz * (6d - lnz * 2d)) * 32d + 144d
-                    + g * ((-sqln2 + ln2 * lnxm1 * 2d + lnz * (2d - lnz)) * 96d - 144d
-                    + g * (lnhalfxm1 * -64d
+                    + ddouble.Zeta3 * (lnhalfzm1 + g) * -32d
+                    + sqpi * ((-sqln2 + ln2 * lnzm1 * 2d + lnz * (2d - lnz) - g * (lnhalfzm1 * 2d + g)) * 8d - 12d - sqpi)
+                    + g * ((cbln2 - sqln2 * lnzm1 * 3d) * 64d + ln2 * (lnz * (-2d + lnz) * 192d + 288d) + lnz * (-9d + lnz * (6d - lnz * 2d)) * 32d + 144d
+                    + g * ((-sqln2 + ln2 * lnzm1 * 2d + lnz * (2d - lnz)) * 96d - 144d
+                    + g * (lnhalfzm1 * -64d
                     - g * 16d)))
                     - 72d;
 
