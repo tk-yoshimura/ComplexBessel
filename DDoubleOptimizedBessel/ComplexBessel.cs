@@ -1299,10 +1299,6 @@ namespace DDoubleOptimizedBessel {
                 int n = (int)ddouble.Floor(nu);
                 ddouble alpha = nu - n;
 
-                if (alpha == 0d) {
-                    return BesselJKernel(n, z, m);
-                }
-
                 Debug.Assert(m >= 2 && (m & 1) == 0 && n < m);
 
                 if (!phi_coef_table.TryGetValue(alpha, out BesselJPhiTable phi_table)) {
@@ -1462,10 +1458,6 @@ namespace DDoubleOptimizedBessel {
             public static Complex BesselYKernel(ddouble nu, Complex z, int m) {
                 int n = (int)ddouble.Floor(nu);
                 ddouble alpha = nu - n;
-
-                if (alpha == 0d) {
-                    return BesselYKernel(n, z, m);
-                }
 
                 Debug.Assert(m >= 2 && (m & 1) == 0 && n < m);
 
@@ -1734,10 +1726,6 @@ namespace DDoubleOptimizedBessel {
             public static Complex BesselIKernel(ddouble nu, Complex z, int m, bool scale = false) {
                 int n = (int)ddouble.Floor(nu);
                 ddouble alpha = nu - n;
-
-                if (alpha == 0d) {
-                    return BesselIKernel(n, z, m, scale);
-                }
 
                 Debug.Assert(m >= 2 && (m & 1) == 0 && n < m);
 
