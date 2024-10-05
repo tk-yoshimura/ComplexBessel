@@ -29,7 +29,7 @@ namespace DDoubleOptimizedBessel {
                 return MillerBackward.BesselJ(nu, z);
             }
             else {
-                return (SinCosPICache.CosPI(nu / 2), SinCosPICache.SinPI(nu / 2)) * BesselI(nu, (z.I, z.R)).Conj;
+                return (SinCosPICache.CosPI(nu / 2), SinCosPICache.SinPI(nu / 2)) * MillerBackward.BesselI(nu, (z.I, z.R)).Conj;
             }
         }
 
