@@ -66,7 +66,7 @@ namespace DDoubleOptimizedBesselTests {
                     Console.WriteLine(expected);
                     Console.WriteLine(actual);
 
-                    Assert.IsTrue(err < 2e-27, $"\n{nu}, {x}\n{expected}\n{actual}\n{err:e4}");
+                    Assert.IsTrue(err < 2e-30, $"\n{nu}, {x}\n{expected}\n{actual}\n{err:e4}");
                 }
 
                 Console.WriteLine(string.Empty);
@@ -89,7 +89,7 @@ namespace DDoubleOptimizedBesselTests {
                     Console.WriteLine(expected);
                     Console.WriteLine(actual);
 
-                    Assert.IsTrue(err < 2e-27, $"\n{nu}, {x}\n{expected}\n{actual}\n{err:e4}");
+                    Assert.IsTrue(err < 8e-30, $"\n{nu}, {x}\n{expected}\n{actual}\n{err:e4}");
                 }
 
                 Console.WriteLine(string.Empty);
