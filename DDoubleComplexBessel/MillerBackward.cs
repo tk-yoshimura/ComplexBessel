@@ -4,6 +4,8 @@ using System.Diagnostics;
 
 namespace DDoubleComplexBessel {
     public class MillerBackward {
+        public static readonly double MillerBwdBesselYEps = double.ScaleB(1, -30);
+
         private static readonly Dictionary<ddouble, BesselJPhiTable> phi_coef_table = [];
         private static readonly Dictionary<ddouble, BesselIPsiTable> psi_coef_table = [];
         private static readonly Dictionary<ddouble, BesselYEtaTable> eta_coef_table = [];
@@ -73,30 +75,30 @@ namespace DDoubleComplexBessel {
             return (m + 1) / 2 * 2;
         }
 
-        public static Complex BesselI(int n, Complex z, bool scale = false) {
+        public static Complex BesselI(int n, Complex z) {
             Debug.Assert(ddouble.IsPositive(z.R));
             Debug.Assert(ddouble.IsPositive(z.I));
 
             int m = BesselIIterM((double)z.R, (double)z.I);
 
-            Complex y = BesselIKernel(n, z, m, scale);
+            Complex y = BesselIKernel(n, z, m);
 
             return y;
         }
 
-        public static Complex BesselI(ddouble nu, Complex z, bool scale = false) {
+        public static Complex BesselI(ddouble nu, Complex z) {
             Debug.Assert(ddouble.IsPositive(z.R));
             Debug.Assert(ddouble.IsPositive(z.I));
 
             int m = BesselIIterM((double)z.R, (double)z.I);
 
             if (BesselUtil.NearlyInteger(nu, out int n)) {
-                Complex y = BesselIKernel(n, z, m, scale);
+                Complex y = BesselIKernel(n, z, m);
 
                 return y;
             }
             else {
-                Complex y = BesselIKernel(nu, z, m, scale);
+                Complex y = BesselIKernel(nu, z, m);
 
                 return y;
             }
@@ -112,35 +114,17 @@ namespace DDoubleComplexBessel {
             Debug.Assert(m >= 2 && (m & 1) == 0 && n < m);
 
             if (n < 0) {
-                return ((n & 1) == 0) ? BesselJKernel(-n, z, m) : -BesselJKernel(-n, z, m);
+                return (n & 1) == 0 ? BesselJKernel(-n, z, m) : -BesselJKernel(-n, z, m);
             }
-            if (n == 0) {
+            else if (n == 0) {
                 return BesselJ0Kernel(z, m);
             }
-            if (n == 1) {
+            else if (n == 1) {
                 return BesselJ1Kernel(z, m);
             }
-
-            Complex f0 = 1e-256d, f1 = 0d, fn = 0d, lambda = 0d;
-            Complex v = 1d / z;
-
-            for (int k = m; k >= 1; k--) {
-                if ((k & 1) == 0) {
-                    lambda += f0;
-                }
-
-                (f0, f1) = (2 * k * v * f0 - f1, f0);
-
-                if (k - 1 == n) {
-                    fn = f0;
-                }
+            else {
+                return BesselJNKernel(n, z, m);
             }
-
-            lambda = Complex.Ldexp(lambda, 1) + f0;
-
-            Complex yn = fn / lambda;
-
-            return yn;
         }
 
         public static Complex BesselJKernel(ddouble nu, Complex z, int m) {
@@ -249,62 +233,44 @@ namespace DDoubleComplexBessel {
             return y1;
         }
 
-        private static Complex BesselYKernel(int n, Complex z, int m) {
-            Debug.Assert(m >= 2 && (m & 1) == 0 && n < m);
-
-            if (n < 0) {
-                return ((n & 1) == 0) ? BesselYKernel(-n, z, m) : -BesselYKernel(-n, z, m);
-            }
-            if (n == 0) {
-                return BesselY0Kernel(z, m);
-            }
-            if (n == 1) {
-                return BesselY1Kernel(z, m);
-            }
-
-            if (!eta_coef_table.ContainsKey(0)) {
-                eta_coef_table.Add(0, new BesselYEtaTable(0));
-            }
-
-            BesselYEtaTable eta = eta_coef_table[0];
-
-            if (!xi_coef_table.ContainsKey(0)) {
-                xi_coef_table.Add(0, new BesselYXiTable(0, eta));
-            }
-
-            BesselYXiTable xi = xi_coef_table[0];
-
-            Complex f0 = 1e-256, f1 = 0d, lambda = 0d;
-            Complex se = 0d, sx = 0d;
+        private static Complex BesselJNKernel(int n, Complex z, int m) {
+            Complex f0 = 1e-256d, f1 = 0d, fn = 0d, lambda = 0d;
             Complex v = 1d / z;
 
             for (int k = m; k >= 1; k--) {
                 if ((k & 1) == 0) {
                     lambda += f0;
-
-                    se += f0 * eta[k / 2];
-                }
-                else if (k >= 3) {
-                    sx += f0 * xi[k];
                 }
 
                 (f0, f1) = (2 * k * v * f0 - f1, f0);
+
+                if (k - 1 == n) {
+                    fn = f0;
+                }
             }
 
             lambda = Complex.Ldexp(lambda, 1) + f0;
 
-            Complex c = Complex.Log(Complex.Ldexp(z, -1)) + ddouble.EulerGamma;
-
-            Complex y0 = se + f0 * c;
-            Complex y1 = sx - v * f0 + (c - 1d) * f1;
-
-            for (int k = 1; k < n; k++) {
-                (y1, y0) = (2 * k * v * y1 - y0, y1);
-            }
-
-            Complex yn = Complex.Ldexp(y1 / (lambda * ddouble.PI), 1);
+            Complex yn = fn / lambda;
 
             return yn;
+        }
+
+        private static Complex BesselYKernel(int n, Complex z, int m) {
+            Debug.Assert(m >= 2 && (m & 1) == 0 && n < m);
+
+            if (n < 0) {
+                return (n & 1) == 0 ? BesselYKernel(-n, z, m) : -BesselYKernel(-n, z, m);
+            }
+            else if (n == 0) {
+                return BesselY0Kernel(z, m);
+            }
+            else if (n == 1) {
+                return BesselY1Kernel(z, m);
+            }
+            else {
+                return BesselYNKernel(n, z, m);
+            }
         }
 
         public static Complex BesselYKernel(ddouble nu, Complex z, int m) {
@@ -365,12 +331,12 @@ namespace DDoubleComplexBessel {
             Complex r = Complex.Ldexp(ddouble.RcpPI * sqs, 1);
             Complex p = sqs * rsqgamma * ddouble.RcpPI;
 
-            Complex eta0 = (ddouble.Abs(alpha) > BesselUtil.MillerBwdBesselYEps)
-                ? (rcot - p / alpha)
+            Complex eta0 = ddouble.Abs(alpha) > MillerBwdBesselYEps
+                ? rcot - p / alpha
                 : BesselYEta0Eps(alpha, z);
 
             Complex xi0 = -Complex.Ldexp(v, 1) * p;
-            Complex xi1 = (ddouble.Abs(alpha) > BesselUtil.MillerBwdBesselYEps)
+            Complex xi1 = ddouble.Abs(alpha) > MillerBwdBesselYEps
                 ? rcot + p * (alpha * (alpha + 1d) + 1d) / (alpha * (alpha - 1d))
                 : BesselYXi1Eps(alpha, z);
 
@@ -426,7 +392,7 @@ namespace DDoubleComplexBessel {
             Complex r3 =
                 (-qdln2 + lnz * (cbln2 * 4d + lnz * (sqln2 * -6d + lnz * (ln2 * 4d - lnz)))) * 16d
                 - ddouble.Zeta3 * (lnhalfz + g) * 32d
-                - sqpi * (((sqln2 + lnz * (-ln2 * 2d + lnz) + g * (lnhalfz * 2d + g)) * 8d) + sqpi)
+                - sqpi * ((sqln2 + lnz * (-ln2 * 2d + lnz) + g * (lnhalfz * 2d + g)) * 8d + sqpi)
                 + g * ((cbln2 + lnz * (sqln2 * -3d + lnz * (ln2 * 3d - lnz))) * 4d
                 + g * ((sqln2 + lnz * (ln2 * -2d + lnz)) * -6d
                 + g * (lnhalfz * -4d
@@ -437,38 +403,38 @@ namespace DDoubleComplexBessel {
             return eta0;
         }
 
-        static Complex BesselYXi1Eps(ddouble alpha, Complex z) {
-            Complex lnz = Complex.Log(z), lnhalfz = Complex.Log(Complex.Ldexp(z, -1)), lnxm1 = lnz - 1, lnhalfxm1 = lnhalfz - 1;
+        private static Complex BesselYXi1Eps(ddouble alpha, Complex z) {
+            Complex lnz = Complex.Log(z), lnhalfz = Complex.Log(Complex.Ldexp(z, -1)), lnzm1 = lnz - 1, lnhalfzm1 = lnhalfz - 1;
             ddouble pi = ddouble.PI, sqpi = pi * pi;
             ddouble ln2 = ddouble.Ln2, sqln2 = ln2 * ln2, cbln2 = sqln2 * ln2, qdln2 = sqln2 * sqln2;
             ddouble g = ddouble.EulerGamma;
 
-            Complex r0 = lnhalfxm1 + g;
+            Complex r0 = lnhalfzm1 + g;
             Complex r1 =
-                (-sqln2 + ln2 * lnxm1 * 2d + lnz * (2 - lnz)) * 4d
+                (-sqln2 + ln2 * lnzm1 * 2d + lnz * (2 - lnz)) * 4d
                 - sqpi
-                - g * (lnhalfxm1 * 2d + g) * 4d
+                - g * (lnhalfzm1 * 2d + g) * 4d
                 - 6d;
             Complex r2 =
-                -cbln2 * 4d + sqln2 * lnxm1 * 12d + lnz * (18d + lnz * (-12d + lnz * 4d))
+                -cbln2 * 4d + sqln2 * lnzm1 * 12d + lnz * (18d + lnz * (-12d + lnz * 4d))
                 + ln2 * (lnz * (2d - lnz) * 12d - 18d)
                 + ddouble.Zeta3 * 2d
-                + sqpi * (lnhalfxm1 + g)
-                + g * ((sqln2 - ln2 * lnxm1 * 2d + lnz * (-2d + lnz)) * 12d + 18d
-                + g * (lnhalfxm1 * 12d
+                + sqpi * (lnhalfzm1 + g)
+                + g * ((sqln2 - ln2 * lnzm1 * 2d + lnz * (-2d + lnz)) * 12d + 18d
+                + g * (lnhalfzm1 * 12d
                 + g * 4d))
                 - 9d;
             Complex r3 =
                 -qdln2 * 16d
-                + cbln2 * lnxm1 * 64d
+                + cbln2 * lnzm1 * 64d
                 + sqln2 * (lnz * (2d - lnz) * 96d - 144d)
                 + ln2 * (lnz * (9d + lnz * (-6d + lnz * 2d)) * 32d - 144d)
                 + lnz * (9d + lnz * (-9d + lnz * (4d - lnz))) * 16d
-                + ddouble.Zeta3 * (lnhalfxm1 + g) * -32d
-                + sqpi * ((-sqln2 + ln2 * lnxm1 * 2d + lnz * (2d - lnz) - g * (lnhalfxm1 * 2d + g)) * 8d - 12d - sqpi)
-                + g * ((cbln2 - sqln2 * lnxm1 * 3d) * 64d + ln2 * (lnz * (-2d + lnz) * 192d + 288d) + lnz * (-9d + lnz * (6d - lnz * 2d)) * 32d + 144d
-                + g * ((-sqln2 + ln2 * lnxm1 * 2d + lnz * (2d - lnz)) * 96d - 144d
-                + g * (lnhalfxm1 * -64d
+                + ddouble.Zeta3 * (lnhalfzm1 + g) * -32d
+                + sqpi * ((-sqln2 + ln2 * lnzm1 * 2d + lnz * (2d - lnz) - g * (lnhalfzm1 * 2d + g)) * 8d - 12d - sqpi)
+                + g * ((cbln2 - sqln2 * lnzm1 * 3d) * 64d + ln2 * (lnz * (-2d + lnz) * 192d + 288d) + lnz * (-9d + lnz * (6d - lnz * 2d)) * 32d + 144d
+                + g * ((-sqln2 + ln2 * lnzm1 * 2d + lnz * (2d - lnz)) * 96d - 144d
+                + g * (lnhalfzm1 * -64d
                 - g * 16d)))
                 - 72d;
 
@@ -543,48 +509,74 @@ namespace DDoubleComplexBessel {
             return y1;
         }
 
-        private static Complex BesselIKernel(int n, Complex z, int m, bool scale = false) {
+        private static Complex BesselYNKernel(int n, Complex z, int m) {
+            if (!eta_coef_table.ContainsKey(0)) {
+                eta_coef_table.Add(0, new BesselYEtaTable(0));
+            }
+
+            BesselYEtaTable eta = eta_coef_table[0];
+
+            if (!xi_coef_table.ContainsKey(0)) {
+                xi_coef_table.Add(0, new BesselYXiTable(0, eta));
+            }
+
+            BesselYXiTable xi = xi_coef_table[0];
+
+            Complex f0 = 1e-256, f1 = 0d, lambda = 0d;
+            Complex se = 0d, sx = 0d;
+            Complex v = 1d / z;
+
+            for (int k = m; k >= 1; k--) {
+                if ((k & 1) == 0) {
+                    lambda += f0;
+
+                    se += f0 * eta[k / 2];
+                }
+                else if (k >= 3) {
+                    sx += f0 * xi[k];
+                }
+
+                (f0, f1) = (2 * k * v * f0 - f1, f0);
+            }
+
+            lambda = Complex.Ldexp(lambda, 1) + f0;
+
+            Complex c = Complex.Log(Complex.Ldexp(z, -1)) + ddouble.EulerGamma;
+
+            Complex y0 = se + f0 * c;
+            Complex y1 = sx - v * f0 + (c - 1d) * f1;
+
+            for (int k = 1; k < n; k++) {
+                (y1, y0) = (2 * k * v * y1 - y0, y1);
+            }
+
+            Complex yn = Complex.Ldexp(y1 / (lambda * ddouble.PI), 1);
+
+            return yn;
+        }
+
+        private static Complex BesselIKernel(int n, Complex z, int m) {
             Debug.Assert(m >= 2 && (m & 1) == 0 && n < m);
 
             n = int.Abs(n);
 
             if (n == 0) {
-                return BesselI0Kernel(z, m, scale);
+                return BesselI0Kernel(z, m);
             }
-            if (n == 1) {
-                return BesselI1Kernel(z, m, scale);
+            else if (n == 1) {
+                return BesselI1Kernel(z, m);
             }
-
-            Complex f0 = 1e-256, f1 = 0d, lambda = 0d, fn = 0d;
-            Complex v = 1d / z;
-
-            for (int k = m; k >= 1; k--) {
-                lambda += f0;
-
-                (f0, f1) = (2 * k * v * f0 + f1, f0);
-
-                if (k - 1 == n) {
-                    fn = f0;
-                }
+            else {
+                return BesselINKernel(n, z, m);
             }
-
-            lambda = Complex.Ldexp(lambda, 1) + f0;
-
-            Complex yn = fn / lambda;
-
-            if (!scale) {
-                yn *= Complex.Exp(z);
-            }
-
-            return yn;
         }
 
-        public static Complex BesselIKernel(ddouble nu, Complex z, int m, bool scale = false) {
+        public static Complex BesselIKernel(ddouble nu, Complex z, int m) {
             int n = (int)ddouble.Floor(nu);
             ddouble alpha = nu - n;
 
             if (alpha == 0d) {
-                return BesselIKernel(n, z, m, scale);
+                return BesselIKernel(n, z, m);
             }
 
             Debug.Assert(m >= 2 && (m & 1) == 0 && n < m);
@@ -617,9 +609,7 @@ namespace DDoubleComplexBessel {
 
                 Complex yn = gn / lambda;
 
-                if (!scale) {
-                    yn *= Complex.Exp(z);
-                }
+                yn *= Complex.Exp(z);
 
                 return yn;
             }
@@ -639,15 +629,13 @@ namespace DDoubleComplexBessel {
 
                 Complex yn = g0 / lambda;
 
-                if (!scale) {
-                    yn *= Complex.Exp(z);
-                }
+                yn *= Complex.Exp(z);
 
                 return yn;
             }
         }
 
-        private static Complex BesselI0Kernel(Complex z, int m, bool scale = false) {
+        private static Complex BesselI0Kernel(Complex z, int m) {
             Debug.Assert(m >= 2 && (m & 1) == 0);
 
             Complex g0 = 1e-256, g1 = 0d, lambda = 0d;
@@ -663,14 +651,12 @@ namespace DDoubleComplexBessel {
 
             Complex y0 = g0 / lambda;
 
-            if (!scale) {
-                y0 *= Complex.Exp(z);
-            }
+            y0 *= Complex.Exp(z);
 
             return y0;
         }
 
-        private static Complex BesselI1Kernel(Complex z, int m, bool scale = false) {
+        private static Complex BesselI1Kernel(Complex z, int m) {
             Debug.Assert(m >= 2 && (m & 1) == 0);
 
             Complex g0 = 1e-256, g1 = 0d, lambda = 0d;
@@ -686,11 +672,32 @@ namespace DDoubleComplexBessel {
 
             Complex y1 = g1 / lambda;
 
-            if (!scale) {
-                y1 *= Complex.Exp(z);
-            }
+            y1 *= Complex.Exp(z);
 
             return y1;
+        }
+
+        private static Complex BesselINKernel(int n, Complex z, int m) {
+            Complex f0 = 1e-256, f1 = 0d, lambda = 0d, fn = 0d;
+            Complex v = 1d / z;
+
+            for (int k = m; k >= 1; k--) {
+                lambda += f0;
+
+                (f0, f1) = (2 * k * v * f0 + f1, f0);
+
+                if (k - 1 == n) {
+                    fn = f0;
+                }
+            }
+
+            lambda = Complex.Ldexp(lambda, 1) + f0;
+
+            Complex yn = fn / lambda;
+
+            yn *= Complex.Exp(z);
+
+            return yn;
         }
 
         private class BesselJPhiTable {
@@ -713,24 +720,24 @@ namespace DDoubleComplexBessel {
                 this.table.Add(phi1);
             }
 
-            public ddouble this[int n] => Value(n);
+            public ddouble this[int k] => Value(k);
 
-            private ddouble Value(int n) {
-                Debug.Assert(n >= 0);
+            private ddouble Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (int m = table.Count; m <= n; m++) {
-                    g = g * (alpha + m - 1d) / m;
+                for (int i = table.Count; i <= k; i++) {
+                    g = g * (alpha + i - 1d) / i;
 
-                    ddouble phi = g * (alpha + 2 * m);
+                    ddouble phi = g * (alpha + 2 * i);
 
                     table.Add(phi);
                 }
 
-                return table[n];
+                return table[k];
             }
         };
 
@@ -754,24 +761,24 @@ namespace DDoubleComplexBessel {
                 this.table.Add(psi1);
             }
 
-            public ddouble this[int n] => Value(n);
+            public ddouble this[int k] => Value(k);
 
-            private ddouble Value(int n) {
-                Debug.Assert(n >= 0);
+            private ddouble Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (int m = table.Count; m <= n; m++) {
-                    g = g * (ddouble.Ldexp(alpha, 1) + m - 1d) / m;
+                for (int i = table.Count; i <= k; i++) {
+                    g = g * (ddouble.Ldexp(alpha, 1) + i - 1d) / i;
 
-                    ddouble phi = g * (alpha + m);
+                    ddouble phi = g * (alpha + i);
 
                     table.Add(phi);
                 }
 
-                return table[n];
+                return table[k];
             }
         };
 
@@ -798,31 +805,31 @@ namespace DDoubleComplexBessel {
                 }
             }
 
-            public ddouble this[int n] => Value(n);
+            public ddouble this[int k] => Value(k);
 
-            private ddouble Value(int n) {
-                Debug.Assert(n >= 0);
+            private ddouble Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (int m = table.Count; m <= n; m++) {
+                for (int i = table.Count; i <= k; i++) {
                     if (alpha > 0d) {
-                        g = -g * (alpha + m - 1) * (ddouble.Ldexp(alpha, 1) + m - 1d) / (m * (m - alpha));
+                        g = -g * (alpha + i - 1) * (ddouble.Ldexp(alpha, 1) + i - 1d) / (i * (i - alpha));
 
-                        ddouble eta = g * (alpha + 2 * m);
+                        ddouble eta = g * (alpha + 2 * i);
 
                         table.Add(eta);
                     }
                     else {
-                        ddouble eta = (ddouble)2d / m;
+                        ddouble eta = (ddouble)2d / i;
 
-                        table.Add(((m & 1) == 1) ? eta : -eta);
+                        table.Add((i & 1) == 1 ? eta : -eta);
                     }
                 }
 
-                return table[n];
+                return table[k];
             }
         };
 
@@ -841,28 +848,28 @@ namespace DDoubleComplexBessel {
                 this.eta = eta;
             }
 
-            public ddouble this[int n] => Value(n);
+            public ddouble this[int k] => Value(k);
 
-            private ddouble Value(int n) {
-                Debug.Assert(n >= 0);
+            private ddouble Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (int m = table.Count; m <= n; m++) {
+                for (int i = table.Count; i <= k; i++) {
                     if (alpha > 0d) {
-                        if ((m & 1) == 0) {
-                            table.Add(eta[m / 2]);
+                        if ((i & 1) == 0) {
+                            table.Add(eta[i / 2]);
                         }
                         else {
-                            table.Add((eta[m / 2] - eta[m / 2 + 1]) / 2);
+                            table.Add((eta[i / 2] - eta[i / 2 + 1]) / 2);
                         }
                     }
                     else {
-                        if ((m & 1) == 1) {
-                            ddouble xi = (ddouble)(2 * (m / 2) + 1) / (m / 2 * ((m / 2) + 1));
-                            table.Add(((m & 2) > 0) ? xi : -xi);
+                        if ((i & 1) == 1) {
+                            ddouble xi = (ddouble)(2 * (i / 2) + 1) / (i / 2 * (i / 2 + 1));
+                            table.Add((i & 2) > 0 ? xi : -xi);
                         }
                         else {
                             table.Add(ddouble.NaN);
@@ -870,7 +877,7 @@ namespace DDoubleComplexBessel {
                     }
                 }
 
-                return table[n];
+                return table[k];
             }
         }
     }

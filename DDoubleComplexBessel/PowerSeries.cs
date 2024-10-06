@@ -25,7 +25,7 @@ namespace DDoubleComplexBessel {
             if (ddouble.IsNegative(nu) && BesselUtil.NearlyInteger(nu, out int n)) {
                 Complex y = BesselJ(-nu, z);
 
-                return ((n & 1) == 0) ? y : -y;
+                return (n & 1) == 0 ? y : -y;
             }
             else {
                 Complex y = BesselJKernel(nu, z, terms: 256);
@@ -50,49 +50,33 @@ namespace DDoubleComplexBessel {
             }
         }
 
-        public static Complex BesselI(ddouble nu, Complex z, bool scale = false) {
+        public static Complex BesselI(ddouble nu, Complex z) {
             Debug.Assert(ddouble.IsPositive(z.R));
             Debug.Assert(ddouble.IsPositive(z.I));
 
             if (ddouble.IsNegative(nu) && BesselUtil.NearlyInteger(nu, out _)) {
                 Complex y = BesselI(-nu, z);
 
-                if (scale) {
-                    y *= Complex.Exp(-z);
-                }
-
                 return y;
             }
             else {
                 Complex y = BesselIKernel(nu, z, terms: 256);
 
-                if (scale) {
-                    y *= Complex.Exp(-z);
-                }
-
                 return y;
             }
         }
 
-        public static Complex BesselK(ddouble nu, Complex z, bool scale = false) {
+        public static Complex BesselK(ddouble nu, Complex z) {
             Debug.Assert(ddouble.IsPositive(z.R));
             Debug.Assert(ddouble.IsPositive(z.I));
 
             if (BesselUtil.NearlyInteger(nu, out int n)) {
                 Complex y = BesselKKernel(n, z, terms: 256);
 
-                if (scale) {
-                    y *= Complex.Exp(z);
-                }
-
                 return y;
             }
             else {
                 Complex y = BesselKKernel(nu, z, terms: 256);
-
-                if (scale) {
-                    y *= Complex.Exp(z);
-                }
 
                 return y;
             }
@@ -161,7 +145,7 @@ namespace DDoubleComplexBessel {
                 Complex a = t * s * g[t], q = gpn[t];
                 Complex pa = p / a, qa = q / a;
 
-                Complex dc = u * r[k] * (4 * t * nu * (pa + qa) - (z2 - (4 * t * t)) * (pa - qa));
+                Complex dc = u * r[k] * (4 * t * nu * (pa + qa) - (z2 - 4 * t * t) * (pa - qa));
 
                 Complex c_next = c + dc;
 
@@ -189,7 +173,7 @@ namespace DDoubleComplexBessel {
             if (n < 0) {
                 Complex y = BesselYKernel(-n, z, terms);
 
-                return ((n & 1) == 0) ? y : -y;
+                return (n & 1) == 0 ? y : -y;
             }
             else if (n == 0) {
                 return BesselY0Kernel(z, terms);
@@ -300,9 +284,9 @@ namespace DDoubleComplexBessel {
                 yn_finitecoef_table.Add(n, f);
             }
 
-            Complex c = 0;
+            Complex c = 0d;
             Complex z2 = z * z, z4 = z2 * z2;
-            Complex u = 1, v = 1, w = z2 / 4;
+            Complex u = 1d, v = 1d, w = Complex.Ldexp(z2, -2);
 
             for (int k = 0; k < n; k++) {
                 c += v * f[k];
@@ -422,19 +406,12 @@ namespace DDoubleComplexBessel {
             if (n == 0) {
                 return BesselK0Kernel(z, terms);
             }
-            if (n == 1) {
+            else if (n == 1) {
                 return BesselK1Kernel(z, terms);
             }
-
-            Complex v = 1d / z;
-            Complex y0 = BesselK0Kernel(z, terms);
-            Complex y1 = BesselK1Kernel(z, terms);
-
-            for (int k = 1; k < n; k++) {
-                (y1, y0) = (2 * k * v * y1 + y0, y1);
+            else {
+                return BesselKNKernel(n, z, terms);
             }
-
-            return y1;
         }
 
         private static Complex BesselK0Kernel(Complex z, int terms) {
@@ -495,6 +472,18 @@ namespace DDoubleComplexBessel {
             return c;
         }
 
+        private static Complex BesselKNKernel(int n, Complex z, int terms) {
+            Complex v = 1d / z;
+            Complex y0 = BesselK0Kernel(z, terms);
+            Complex y1 = BesselK1Kernel(z, terms);
+
+            for (int k = 1; k < n; k++) {
+                (y1, y0) = (2 * k * v * y1 + y0, y1);
+            }
+
+            return y1;
+        }
+
         private class DoubleFactDenomTable {
             private ddouble c;
             private readonly ddouble nu;
@@ -506,22 +495,22 @@ namespace DDoubleComplexBessel {
                 this.table.Add(ddouble.Rcp(c));
             }
 
-            public ddouble this[int n] => Value(n);
+            public ddouble this[int k] => Value(k);
 
-            public ddouble Value(int n) {
-                Debug.Assert(n >= 0);
+            public ddouble Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (long k = table.Count; k <= n; k++) {
-                    c *= checked((nu + (2 * k)) * (nu + (2 * k - 1)) * (32 * k * (2 * k - 1)));
+                for (long i = table.Count; i <= k; i++) {
+                    c *= checked((nu + 2 * i) * (nu + (2 * i - 1)) * (32 * i * (2 * i - 1)));
 
                     table.Add(ddouble.Rcp(c));
                 }
 
-                return table[n];
+                return table[k];
             }
         }
 
@@ -536,22 +525,22 @@ namespace DDoubleComplexBessel {
                 this.table.Add(a);
             }
 
-            public ddouble this[int n] => Value(n);
+            public ddouble this[int k] => Value(k);
 
-            public ddouble Value(int n) {
-                Debug.Assert(n >= 0);
+            public ddouble Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (long k = table.Count; k <= n; k++) {
-                    ddouble a = ddouble.Rcp(checked(4d * (2 * k + 1) * (2 * k + 1 + nu)));
+                for (long i = table.Count; i <= k; i++) {
+                    ddouble a = ddouble.Rcp(checked(4d * (2 * i + 1) * (2 * i + 1 + nu)));
 
                     table.Add(a);
                 }
 
-                return table[n];
+                return table[k];
             }
         }
 
@@ -566,22 +555,22 @@ namespace DDoubleComplexBessel {
                 this.table.Add(ddouble.Rcp(c));
             }
 
-            public ddouble this[int n] => Value(n);
+            public ddouble this[int k] => Value(k);
 
-            public ddouble Value(int n) {
-                Debug.Assert(n >= 0);
+            public ddouble Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (int k = table.Count; k <= n; k++) {
-                    c *= nu + k;
+                for (int i = table.Count; i <= k; i++) {
+                    c *= nu + i;
 
                     table.Add(ddouble.Rcp(c));
                 }
 
-                return table[n];
+                return table[k];
             }
         }
 
@@ -596,22 +585,22 @@ namespace DDoubleComplexBessel {
                 this.table.Add(c);
             }
 
-            public ddouble this[int n] => Value(n);
+            public ddouble this[int k] => Value(k);
 
-            public ddouble Value(int n) {
-                Debug.Assert(n >= 0);
+            public ddouble Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (int k = table.Count; k <= n; k++) {
-                    c *= nu + k;
+                for (int i = table.Count; i <= k; i++) {
+                    c *= nu + i;
 
                     table.Add(c);
                 }
 
-                return table[n];
+                return table[k];
             }
         }
 
@@ -621,27 +610,27 @@ namespace DDoubleComplexBessel {
             private readonly List<ddouble> table = [];
 
             public GammaPNTable(ddouble nu) {
-                this.r = ddouble.Pow(4, nu);
+                this.r = ddouble.Pow(4d, nu);
                 this.positive_table = new(nu);
                 this.negative_table = new(-nu);
             }
 
-            public ddouble this[int n] => Value(n);
+            public ddouble this[int k] => Value(k);
 
-            public ddouble Value(int n) {
-                Debug.Assert(n >= 0);
+            public ddouble Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (int k = table.Count; k <= n; k++) {
-                    ddouble c = r * positive_table[k] / negative_table[k];
+                for (int i = table.Count; i <= k; i++) {
+                    ddouble c = r * positive_table[i] / negative_table[i];
 
                     table.Add(c);
                 }
 
-                return table[n];
+                return table[k];
             }
         }
 
@@ -654,22 +643,22 @@ namespace DDoubleComplexBessel {
                 this.table.Add(1d);
             }
 
-            public ddouble this[int n] => Value(n);
+            public ddouble this[int k] => Value(k);
 
-            public ddouble Value(int n) {
-                Debug.Assert(n >= 0);
+            public ddouble Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (long k = table.Count; k <= n; k++) {
-                    c *= checked(32 * k * (2 * k - 1));
+                for (long i = table.Count; i <= k; i++) {
+                    c *= checked(32 * i * (2 * i - 1));
 
                     table.Add(ddouble.Rcp(c));
                 }
 
-                return table[n];
+                return table[k];
             }
         }
 
@@ -680,65 +669,65 @@ namespace DDoubleComplexBessel {
                 this.table.Add(ddouble.Rcp(4));
             }
 
-            public ddouble this[int n] => Value(n);
+            public ddouble this[int k] => Value(k);
 
-            public ddouble Value(int n) {
-                Debug.Assert(n >= 0);
+            public ddouble Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (long k = table.Count; k <= n; k++) {
-                    ddouble c = ddouble.Rcp(checked(4 * (2 * k + 1) * (2 * k + 1) * (2 * k + 1)));
+                for (long i = table.Count; i <= k; i++) {
+                    ddouble c = ddouble.Rcp(checked(4 * (2 * i + 1) * (2 * i + 1) * (2 * i + 1)));
 
                     table.Add(c);
                 }
 
-                return table[n];
+                return table[k];
             }
         }
 
         private class YNCoefTable {
-            private readonly int nu;
+            private readonly int n;
             private readonly List<ddouble> table = [];
 
-            public YNCoefTable(int nu) {
-                this.nu = nu;
+            public YNCoefTable(int n) {
+                this.n = n;
             }
 
-            public ddouble this[int n] => Value(n);
+            public ddouble this[int k] => Value(k);
 
-            public ddouble Value(int n) {
-                Debug.Assert(n >= 0);
+            public ddouble Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (long k = table.Count; k <= n; k++) {
-                    ddouble c = (ddouble)(nu + 4 * k + 2) /
-                        (ddouble)checked(4 * (2 * k + 1) * (2 * k + 1) * (nu + 2 * k + 1) * (nu + 2 * k + 1));
+                for (long i = table.Count; i <= k; i++) {
+                    ddouble c = (ddouble)(n + 4 * i + 2) /
+                        (ddouble)checked(4 * (2 * i + 1) * (2 * i + 1) * (n + 2 * i + 1) * (n + 2 * i + 1));
 
                     table.Add(c);
                 }
 
-                return table[n];
+                return table[k];
             }
         }
 
         private static class YNFiniteCoefTable {
-            public static ReadOnlyCollection<ddouble> Value(int nu) {
-                Debug.Assert(nu >= 0);
+            public static ReadOnlyCollection<ddouble> Value(int n) {
+                Debug.Assert(n >= 0);
 
                 List<ddouble> frac = [1], coef = [];
 
-                for (int k = 1; k < nu; k++) {
-                    frac.Add(k * frac[^1]);
+                for (int i = 1; i < n; i++) {
+                    frac.Add(i * frac[^1]);
                 }
 
-                for (int k = 0; k < nu; k++) {
-                    coef.Add(frac[^(k + 1)] / frac[k]);
+                for (int i = 0; i < n; i++) {
+                    coef.Add(frac[^(i + 1)] / frac[i]);
                 }
 
                 return new(coef);
@@ -754,22 +743,22 @@ namespace DDoubleComplexBessel {
                 this.table.Add(1d);
             }
 
-            public ddouble this[int n] => Value(n);
+            public ddouble this[int k] => Value(k);
 
-            public ddouble Value(int n) {
-                Debug.Assert(n >= 0);
+            public ddouble Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (long k = table.Count; k <= n; k++) {
-                    c *= 4 * k;
+                for (long i = table.Count; i <= k; i++) {
+                    c *= 4 * i;
 
                     table.Add(ddouble.Rcp(c));
                 }
 
-                return table[n];
+                return table[k];
             }
         }
 
@@ -782,22 +771,22 @@ namespace DDoubleComplexBessel {
                 this.table.Add(1d);
             }
 
-            public ddouble this[int n] => Value(n);
+            public ddouble this[int k] => Value(k);
 
-            public ddouble Value(int n) {
-                Debug.Assert(n >= 0);
+            public ddouble Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (long k = table.Count; k <= n; k++) {
-                    c *= checked(4 * k * k);
+                for (long i = table.Count; i <= k; i++) {
+                    c *= checked(4 * i * i);
 
                     table.Add(ddouble.Rcp(c));
                 }
 
-                return table[n];
+                return table[k];
             }
         }
 
@@ -810,22 +799,22 @@ namespace DDoubleComplexBessel {
                 this.table.Add(1d);
             }
 
-            public ddouble this[int n] => Value(n);
+            public ddouble this[int k] => Value(k);
 
-            public ddouble Value(int n) {
-                Debug.Assert(n >= 0);
+            public ddouble Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (int k = table.Count; k <= n; k++) {
-                    c *= checked(4 * k * (k + 1));
+                for (int i = table.Count; i <= k; i++) {
+                    c *= checked(4 * i * (i + 1));
 
                     table.Add(ddouble.Rcp(c));
                 }
 
-                return table[n];
+                return table[k];
             }
         }
     }

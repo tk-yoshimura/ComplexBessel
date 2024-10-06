@@ -5,8 +5,6 @@ namespace DDoubleComplexBessel {
     public static class Bessel {
         private const double hankel_threshold = 38.75, miller_backward_threshold = 6;
         private const double besselk_pade_threshold = 1, besselk_nz_threshold = 4, besseljy_powerseries_bias = 2;
-        private static readonly Dictionary<ddouble, HankelExpansion> hankel_table = [];
-        private static readonly Dictionary<ddouble, YoshidaPade> pade_table = [];
 
         public static Complex BesselJ(ddouble nu, Complex z) {
             BesselUtil.CheckNu(nu);
@@ -20,12 +18,7 @@ namespace DDoubleComplexBessel {
             }
 
             if (z.Magnitude >= hankel_threshold) {
-                if (!hankel_table.TryGetValue(nu, out HankelExpansion hankel)) {
-                    hankel = new(nu);
-                    hankel_table[nu] = hankel;
-                }
-
-                return hankel.BesselJ(z);
+                return Limit.BesselJ(nu, z);
             }
             else if (z.R <= PowerSeriesThreshold(nu, z.I)) {
                 return PowerSeries.BesselJ(nu, z);
@@ -51,12 +44,7 @@ namespace DDoubleComplexBessel {
             }
 
             if (z.Magnitude >= hankel_threshold) {
-                if (!hankel_table.TryGetValue(nu, out HankelExpansion hankel)) {
-                    hankel = new(nu);
-                    hankel_table[nu] = hankel;
-                }
-
-                return hankel.BesselY(z);
+                return Limit.BesselY(nu, z);
             }
             else if (z.R <= PowerSeriesThreshold(nu, z.I) - besseljy_powerseries_bias) {
                 return PowerSeries.BesselY(nu, z);
@@ -69,7 +57,7 @@ namespace DDoubleComplexBessel {
                 Complex bi = BesselI(nu, (z.I, z.R));
                 Complex bk = BesselK(nu, (z.I, z.R));
 
-                Complex y = (0, 1) * c * bi.Conj - 2 * ddouble.RcpPI * (c * bk).Conj;
+                Complex y = Complex.ImaginaryOne * c * bi.Conj - 2 * ddouble.RcpPI * (c * bk).Conj;
 
                 return y;
             }
@@ -87,12 +75,7 @@ namespace DDoubleComplexBessel {
             }
 
             if (z.Magnitude >= hankel_threshold) {
-                if (!hankel_table.TryGetValue(nu, out HankelExpansion hankel)) {
-                    hankel = new(nu);
-                    hankel_table[nu] = hankel;
-                }
-
-                return hankel.BesselI(z);
+                return Limit.BesselI(nu, z);
             }
             else if (z.I <= PowerSeriesThreshold(nu, z.R)) {
                 return PowerSeries.BesselI(nu, z);
@@ -117,30 +100,20 @@ namespace DDoubleComplexBessel {
             }
 
             if (z.Magnitude >= hankel_threshold) {
-                if (!hankel_table.TryGetValue(nu, out HankelExpansion hankel)) {
-                    hankel = new(nu);
-                    hankel_table[nu] = hankel;
-                }
-
-                return hankel.BesselK(z);
+                return Limit.BesselK(nu, z);
             }
             else if (z.Magnitude <= besselk_nz_threshold) {
                 return PowerSeries.BesselK(nu, z);
             }
             else if (z.R >= besselk_pade_threshold) {
-                if (!pade_table.TryGetValue(nu, out YoshidaPade pade)) {
-                    pade = new(nu);
-                    pade_table[nu] = pade;
-                }
-
-                return pade.BesselK(z);
+                return YoshidaPade.BesselK(nu, z);
             }
             else {
                 Complex c = (SinCosPICache.CosPI(nu / 2), -SinCosPICache.SinPI(nu / 2));
                 Complex bi = BesselI(nu, z);
                 Complex by = BesselY(nu, (z.I, z.R));
 
-                Complex y = c * ((0, -1) * c * bi - by.Conj) * ddouble.PI / 2;
+                Complex y = c * (-Complex.ImaginaryOne * c * bi - by.Conj) * ddouble.PI / 2;
 
                 return y;
             }

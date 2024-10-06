@@ -9,8 +9,6 @@ namespace DDoubleComplexBesselBenchmark {
         [TestMethod()]
         public void BesselKTest() {
             for (double nu = 0; nu <= 16; nu += 0.25) {
-                YoshidaPade pade_dd = new(nu);
-
                 using StreamWriter sw = new($"../../../../results_ddouble/besselk_nu{nu}_yoshidapade_convergence.csv");
                 sw.WriteLine("r,i,relerr");
 
@@ -20,7 +18,7 @@ namespace DDoubleComplexBesselBenchmark {
                             continue;
                         }
 
-                        Complex zdd = pade_dd.BesselK((r, i));
+                        Complex zdd = YoshidaPade.BesselK(nu, (r, i));
 
                         if (Complex.IsNaN(zdd)) {
                             sw.WriteLine($"{r},{i},1");

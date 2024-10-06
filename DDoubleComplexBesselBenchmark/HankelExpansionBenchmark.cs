@@ -9,8 +9,6 @@ namespace DDoubleComplexBesselBenchmark {
         [TestMethod()]
         public void BesselJTest() {
             for (double nu = -16; nu <= 16; nu += 0.25) {
-                HankelExpansion hankel_dd = new(nu);
-
                 using StreamWriter sw = new($"../../../../results_ddouble/besselj_nu{nu}_hankel_convergence.csv");
                 sw.WriteLine("r,i,relerr");
 
@@ -20,7 +18,7 @@ namespace DDoubleComplexBesselBenchmark {
                             continue;
                         }
 
-                        Complex zdd = hankel_dd.BesselJ((r, i));
+                        Complex zdd = Limit.BesselJ(nu, (r, i));
 
                         if (Complex.IsNaN(zdd)) {
                             sw.WriteLine($"{r},{i},1");
@@ -45,8 +43,6 @@ namespace DDoubleComplexBesselBenchmark {
         [TestMethod()]
         public void BesselYTest() {
             for (double nu = -16; nu <= 16; nu += 0.25) {
-                HankelExpansion hankel_dd = new(nu);
-
                 using StreamWriter sw = new($"../../../../results_ddouble/bessely_nu{nu}_hankel_convergence.csv");
                 sw.WriteLine("r,i,relerr");
 
@@ -56,7 +52,7 @@ namespace DDoubleComplexBesselBenchmark {
                             continue;
                         }
 
-                        Complex zdd = hankel_dd.BesselY((r, i));
+                        Complex zdd = Limit.BesselY(nu, (r, i));
 
                         if (Complex.IsNaN(zdd)) {
                             sw.WriteLine($"{r},{i},1");
@@ -81,8 +77,6 @@ namespace DDoubleComplexBesselBenchmark {
         [TestMethod()]
         public void BesselITest() {
             for (double nu = -16; nu <= 16; nu += 0.25) {
-                HankelExpansion hankel_dd = new(nu);
-
                 using StreamWriter sw = new($"../../../../results_ddouble/besseli_nu{nu}_hankel_convergence.csv");
                 sw.WriteLine("r,i,relerr");
 
@@ -92,7 +86,7 @@ namespace DDoubleComplexBesselBenchmark {
                             continue;
                         }
 
-                        Complex zdd = hankel_dd.BesselI((r, i));
+                        Complex zdd = Limit.BesselI(nu, (r, i));
 
                         if (Complex.IsNaN(zdd)) {
                             sw.WriteLine($"{r},{i},1");
@@ -117,8 +111,6 @@ namespace DDoubleComplexBesselBenchmark {
         [TestMethod()]
         public void BesselKTest() {
             for (double nu = 0; nu <= 16; nu += 0.25) {
-                HankelExpansion hankel_dd = new(nu);
-
                 using StreamWriter sw = new($"../../../../results_ddouble/besselk_nu{nu}_hankel_convergence.csv");
                 sw.WriteLine("r,i,relerr");
 
@@ -128,7 +120,7 @@ namespace DDoubleComplexBesselBenchmark {
                             continue;
                         }
 
-                        Complex zdd = hankel_dd.BesselK((r, i));
+                        Complex zdd = Limit.BesselK(nu, (r, i));
 
                         if (Complex.IsNaN(zdd)) {
                             sw.WriteLine($"{r},{i},1");

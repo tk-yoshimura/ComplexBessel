@@ -14,15 +14,13 @@ namespace DDoubleComplexBesselBenchmark {
             double max_norm = 0;
 
             for (double nu = -16; nu <= 16; nu += 0.25) {
-                HankelExpansion hankel_n4 = new(nu);
-
                 for (double norm = 32; norm <= 64; norm += 0.125) {
                     bool is_convergence = true;
 
                     for (double theta = 0; theta <= 0.5; theta += 1d / 32) {
                         Complex z = (norm * ddouble.CosPI(theta), norm * ddouble.SinPI(theta));
 
-                        Complex z4 = hankel_n4.BesselJ(z);
+                        Complex z4 = Limit.BesselJ(nu, z);
 
                         if (Complex.IsNaN(z4)) {
                             is_convergence = false;
@@ -52,15 +50,13 @@ namespace DDoubleComplexBesselBenchmark {
             double max_norm = 0;
 
             for (double nu = -16; nu <= 16; nu += 0.25) {
-                HankelExpansion hankel_n4 = new(nu);
-
                 for (double norm = 32; norm <= 64; norm += 0.125) {
                     bool is_convergence = true;
 
                     for (double theta = 0; theta <= 0.5; theta += 1d / 32) {
                         Complex z = (norm * ddouble.CosPI(theta), norm * ddouble.SinPI(theta));
 
-                        Complex z4 = hankel_n4.BesselY(z);
+                        Complex z4 = Limit.BesselY(nu, z);
 
                         if (Complex.IsNaN(z4)) {
                             is_convergence = false;
@@ -90,15 +86,13 @@ namespace DDoubleComplexBesselBenchmark {
             double max_norm = 0;
 
             for (double nu = -16; nu <= 16; nu += 0.25) {
-                HankelExpansion hankel_n4 = new(nu);
-
                 for (double norm = 32; norm <= 64; norm += 0.125) {
                     bool is_convergence = true;
 
                     for (double theta = 0; theta <= 0.5; theta += 1d / 32) {
                         Complex z = (norm * ddouble.CosPI(theta), norm * ddouble.SinPI(theta));
 
-                        Complex z4 = hankel_n4.BesselI(z);
+                        Complex z4 = Limit.BesselI(nu, z);
 
                         if (Complex.IsNaN(z4)) {
                             is_convergence = false;
@@ -128,15 +122,13 @@ namespace DDoubleComplexBesselBenchmark {
             double max_norm = 0;
 
             for (double nu = 0; nu <= 16; nu += 0.25) {
-                HankelExpansion hankel_n4 = new(nu);
-
                 for (double norm = 32; norm <= 64; norm += 0.125) {
                     bool is_convergence = true;
 
                     for (double theta = 0; theta <= 0.5; theta += 1d / 32) {
                         Complex z = (norm * ddouble.CosPI(theta), norm * ddouble.SinPI(theta));
 
-                        Complex z4 = hankel_n4.BesselK(z);
+                        Complex z4 = Limit.BesselK(nu, z);
 
                         if (Complex.IsNaN(z4)) {
                             is_convergence = false;
