@@ -100,7 +100,7 @@ namespace DDoubleOptimizedBessel {
         public static readonly double ExtremelyNearZero = double.ScaleB(1, -28);
         public static readonly double InterpolationThreshold = double.ScaleB(1, -25);
         public const double HankelThreshold = 38.75, MillerBackwardThreshold = 6;
-        public const double BesselKPadeThreshold = 1, BesselKNearZeroThreshold = 4, BesselJYPowerseriesBias = 2;
+        public const double BesselKPadeThreshold = 1, BesselKNearZeroThreshold = 2, BesselJYPowerseriesBias = 2;
 
         public static ddouble PowerSeriesThreshold(ddouble nu) {
             ddouble nu_abs = ddouble.Abs(nu);
