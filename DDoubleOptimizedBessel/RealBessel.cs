@@ -1140,7 +1140,6 @@ namespace DDoubleOptimizedBessel {
             public static readonly double MillerBwdBesselYEps = double.ScaleB(1, -30);
 
             private static readonly Dictionary<ddouble, BesselJPhiTable> phi_coef_table = [];
-            private static readonly Dictionary<ddouble, BesselIPsiTable> psi_coef_table = [];
             private static readonly Dictionary<ddouble, BesselYEtaTable> eta_coef_table = [];
             private static readonly Dictionary<ddouble, BesselYXiTable> xi_coef_table = [];
 
@@ -1200,12 +1199,6 @@ namespace DDoubleOptimizedBessel {
 
             private static int BesselJYIterM(double r) {
                 int m = (int)double.Ceiling(3.8029e1 + r * 1.6342e0);
-
-                return (m + 1) / 2 * 2;
-            }
-
-            private static int BesselIIterM(double r) {
-                int m = (int)double.Ceiling(3.3612e1 + r * 1.3557e0);
 
                 return (m + 1) / 2 * 2;
             }
