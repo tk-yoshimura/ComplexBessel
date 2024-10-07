@@ -374,10 +374,15 @@ namespace DDoubleOptimizedBesselTests {
                         continue;
                     }
 
-                    for (ddouble x = 1d / 4; x <= 8; x += 1d / 4) {
+                    for (ddouble x = 1d / 4; x <= 16; x += 1d / 4) {
                         ddouble y = DDoubleOptimizedBessel.RealBessel.BesselY(nu, x);
                         ddouble y_dec = DDoubleOptimizedBessel.RealBessel.BesselY(ddouble.BitDecrement(nu), x);
                         ddouble y_inc = DDoubleOptimizedBessel.RealBessel.BesselY(ddouble.BitIncrement(nu), x);
+
+                        Console.WriteLine($"{nu}, {x}");
+                        Console.WriteLine(y);
+                        Console.WriteLine(y_dec);
+                        Console.WriteLine(y_inc);
 
                         Assert.IsTrue(ddouble.Abs((y_dec - y) / y) < 2e-21);
                         Assert.IsTrue(ddouble.Abs((y_inc - y) / y) < 2e-21);
@@ -395,7 +400,11 @@ namespace DDoubleOptimizedBesselTests {
 
                     ddouble actual = DDoubleOptimizedBessel.RealBessel.BesselY(nu, x);
 
-                    Assert.IsTrue(ddouble.Abs((expected - actual) / expected) < 2e-21);
+                    Console.WriteLine($"{nu}, {x}");
+                    Console.WriteLine(expected);
+                    Console.WriteLine(actual);
+
+                    Assert.IsTrue(ddouble.Abs((expected - actual) / expected) < 2e-22);
                 }
             }
         }
@@ -567,7 +576,7 @@ namespace DDoubleOptimizedBesselTests {
 
                     ddouble actual = DDoubleOptimizedBessel.RealBessel.BesselK(nu, x);
 
-                    Assert.IsTrue(ddouble.Abs((expected - actual) / expected) < 2e-25);
+                    Assert.IsTrue(ddouble.Abs((expected - actual) / expected) < 2e-27);
                 }
             }
         }

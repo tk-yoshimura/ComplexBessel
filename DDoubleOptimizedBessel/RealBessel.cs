@@ -44,12 +44,7 @@ namespace DDoubleOptimizedBessel {
                 }
             }
             else {
-                if (NearlyInteger(nu, out _) || (ddouble.Ceiling(nu) - nu) >= InterpolationThreshold) {
-                    return MillerBackward.BesselY(nu, x);
-                }
-                else {
-                    return CubicInterpolate.BesselYMillerBackward(nu, x);
-                }
+                return MillerBackward.BesselY(nu, x);
             }
         }
 
@@ -1362,7 +1357,7 @@ namespace DDoubleOptimizedBessel {
             }
 
             private static ddouble BesselYKernel(ddouble nu, ddouble x, int m) {
-                int n = (int)ddouble.Floor(nu);
+                int n = (int)ddouble.Round(nu);
                 ddouble alpha = nu - n;
 
                 Debug.Assert(m >= 2 && (m & 1) == 0 && n < m);
@@ -1635,7 +1630,7 @@ namespace DDoubleOptimizedBessel {
                 private ddouble g;
 
                 public BesselJPhiTable(ddouble alpha) {
-                    Debug.Assert(alpha > 0d && alpha < 1d, nameof(alpha));
+                    Debug.Assert(alpha > -1d && alpha < 1d, nameof(alpha));
 
                     this.alpha = alpha;
 
@@ -1676,7 +1671,7 @@ namespace DDoubleOptimizedBessel {
                 private ddouble g;
 
                 public BesselIPsiTable(ddouble alpha) {
-                    Debug.Assert(alpha > 0d && alpha < 1d, nameof(alpha));
+                    Debug.Assert(alpha > -1d && alpha < 1d, nameof(alpha));
 
                     this.alpha = alpha;
 
@@ -1717,12 +1712,12 @@ namespace DDoubleOptimizedBessel {
                 private ddouble g;
 
                 public BesselYEtaTable(ddouble alpha) {
-                    Debug.Assert(alpha >= 0d && alpha < 1d, nameof(alpha));
+                    Debug.Assert(alpha > -1d && alpha < 1d, nameof(alpha));
 
                     this.alpha = alpha;
                     this.table.Add(ddouble.NaN);
 
-                    if (alpha > 0d) {
+                    if (alpha != 0d) {
                         ddouble c = ddouble.Gamma(1d + alpha);
                         c *= c;
                         this.g = 1d / (1d - alpha) * c;
@@ -1743,7 +1738,7 @@ namespace DDoubleOptimizedBessel {
                     }
 
                     for (int i = table.Count; i <= k; i++) {
-                        if (alpha > 0d) {
+                        if (alpha != 0d) {
                             g = -g * (alpha + i - 1) * (ddouble.Ldexp(alpha, 1) + i - 1d) / (i * (i - alpha));
 
                             ddouble eta = g * (alpha + 2 * i);
@@ -1767,7 +1762,7 @@ namespace DDoubleOptimizedBessel {
                 private readonly BesselYEtaTable eta;
 
                 public BesselYXiTable(ddouble alpha, BesselYEtaTable eta) {
-                    Debug.Assert(alpha >= 0d && alpha < 1d, nameof(alpha));
+                    Debug.Assert(alpha >= -1d && alpha < 1d, nameof(alpha));
 
                     this.alpha = alpha;
                     this.table.Add(ddouble.NaN);
@@ -1786,7 +1781,7 @@ namespace DDoubleOptimizedBessel {
                     }
 
                     for (int i = table.Count; i <= k; i++) {
-                        if (alpha > 0d) {
+                        if (alpha != 0d) {
                             if ((i & 1) == 0) {
                                 table.Add(eta[i / 2]);
                             }
