@@ -4,9 +4,6 @@ using MP4 = MultiPrecision.MultiPrecision<MultiPrecision.Pow2.N4>;
 
 namespace ComplexBessel {
     public static class BesselN4 {
-        private static readonly Dictionary<MP4, HankelExpansion<Pow2.N4>> hankel_table = [];
-        private static readonly Dictionary<MP4, YoshidaPade<Pow2.N4>> pade_table = [];
-
         public static CMP4 BesselJ(MP4 nu, CMP4 z) {
             BesselUtil<Pow2.N4>.CheckNu(nu);
 
@@ -19,12 +16,7 @@ namespace ComplexBessel {
             }
 
             if (z.Magnitude >= 46.5) {
-                if (!hankel_table.TryGetValue(nu, out HankelExpansion<Pow2.N4> hankel)) {
-                    hankel = new(nu);
-                    hankel_table[nu] = hankel;
-                }
-
-                return hankel.BesselJ(z);
+                return Limit<Pow2.N4>.BesselJ(nu, z);
             }
             else if (z.R <= PowerSeriesThreshold(nu, z.I)) {
                 return PowerSeries<Pow2.N4>.BesselJ(nu, z);
@@ -49,12 +41,7 @@ namespace ComplexBessel {
             }
 
             if (z.Magnitude >= 46.5) {
-                if (!hankel_table.TryGetValue(nu, out HankelExpansion<Pow2.N4> hankel)) {
-                    hankel = new(nu);
-                    hankel_table[nu] = hankel;
-                }
-
-                return hankel.BesselY(z);
+                return Limit<Pow2.N4>.BesselY(nu, z);
             }
             else if (z.R <= PowerSeriesThreshold(nu, z.I)) {
                 return PowerSeries<Pow2.N4>.BesselY(nu, z);
@@ -85,12 +72,7 @@ namespace ComplexBessel {
             }
 
             if (z.Magnitude >= 46.25) {
-                if (!hankel_table.TryGetValue(nu, out HankelExpansion<Pow2.N4> hankel)) {
-                    hankel = new(nu);
-                    hankel_table[nu] = hankel;
-                }
-
-                return hankel.BesselI(z);
+                return Limit<Pow2.N4>.BesselI(nu, z);
             }
             else if (z.I <= PowerSeriesThreshold(nu, z.R)) {
                 return PowerSeries<Pow2.N4>.BesselI(nu, z);
@@ -114,23 +96,13 @@ namespace ComplexBessel {
             }
 
             if (z.Magnitude >= 44.5) {
-                if (!hankel_table.TryGetValue(nu, out HankelExpansion<Pow2.N4> hankel)) {
-                    hankel = new(nu);
-                    hankel_table[nu] = hankel;
-                }
-
-                return hankel.BesselK(z);
+                return Limit<Pow2.N4>.BesselK(nu, z);
             }
             else if (z.Magnitude <= 4) {
                 return PowerSeries<Pow2.N4>.BesselK(nu, z);
             }
             else if (z.R >= MP4.Min(2, z.I / 2)) {
-                if (!pade_table.TryGetValue(nu, out YoshidaPade<Pow2.N4> pade)) {
-                    pade = new(nu);
-                    pade_table[nu] = pade;
-                }
-
-                return pade.BesselK(z);
+                return YoshidaPade<Pow2.N4>.BesselK(nu, z);
             }
             else {
                 CMP4 c = (SinCosPICache<Pow2.N4>.CosPI(nu / 2), -SinCosPICache<Pow2.N4>.SinPI(nu / 2));

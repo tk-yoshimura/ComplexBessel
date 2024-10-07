@@ -8,7 +8,7 @@ namespace ComplexBessel {
         }
 
         public static (MultiPrecision<N>[] cs, MultiPrecision<N>[] ds) Table(MultiPrecision<N> nu, int m) {
-            HankelExpansion<Plus16> hankel = new(nu.Convert<Plus16>());
+            Limit<Plus16>.HankelExpansion hankel = new(nu.Convert<Plus16>());
 
             MultiPrecision<N>[] cs = new MultiPrecision<N>[m + 1], ds = new MultiPrecision<N>[m + 1];
 

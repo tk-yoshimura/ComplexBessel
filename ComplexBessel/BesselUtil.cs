@@ -2,7 +2,7 @@
 
 namespace ComplexBessel {
     static class BesselUtil<N> where N : struct, IConstant {
-        public static readonly double Eps = double.ScaleB(1, -1000);
+        public static readonly double Eps = double.ScaleB(1, -MultiPrecision<N>.Bits);
         public static readonly double ExtremelyNearZero = double.ScaleB(1, -28);
         public static readonly double InterpolationThreshold = double.ScaleB(1, -25);
         public static readonly double MillerBwdBesselYEps = double.ScaleB(1, -30);

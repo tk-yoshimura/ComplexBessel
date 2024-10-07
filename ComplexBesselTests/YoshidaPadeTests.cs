@@ -20,10 +20,8 @@ namespace ComplexBesselTests {
             for (double nu = 0; nu <= 4; nu += 0.25) {
                 Console.WriteLine(nu);
 
-                YoshidaPade<Pow2.N4> pade = new(nu);
-
                 foreach (Complex<Pow2.N4> z in zs) {
-                    Console.WriteLine($"{z}: {pade.BesselK(z)}");
+                    Console.WriteLine($"{z}: {YoshidaPade<Pow2.N4>.BesselK(nu, z)}");
                 }
 
                 Console.WriteLine(string.Empty);
@@ -32,8 +30,6 @@ namespace ComplexBesselTests {
 
         [TestMethod()]
         public void BesselKNu0Test() {
-            YoshidaPade<Pow2.N4> pade = new(0);
-
             Complex<Pow2.N4>[] expecteds = [
                 "0.0001464707052228153870965844086986779219673",
                 "-0.0000752672003871676039474869759917141832085-0.0001232098841922133928827997847868472206244i",
@@ -42,7 +38,7 @@ namespace ComplexBesselTests {
             ];
 
             foreach ((Complex<Pow2.N4> z, Complex<Pow2.N4> expected) in zs_mini.Zip(expecteds)) {
-                Complex<Pow2.N4> actual = pade.BesselK(z);
+                Complex<Pow2.N4> actual = YoshidaPade<Pow2.N4>.BesselK(0, z);
 
                 Console.WriteLine(z);
                 Console.WriteLine(expected);
@@ -54,8 +50,6 @@ namespace ComplexBesselTests {
 
         [TestMethod()]
         public void BesselKNu0p5Test() {
-            YoshidaPade<Pow2.N4> pade = new(0.5);
-
             Complex<Pow2.N4>[] expecteds = [
                 "0.0001486480066651728298787091323662822494168",
                 "-0.0000767389254864942166147125308804301885050-0.0001246901320077561362108244312234056496959i",
@@ -64,7 +58,7 @@ namespace ComplexBesselTests {
             ];
 
             foreach ((Complex<Pow2.N4> z, Complex<Pow2.N4> expected) in zs_mini.Zip(expecteds)) {
-                Complex<Pow2.N4> actual = pade.BesselK(z);
+                Complex<Pow2.N4> actual = YoshidaPade<Pow2.N4>.BesselK(0.5, z);
 
                 Console.WriteLine(z);
                 Console.WriteLine(expected);
@@ -76,8 +70,6 @@ namespace ComplexBesselTests {
 
         [TestMethod()]
         public void BesselKNu1Test() {
-            YoshidaPade<Pow2.N4> pade = new(1);
-
             Complex<Pow2.N4>[] expecteds = [
                 "0.0001553692118050011339168624506224746211171",
                 "-0.0000813038765376162163181515712117942236129-0.0001292246118233234030480928708481418493529i",
@@ -86,7 +78,7 @@ namespace ComplexBesselTests {
             ];
 
             foreach ((Complex<Pow2.N4> z, Complex<Pow2.N4> expected) in zs_mini.Zip(expecteds)) {
-                Complex<Pow2.N4> actual = pade.BesselK(z);
+                Complex<Pow2.N4> actual = YoshidaPade<Pow2.N4>.BesselK(1, z);
 
                 Console.WriteLine(z);
                 Console.WriteLine(expected);
@@ -98,8 +90,6 @@ namespace ComplexBesselTests {
 
         [TestMethod()]
         public void BesselKNu1p25Test() {
-            YoshidaPade<Pow2.N4> pade = new(1.25);
-
             Complex<Pow2.N4>[] expecteds = [
                 "0.0001606019006214995920875098806847954111049",
                 "-0.0000848796993628445379920041646286883097161-0.0001327193785366760545268043058004086379747i",
@@ -108,7 +98,7 @@ namespace ComplexBesselTests {
             ];
 
             foreach ((Complex<Pow2.N4> z, Complex<Pow2.N4> expected) in zs_mini.Zip(expecteds)) {
-                Complex<Pow2.N4> actual = pade.BesselK(z);
+                Complex<Pow2.N4> actual = YoshidaPade<Pow2.N4>.BesselK(1.25, z);
 
                 Console.WriteLine(z);
                 Console.WriteLine(expected);
@@ -120,8 +110,6 @@ namespace ComplexBesselTests {
 
         [TestMethod()]
         public void BesselKNu2Test() {
-            YoshidaPade<Pow2.N4> pade = new(2);
-
             Complex<Pow2.N4>[] expecteds = [
                 "0.0001853130081740656705758000213542965772466",
                 "-0.0001019989720326845609075281027973211681382-0.0001488330942366650044048127207974809367302i",
@@ -130,7 +118,7 @@ namespace ComplexBesselTests {
             ];
 
             foreach ((Complex<Pow2.N4> z, Complex<Pow2.N4> expected) in zs_mini.Zip(expecteds)) {
-                Complex<Pow2.N4> actual = pade.BesselK(z);
+                Complex<Pow2.N4> actual = YoshidaPade<Pow2.N4>.BesselK(2, z);
 
                 Console.WriteLine(z);
                 Console.WriteLine(expected);
@@ -142,8 +130,6 @@ namespace ComplexBesselTests {
 
         [TestMethod()]
         public void BesselKNu2p75Test() {
-            YoshidaPade<Pow2.N4> pade = new(2.75);
-
             Complex<Pow2.N4>[] expecteds = [
                 "0.0002281520973477027067949682707390443338159",
                 "-0.0001324312768976771167409628920725297231692-0.0001754274209677220047745542198008392981400i",
@@ -152,7 +138,7 @@ namespace ComplexBesselTests {
             ];
 
             foreach ((Complex<Pow2.N4> z, Complex<Pow2.N4> expected) in zs_mini.Zip(expecteds)) {
-                Complex<Pow2.N4> actual = pade.BesselK(z);
+                Complex<Pow2.N4> actual = YoshidaPade<Pow2.N4>.BesselK(2.75, z);
 
                 Console.WriteLine(z);
                 Console.WriteLine(expected);

@@ -14,15 +14,13 @@ namespace ComplexBesselBenchmark {
             double max_norm = 0;
 
             for (double nu = -16; nu <= 16; nu += 0.25) {
-                HankelExpansion<Pow2.N4> hankel_n4 = new(nu);
-
                 for (double norm = 32; norm <= 64; norm += 0.125) {
                     bool is_convergence = true;
 
                     for (double theta = 0; theta <= 0.5; theta += 1d / 32) {
                         Complex<Pow2.N4> z = (norm * MultiPrecision<Pow2.N4>.CosPI(theta), norm * MultiPrecision<Pow2.N4>.SinPI(theta));
 
-                        Complex<Pow2.N4> z4 = hankel_n4.BesselJ(z);
+                        Complex<Pow2.N4> z4 = Limit<Pow2.N4>.BesselJ(nu, z);
 
                         if (Complex<Pow2.N4>.IsNaN(z4)) {
                             is_convergence = false;
@@ -52,15 +50,13 @@ namespace ComplexBesselBenchmark {
             double max_norm = 0;
 
             for (double nu = -16; nu <= 16; nu += 0.25) {
-                HankelExpansion<Pow2.N4> hankel_n4 = new(nu);
-
                 for (double norm = 32; norm <= 64; norm += 0.125) {
                     bool is_convergence = true;
 
                     for (double theta = 0; theta <= 0.5; theta += 1d / 32) {
                         Complex<Pow2.N4> z = (norm * MultiPrecision<Pow2.N4>.CosPI(theta), norm * MultiPrecision<Pow2.N4>.SinPI(theta));
 
-                        Complex<Pow2.N4> z4 = hankel_n4.BesselY(z);
+                        Complex<Pow2.N4> z4 = Limit<Pow2.N4>.BesselY(nu, z);
 
                         if (Complex<Pow2.N4>.IsNaN(z4)) {
                             is_convergence = false;
@@ -90,15 +86,13 @@ namespace ComplexBesselBenchmark {
             double max_norm = 0;
 
             for (double nu = -16; nu <= 16; nu += 0.25) {
-                HankelExpansion<Pow2.N4> hankel_n4 = new(nu);
-
                 for (double norm = 32; norm <= 64; norm += 0.125) {
                     bool is_convergence = true;
 
                     for (double theta = 0; theta <= 0.5; theta += 1d / 32) {
                         Complex<Pow2.N4> z = (norm * MultiPrecision<Pow2.N4>.CosPI(theta), norm * MultiPrecision<Pow2.N4>.SinPI(theta));
 
-                        Complex<Pow2.N4> z4 = hankel_n4.BesselI(z);
+                        Complex<Pow2.N4> z4 = Limit<Pow2.N4>.BesselI(nu, z);
 
                         if (Complex<Pow2.N4>.IsNaN(z4)) {
                             is_convergence = false;
@@ -128,15 +122,13 @@ namespace ComplexBesselBenchmark {
             double max_norm = 0;
 
             for (double nu = 0; nu <= 16; nu += 0.25) {
-                HankelExpansion<Pow2.N4> hankel_n4 = new(nu);
-
                 for (double norm = 32; norm <= 64; norm += 0.125) {
                     bool is_convergence = true;
 
                     for (double theta = 0; theta <= 0.5; theta += 1d / 32) {
                         Complex<Pow2.N4> z = (norm * MultiPrecision<Pow2.N4>.CosPI(theta), norm * MultiPrecision<Pow2.N4>.SinPI(theta));
 
-                        Complex<Pow2.N4> z4 = hankel_n4.BesselK(z);
+                        Complex<Pow2.N4> z4 = Limit<Pow2.N4>.BesselK(nu, z);
 
                         if (Complex<Pow2.N4>.IsNaN(z4)) {
                             is_convergence = false;

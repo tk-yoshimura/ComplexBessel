@@ -19,24 +19,24 @@ namespace ComplexBessel {
         private static readonly K1CoefTable k1_coef_table = new();
 
         public static Complex<N> BesselJ(MultiPrecision<N> nu, Complex<N> z) {
-            Debug.Assert(z.R.Sign == Sign.Plus);
-            Debug.Assert(z.I.Sign == Sign.Plus);
+            Debug.Assert(MultiPrecision<N>.IsPositive(z.R));
+            Debug.Assert(MultiPrecision<N>.IsPositive(z.I));
 
             if (MultiPrecision<N>.IsNegative(nu) && BesselUtil<N>.NearlyInteger(nu, out int n)) {
                 Complex<N> y = BesselJ(-nu, z);
 
-                return ((n & 1) == 0) ? y : -y;
+                return (n & 1) == 0 ? y : -y;
             }
             else {
-                Complex<N> y = BesselJIKernel(nu, z, sign_switch: true, terms: 256);
+                Complex<N> y = BesselJKernel(nu, z, terms: 256);
 
                 return y;
             }
         }
 
         public static Complex<N> BesselY(MultiPrecision<N> nu, Complex<N> z) {
-            Debug.Assert(z.R.Sign == Sign.Plus);
-            Debug.Assert(z.I.Sign == Sign.Plus);
+            Debug.Assert(MultiPrecision<N>.IsPositive(z.R));
+            Debug.Assert(MultiPrecision<N>.IsPositive(z.I));
 
             if (BesselUtil<N>.NearlyInteger(nu, out int n)) {
                 Complex<N> y = BesselYKernel(n, z, terms: 256);
@@ -50,55 +50,39 @@ namespace ComplexBessel {
             }
         }
 
-        public static Complex<N> BesselI(MultiPrecision<N> nu, Complex<N> z, bool scale = false) {
-            Debug.Assert(z.R.Sign == Sign.Plus);
-            Debug.Assert(z.I.Sign == Sign.Plus);
+        public static Complex<N> BesselI(MultiPrecision<N> nu, Complex<N> z) {
+            Debug.Assert(MultiPrecision<N>.IsPositive(z.R));
+            Debug.Assert(MultiPrecision<N>.IsPositive(z.I));
 
             if (MultiPrecision<N>.IsNegative(nu) && BesselUtil<N>.NearlyInteger(nu, out _)) {
                 Complex<N> y = BesselI(-nu, z);
 
-                if (scale) {
-                    y *= Complex<N>.Exp(-z);
-                }
-
                 return y;
             }
             else {
-                Complex<N> y = BesselJIKernel(nu, z, sign_switch: false, terms: 256);
-
-                if (scale) {
-                    y *= Complex<N>.Exp(-z);
-                }
+                Complex<N> y = BesselIKernel(nu, z, terms: 256);
 
                 return y;
             }
         }
 
-        public static Complex<N> BesselK(MultiPrecision<N> nu, Complex<N> z, bool scale = false) {
-            Debug.Assert(z.R.Sign == Sign.Plus);
-            Debug.Assert(z.I.Sign == Sign.Plus);
+        public static Complex<N> BesselK(MultiPrecision<N> nu, Complex<N> z) {
+            Debug.Assert(MultiPrecision<N>.IsPositive(z.R));
+            Debug.Assert(MultiPrecision<N>.IsPositive(z.I));
 
             if (BesselUtil<N>.NearlyInteger(nu, out int n)) {
                 Complex<N> y = BesselKKernel(n, z, terms: 256);
-
-                if (scale) {
-                    y *= Complex<N>.Exp(z);
-                }
 
                 return y;
             }
             else {
                 Complex<N> y = BesselKKernel(nu, z, terms: 256);
 
-                if (scale) {
-                    y *= Complex<N>.Exp(z);
-                }
-
                 return y;
             }
         }
 
-        private static Complex<N> BesselJIKernel(MultiPrecision<N> nu, Complex<N> z, bool sign_switch, int terms) {
+        private static Complex<N> BesselJKernel(MultiPrecision<N> nu, Complex<N> z, int terms) {
             if (!dfactdenom_coef_table.TryGetValue(nu, out DoubleFactDenomTable r)) {
                 r = new DoubleFactDenomTable(nu);
                 dfactdenom_coef_table.Add(nu, r);
@@ -114,7 +98,7 @@ namespace ComplexBessel {
 
             for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
                 Complex<N> w = z2 * d[k];
-                Complex<N> dc = u * r[k] * (sign_switch ? (1d - w) : (1d + w));
+                Complex<N> dc = u * r[k] * (1d - w);
 
                 Complex<N> c_next = c + dc;
 
@@ -159,7 +143,7 @@ namespace ComplexBessel {
                 Complex<N> a = t * s * g[t], q = gpn[t];
                 Complex<N> pa = p / a, qa = q / a;
 
-                Complex<N> dc = u * r[k] * (4 * t * nu * (pa + qa) - (z2 - (4 * t * t)) * (pa - qa));
+                Complex<N> dc = u * r[k] * (4 * t * nu * (pa + qa) - (z2 - 4 * t * t) * (pa - qa));
 
                 Complex<N> c_next = c + dc;
 
@@ -185,7 +169,7 @@ namespace ComplexBessel {
             if (n < 0) {
                 Complex<N> y = BesselYKernel(-n, z, terms);
 
-                return ((n & 1) == 0) ? y : -y;
+                return (n & 1) == 0 ? y : -y;
             }
             else if (n == 0) {
                 return BesselY0Kernel(z, terms);
@@ -292,9 +276,9 @@ namespace ComplexBessel {
                 yn_finitecoef_table.Add(n, f);
             }
 
-            Complex<N> c = 0;
+            Complex<N> c = 0d;
             Complex<N> z2 = z * z, z4 = z2 * z2;
-            Complex<N> u = 1, v = 1, w = z2 / 4;
+            Complex<N> u = 1d, v = 1d, w = Complex<N>.Ldexp(z2, -2);
 
             for (int k = 0; k < n; k++) {
                 c += v * f[k];
@@ -323,6 +307,44 @@ namespace ComplexBessel {
             Complex<N> y = c * MultiPrecision<N>.RcpPI * Complex<N>.Pow(Complex<N>.Ldexp(z, -1), n);
 
             return y;
+        }
+
+        private static Complex<N> BesselIKernel(MultiPrecision<N> nu, Complex<N> z, int terms) {
+            if (!dfactdenom_coef_table.TryGetValue(nu, out DoubleFactDenomTable r)) {
+                r = new DoubleFactDenomTable(nu);
+                dfactdenom_coef_table.Add(nu, r);
+            }
+            if (!x2denom_coef_table.TryGetValue(nu, out X2DenomTable d)) {
+                d = new X2DenomTable(nu);
+                x2denom_coef_table.Add(nu, d);
+            }
+
+            Complex<N> z2 = z * z, z4 = z2 * z2;
+
+            Complex<N> c = 0d, u = Complex<N>.Pow(Complex<N>.Ldexp(z, -1), nu);
+
+            for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
+                Complex<N> w = z2 * d[k];
+                Complex<N> dc = u * r[k] * (1d + w);
+
+                Complex<N> c_next = c + dc;
+
+                if (c == c_next || !Complex<N>.IsFinite(c_next)) {
+                    conv_times++;
+                }
+                else {
+                    conv_times = 0;
+                }
+
+                c = c_next;
+                u *= z4;
+
+                if (!Complex<N>.IsFinite(c)) {
+                    break;
+                }
+            }
+
+            return c;
         }
 
         private static Complex<N> BesselKKernel(MultiPrecision<N> nu, Complex<N> z, int terms) {
@@ -370,19 +392,12 @@ namespace ComplexBessel {
             if (n == 0) {
                 return BesselK0Kernel(z, terms);
             }
-            if (n == 1) {
+            else if (n == 1) {
                 return BesselK1Kernel(z, terms);
             }
-
-            Complex<N> v = 1d / z;
-            Complex<N> y0 = BesselK0Kernel(z, terms);
-            Complex<N> y1 = BesselK1Kernel(z, terms);
-
-            for (int k = 1; k < n; k++) {
-                (y1, y0) = (2 * k * v * y1 + y0, y1);
+            else {
+                return BesselKNKernel(n, z, terms);
             }
-
-            return y1;
         }
 
         private static Complex<N> BesselK0Kernel(Complex<N> z, int terms) {
@@ -439,6 +454,18 @@ namespace ComplexBessel {
             return c;
         }
 
+        private static Complex<N> BesselKNKernel(int n, Complex<N> z, int terms) {
+            Complex<N> v = 1d / z;
+            Complex<N> y0 = BesselK0Kernel(z, terms);
+            Complex<N> y1 = BesselK1Kernel(z, terms);
+
+            for (int k = 1; k < n; k++) {
+                (y1, y0) = (2 * k * v * y1 + y0, y1);
+            }
+
+            return y1;
+        }
+
         private class DoubleFactDenomTable {
             private MultiPrecision<N> c;
             private readonly MultiPrecision<N> nu;
@@ -450,22 +477,22 @@ namespace ComplexBessel {
                 this.table.Add(MultiPrecision<N>.Rcp(c));
             }
 
-            public MultiPrecision<N> this[int n] => Value(n);
+            public MultiPrecision<N> this[int k] => Value(k);
 
-            public MultiPrecision<N> Value(int n) {
-                Debug.Assert(n >= 0);
+            public MultiPrecision<N> Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (long k = table.Count; k <= n; k++) {
-                    c *= checked((nu + (2 * k)) * (nu + (2 * k - 1)) * (32 * k * (2 * k - 1)));
+                for (long i = table.Count; i <= k; i++) {
+                    c *= checked((nu + 2 * i) * (nu + (2 * i - 1)) * (32 * i * (2 * i - 1)));
 
                     table.Add(MultiPrecision<N>.Rcp(c));
                 }
 
-                return table[n];
+                return table[k];
             }
         }
 
@@ -480,22 +507,22 @@ namespace ComplexBessel {
                 this.table.Add(a);
             }
 
-            public MultiPrecision<N> this[int n] => Value(n);
+            public MultiPrecision<N> this[int k] => Value(k);
 
-            public MultiPrecision<N> Value(int n) {
-                Debug.Assert(n >= 0);
+            public MultiPrecision<N> Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (long k = table.Count; k <= n; k++) {
-                    MultiPrecision<N> a = MultiPrecision<N>.Rcp(checked(4d * (2 * k + 1) * (2 * k + 1 + nu)));
+                for (long i = table.Count; i <= k; i++) {
+                    MultiPrecision<N> a = MultiPrecision<N>.Rcp(checked(4d * (2 * i + 1) * (2 * i + 1 + nu)));
 
                     table.Add(a);
                 }
 
-                return table[n];
+                return table[k];
             }
         }
 
@@ -510,22 +537,22 @@ namespace ComplexBessel {
                 this.table.Add(MultiPrecision<N>.Rcp(c));
             }
 
-            public MultiPrecision<N> this[int n] => Value(n);
+            public MultiPrecision<N> this[int k] => Value(k);
 
-            public MultiPrecision<N> Value(int n) {
-                Debug.Assert(n >= 0);
+            public MultiPrecision<N> Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (int k = table.Count; k <= n; k++) {
-                    c *= nu + k;
+                for (int i = table.Count; i <= k; i++) {
+                    c *= nu + i;
 
                     table.Add(MultiPrecision<N>.Rcp(c));
                 }
 
-                return table[n];
+                return table[k];
             }
         }
 
@@ -540,22 +567,22 @@ namespace ComplexBessel {
                 this.table.Add(c);
             }
 
-            public MultiPrecision<N> this[int n] => Value(n);
+            public MultiPrecision<N> this[int k] => Value(k);
 
-            public MultiPrecision<N> Value(int n) {
-                Debug.Assert(n >= 0);
+            public MultiPrecision<N> Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (int k = table.Count; k <= n; k++) {
-                    c *= nu + k;
+                for (int i = table.Count; i <= k; i++) {
+                    c *= nu + i;
 
                     table.Add(c);
                 }
 
-                return table[n];
+                return table[k];
             }
         }
 
@@ -565,27 +592,27 @@ namespace ComplexBessel {
             private readonly List<MultiPrecision<N>> table = [];
 
             public GammaPNTable(MultiPrecision<N> nu) {
-                this.r = MultiPrecision<N>.Pow(4, nu);
+                this.r = MultiPrecision<N>.Pow(4d, nu);
                 this.positive_table = new(nu);
                 this.negative_table = new(-nu);
             }
 
-            public MultiPrecision<N> this[int n] => Value(n);
+            public MultiPrecision<N> this[int k] => Value(k);
 
-            public MultiPrecision<N> Value(int n) {
-                Debug.Assert(n >= 0);
+            public MultiPrecision<N> Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (int k = table.Count; k <= n; k++) {
-                    MultiPrecision<N> c = r * positive_table[k] / negative_table[k];
+                for (int i = table.Count; i <= k; i++) {
+                    MultiPrecision<N> c = r * positive_table[i] / negative_table[i];
 
                     table.Add(c);
                 }
 
-                return table[n];
+                return table[k];
             }
         }
 
@@ -598,22 +625,22 @@ namespace ComplexBessel {
                 this.table.Add(1d);
             }
 
-            public MultiPrecision<N> this[int n] => Value(n);
+            public MultiPrecision<N> this[int k] => Value(k);
 
-            public MultiPrecision<N> Value(int n) {
-                Debug.Assert(n >= 0);
+            public MultiPrecision<N> Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (long k = table.Count; k <= n; k++) {
-                    c *= checked(32 * k * (2 * k - 1));
+                for (long i = table.Count; i <= k; i++) {
+                    c *= checked(32 * i * (2 * i - 1));
 
                     table.Add(MultiPrecision<N>.Rcp(c));
                 }
 
-                return table[n];
+                return table[k];
             }
         }
 
@@ -624,65 +651,65 @@ namespace ComplexBessel {
                 this.table.Add(MultiPrecision<N>.Rcp(4));
             }
 
-            public MultiPrecision<N> this[int n] => Value(n);
+            public MultiPrecision<N> this[int k] => Value(k);
 
-            public MultiPrecision<N> Value(int n) {
-                Debug.Assert(n >= 0);
+            public MultiPrecision<N> Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (long k = table.Count; k <= n; k++) {
-                    MultiPrecision<N> c = MultiPrecision<N>.Rcp(checked(4 * (2 * k + 1) * (2 * k + 1) * (2 * k + 1)));
+                for (long i = table.Count; i <= k; i++) {
+                    MultiPrecision<N> c = MultiPrecision<N>.Rcp(checked(4 * (2 * i + 1) * (2 * i + 1) * (2 * i + 1)));
 
                     table.Add(c);
                 }
 
-                return table[n];
+                return table[k];
             }
         }
 
         private class YNCoefTable {
-            private readonly int nu;
+            private readonly int n;
             private readonly List<MultiPrecision<N>> table = [];
 
-            public YNCoefTable(int nu) {
-                this.nu = nu;
+            public YNCoefTable(int n) {
+                this.n = n;
             }
 
-            public MultiPrecision<N> this[int n] => Value(n);
+            public MultiPrecision<N> this[int k] => Value(k);
 
-            public MultiPrecision<N> Value(int n) {
-                Debug.Assert(n >= 0);
+            public MultiPrecision<N> Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (long k = table.Count; k <= n; k++) {
-                    MultiPrecision<N> c = (MultiPrecision<N>)(nu + 4 * k + 2) /
-                        (MultiPrecision<N>)checked(4 * (2 * k + 1) * (2 * k + 1) * (nu + 2 * k + 1) * (nu + 2 * k + 1));
+                for (long i = table.Count; i <= k; i++) {
+                    MultiPrecision<N> c = (MultiPrecision<N>)(n + 4 * i + 2) /
+                        (MultiPrecision<N>)checked(4 * (2 * i + 1) * (2 * i + 1) * (n + 2 * i + 1) * (n + 2 * i + 1));
 
                     table.Add(c);
                 }
 
-                return table[n];
+                return table[k];
             }
         }
 
         private static class YNFiniteCoefTable {
-            public static ReadOnlyCollection<MultiPrecision<N>> Value(int nu) {
-                Debug.Assert(nu >= 0);
+            public static ReadOnlyCollection<MultiPrecision<N>> Value(int n) {
+                Debug.Assert(n >= 0);
 
                 List<MultiPrecision<N>> frac = [1], coef = [];
 
-                for (int k = 1; k < nu; k++) {
-                    frac.Add(k * frac[^1]);
+                for (int i = 1; i < n; i++) {
+                    frac.Add(i * frac[^1]);
                 }
 
-                for (int k = 0; k < nu; k++) {
-                    coef.Add(frac[^(k + 1)] / frac[k]);
+                for (int i = 0; i < n; i++) {
+                    coef.Add(frac[^(i + 1)] / frac[i]);
                 }
 
                 return new(coef);
@@ -698,22 +725,22 @@ namespace ComplexBessel {
                 this.table.Add(1d);
             }
 
-            public MultiPrecision<N> this[int n] => Value(n);
+            public MultiPrecision<N> this[int k] => Value(k);
 
-            public MultiPrecision<N> Value(int n) {
-                Debug.Assert(n >= 0);
+            public MultiPrecision<N> Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (long k = table.Count; k <= n; k++) {
-                    c *= 4 * k;
+                for (long i = table.Count; i <= k; i++) {
+                    c *= 4 * i;
 
                     table.Add(MultiPrecision<N>.Rcp(c));
                 }
 
-                return table[n];
+                return table[k];
             }
         }
 
@@ -726,22 +753,22 @@ namespace ComplexBessel {
                 this.table.Add(1d);
             }
 
-            public MultiPrecision<N> this[int n] => Value(n);
+            public MultiPrecision<N> this[int k] => Value(k);
 
-            public MultiPrecision<N> Value(int n) {
-                Debug.Assert(n >= 0);
+            public MultiPrecision<N> Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (long k = table.Count; k <= n; k++) {
-                    c *= checked(4 * k * k);
+                for (long i = table.Count; i <= k; i++) {
+                    c *= checked(4 * i * i);
 
                     table.Add(MultiPrecision<N>.Rcp(c));
                 }
 
-                return table[n];
+                return table[k];
             }
         }
 
@@ -754,22 +781,22 @@ namespace ComplexBessel {
                 this.table.Add(1d);
             }
 
-            public MultiPrecision<N> this[int n] => Value(n);
+            public MultiPrecision<N> this[int k] => Value(k);
 
-            public MultiPrecision<N> Value(int n) {
-                Debug.Assert(n >= 0);
+            public MultiPrecision<N> Value(int k) {
+                Debug.Assert(k >= 0);
 
-                if (n < table.Count) {
-                    return table[n];
+                if (k < table.Count) {
+                    return table[k];
                 }
 
-                for (int k = table.Count; k <= n; k++) {
-                    c *= checked(4 * k * (k + 1));
+                for (int i = table.Count; i <= k; i++) {
+                    c *= checked(4 * i * (i + 1));
 
                     table.Add(MultiPrecision<N>.Rcp(c));
                 }
 
-                return table[n];
+                return table[k];
             }
         }
     }
