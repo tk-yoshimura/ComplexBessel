@@ -99,7 +99,7 @@ namespace DDoubleOptimizedBessel {
         public static readonly double Eps = double.ScaleB(1, -105);
         public static readonly double ExtremelyNearZero = double.ScaleB(1, -28);
         public static readonly double InterpolationThreshold = double.ScaleB(1, -25);
-        public const double HankelThreshold = 38.75, MillerBackwardThreshold = 6;
+        public const double HankelThreshold = 38.875, MillerBackwardThreshold = 6;
         public const double BesselKPadeThreshold = 1, BesselKNearZeroThreshold = 2, BesselJYPowerseriesBias = 2;
 
         public static ddouble PowerSeriesThreshold(ddouble nu) {
@@ -188,7 +188,7 @@ namespace DDoubleOptimizedBessel {
                 Debug.Assert(ddouble.IsPositive(x));
 
                 if (NearlyInteger(nu, out int n)) {
-                    ddouble y = BesselYKernel(n, x, terms: 17);
+                    ddouble y = BesselYKernel(n, x, terms: 18);
 
                     return y;
                 }
@@ -1094,7 +1094,7 @@ namespace DDoubleOptimizedBessel {
                     return (c_even, c_odd / x);
                 }
 
-                public ddouble BesselICoef(ddouble x, int max_term = 71) {
+                public ddouble BesselICoef(ddouble x, int max_term = 72) {
                     ddouble v = 1d / x, w = -v;
 
                     ddouble c = ACoef(0);

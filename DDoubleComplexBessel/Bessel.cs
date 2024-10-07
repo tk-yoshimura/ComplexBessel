@@ -3,7 +3,7 @@ using DoubleDoubleComplex;
 
 namespace DDoubleComplexBessel {
     public static class Bessel {
-        private const double hankel_threshold = 38.75, miller_backward_threshold = 6;
+        private const double hankel_threshold = 38.875, miller_backward_threshold = 6;
         private const double besselk_pade_threshold = 1, besselk_nz_threshold = 4, besseljy_powerseries_bias = 2;
 
         public static Complex BesselJ(ddouble nu, Complex z) {

@@ -1,8 +1,5 @@
-﻿using ComplexBessel;
-using DDoubleOptimizedBessel;
+﻿using DDoubleOptimizedBessel;
 using DoubleDouble;
-using MultiPrecision;
-using MultiPrecisionComplex;
 
 namespace DDoubleOptimizedBesselTests {
     [TestClass()]

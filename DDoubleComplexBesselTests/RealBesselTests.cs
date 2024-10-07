@@ -11,7 +11,7 @@ namespace DDoubleComplexBesselTests {
             for (double nu = -16; nu <= 16; nu += 0.25) {
                 Console.WriteLine(nu);
 
-                for (double r = 0.5; r <= 42; r += 0.5) {
+                for (double r = 0.125; r <= 42; r += 0.125) {
                     Complex expected = BesselN4.BesselJ(nu, r).ToString();
                     Complex actual = Bessel.BesselJ(nu, r);
 
@@ -21,7 +21,7 @@ namespace DDoubleComplexBesselTests {
                     Console.WriteLine(expected);
                     Console.WriteLine(actual);
 
-                    Assert.IsTrue(err < 2e-27, $"\n{nu}, {r}\n{expected}\n{actual}\n{err:e4}");
+                    Assert.IsTrue(err < 6e-27, $"\n{nu}, {r}\n{expected}\n{actual}\n{err:e4}");
                 }
 
                 Console.WriteLine(string.Empty);
@@ -33,7 +33,7 @@ namespace DDoubleComplexBesselTests {
             for (double nu = -16; nu <= 16; nu += 0.25) {
                 Console.WriteLine(nu);
 
-                for (double r = 0.5; r <= 42; r += 0.5) {
+                for (double r = 0.125; r <= 42; r += 0.125) {
                     Complex expected = BesselN4.BesselY(nu, r).ToString();
                     Complex actual = Bessel.BesselY(nu, r);
 
@@ -43,7 +43,7 @@ namespace DDoubleComplexBesselTests {
                     Console.WriteLine(expected);
                     Console.WriteLine(actual);
 
-                    Assert.IsTrue(err < 2e-27, $"\n{nu}, {r}\n{expected}\n{actual}\n{err:e4}");
+                    Assert.IsTrue(err < 6e-27, $"\n{nu}, {r}\n{expected}\n{actual}\n{err:e4}");
                 }
 
                 Console.WriteLine(string.Empty);

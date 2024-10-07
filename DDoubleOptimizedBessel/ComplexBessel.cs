@@ -172,7 +172,7 @@ namespace DDoubleOptimizedBessel {
         public static readonly double Eps = double.ScaleB(1, -105);
         public static readonly double ExtremelyNearZero = double.ScaleB(1, -28);
         public static readonly double InterpolationThreshold = double.ScaleB(1, -25);
-        public const double HankelThreshold = 38.75, MillerBackwardThreshold = 6;
+        public const double HankelThreshold = 38.875, MillerBackwardThreshold = 6;
         public const double BesselKPadeThreshold = 1, BesselKNearZeroThreshold = 4, BesselJYPowerseriesBias = 2;
 
         public static ddouble PowerSeriesThreshold(ddouble nu, ddouble x) {
@@ -1154,7 +1154,7 @@ namespace DDoubleOptimizedBessel {
                     return (c_even, c_odd / z);
                 }
 
-                public Complex BesselICoef(Complex z, int max_term = 81) {
+                public Complex BesselICoef(Complex z, int max_term = 75) {
                     Complex v = 1d / z, w = -v;
 
                     Complex c = ACoef(0);
@@ -1174,7 +1174,7 @@ namespace DDoubleOptimizedBessel {
                     return c;
                 }
 
-                public Complex BesselKCoef(Complex z, int max_term = 59) {
+                public Complex BesselKCoef(Complex z, int max_term = 58) {
                     Complex v = 1d / z, w = v;
 
                     Complex c = ACoef(0);

@@ -5,6 +5,8 @@ using DoubleDoubleComplex;
 namespace DDoubleComplexBesselBenchmark {
     [TestClass]
     public class HankelExpansionRange {
+        private const double dnorm = 0.125;
+
         [TestMethod()]
         public void BesselJTest() {
             using StreamWriter sw = new($"../../../../results_ddouble/besselj_hankel_range.csv");
@@ -14,10 +16,10 @@ namespace DDoubleComplexBesselBenchmark {
             double max_norm = 0;
 
             for (double nu = -16; nu <= 16; nu += 0.25) {
-                for (double norm = 32; norm <= 64; norm += 0.125) {
+                for (double norm = 50; norm >= 32; norm -= dnorm) {
                     bool is_convergence = true;
 
-                    for (double theta = 0; theta <= 0.5; theta += 1d / 32) {
+                    for (double theta = 0; theta <= 0.5; theta += 1d / 64) {
                         Complex z = (norm * ddouble.CosPI(theta), norm * ddouble.SinPI(theta));
 
                         Complex z4 = Limit.BesselJ(nu, z);
@@ -28,8 +30,8 @@ namespace DDoubleComplexBesselBenchmark {
                         }
                     }
 
-                    if (is_convergence) {
-                        max_norm = double.Max(norm, max_norm);
+                    if (!is_convergence) {
+                        max_norm = double.Max(norm + dnorm, max_norm);
                         sw.WriteLine($"{nu},{norm}");
                         break;
                     }
@@ -50,10 +52,10 @@ namespace DDoubleComplexBesselBenchmark {
             double max_norm = 0;
 
             for (double nu = -16; nu <= 16; nu += 0.25) {
-                for (double norm = 32; norm <= 64; norm += 0.125) {
+                for (double norm = 50; norm >= 32; norm -= dnorm) {
                     bool is_convergence = true;
 
-                    for (double theta = 0; theta <= 0.5; theta += 1d / 32) {
+                    for (double theta = 0; theta <= 0.5; theta += 1d / 64) {
                         Complex z = (norm * ddouble.CosPI(theta), norm * ddouble.SinPI(theta));
 
                         Complex z4 = Limit.BesselY(nu, z);
@@ -64,8 +66,8 @@ namespace DDoubleComplexBesselBenchmark {
                         }
                     }
 
-                    if (is_convergence) {
-                        max_norm = double.Max(norm, max_norm);
+                    if (!is_convergence) {
+                        max_norm = double.Max(norm + dnorm, max_norm);
                         sw.WriteLine($"{nu},{norm}");
                         break;
                     }
@@ -86,10 +88,10 @@ namespace DDoubleComplexBesselBenchmark {
             double max_norm = 0;
 
             for (double nu = -16; nu <= 16; nu += 0.25) {
-                for (double norm = 32; norm <= 64; norm += 0.125) {
+                for (double norm = 50; norm >= 32; norm -= dnorm) {
                     bool is_convergence = true;
 
-                    for (double theta = 0; theta <= 0.5; theta += 1d / 32) {
+                    for (double theta = 0; theta <= 0.5; theta += 1d / 64) {
                         Complex z = (norm * ddouble.CosPI(theta), norm * ddouble.SinPI(theta));
 
                         Complex z4 = Limit.BesselI(nu, z);
@@ -100,8 +102,8 @@ namespace DDoubleComplexBesselBenchmark {
                         }
                     }
 
-                    if (is_convergence) {
-                        max_norm = double.Max(norm, max_norm);
+                    if (!is_convergence) {
+                        max_norm = double.Max(norm + dnorm, max_norm);
                         sw.WriteLine($"{nu},{norm}");
                         break;
                     }
@@ -122,10 +124,10 @@ namespace DDoubleComplexBesselBenchmark {
             double max_norm = 0;
 
             for (double nu = 0; nu <= 16; nu += 0.25) {
-                for (double norm = 32; norm <= 64; norm += 0.125) {
+                for (double norm = 50; norm >= 32; norm -= dnorm) {
                     bool is_convergence = true;
 
-                    for (double theta = 0; theta <= 0.5; theta += 1d / 32) {
+                    for (double theta = 0; theta <= 0.5; theta += 1d / 64) {
                         Complex z = (norm * ddouble.CosPI(theta), norm * ddouble.SinPI(theta));
 
                         Complex z4 = Limit.BesselK(nu, z);
@@ -136,8 +138,8 @@ namespace DDoubleComplexBesselBenchmark {
                         }
                     }
 
-                    if (is_convergence) {
-                        max_norm = double.Max(norm, max_norm);
+                    if (!is_convergence) {
+                        max_norm = double.Max(norm + dnorm, max_norm);
                         sw.WriteLine($"{nu},{norm}");
                         break;
                     }
