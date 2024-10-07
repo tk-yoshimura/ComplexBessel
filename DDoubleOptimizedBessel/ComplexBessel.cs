@@ -1750,12 +1750,10 @@ namespace DDoubleOptimizedBessel {
 
                 Debug.Assert(m >= 2 && (m & 1) == 0 && n < m);
 
-                if (!psi_coef_table.TryGetValue(alpha, out BesselIPsiTable psi_table)) {
-                    psi_table = new BesselIPsiTable(alpha);
-                    psi_coef_table.Add(alpha, psi_table);
+                if (!psi_coef_table.TryGetValue(alpha, out BesselIPsiTable psi)) {
+                    psi = new BesselIPsiTable(alpha);
+                    psi_coef_table.Add(alpha, psi);
                 }
-
-                BesselIPsiTable psi = psi_table;
 
                 Complex g0 = 1e-256, g1 = 0d, lambda = 0d;
                 Complex v = 1d / z;

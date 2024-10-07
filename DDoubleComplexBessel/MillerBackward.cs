@@ -137,12 +137,10 @@ namespace DDoubleComplexBessel {
 
             Debug.Assert(m >= 2 && (m & 1) == 0 && n < m);
 
-            if (!phi_coef_table.TryGetValue(alpha, out BesselJPhiTable phi_table)) {
-                phi_table = new BesselJPhiTable(alpha);
-                phi_coef_table.Add(alpha, phi_table);
+            if (!phi_coef_table.TryGetValue(alpha, out BesselJPhiTable phi)) {
+                phi = new BesselJPhiTable(alpha);
+                phi_coef_table.Add(alpha, phi);
             }
-
-            BesselJPhiTable phi = phi_table;
 
             Complex f0 = 1e-256d, f1 = 0d, lambda = 0d;
             Complex v = 1d / z;
@@ -283,26 +281,18 @@ namespace DDoubleComplexBessel {
 
             Debug.Assert(m >= 2 && (m & 1) == 0 && n < m);
 
-            if (!eta_coef_table.TryGetValue(alpha, out BesselYEtaTable eta_table)) {
-                eta_table = new BesselYEtaTable(alpha);
-                eta_coef_table.Add(alpha, eta_table);
+            if (!eta_coef_table.TryGetValue(alpha, out BesselYEtaTable eta)) {
+                eta = new BesselYEtaTable(alpha);
+                eta_coef_table.Add(alpha, eta);
             }
-
-            BesselYEtaTable eta = eta_table;
-
-            if (!xi_coef_table.TryGetValue(alpha, out BesselYXiTable xi_table)) {
-                xi_table = new BesselYXiTable(alpha, eta);
-                xi_coef_table.Add(alpha, xi_table);
+            if (!xi_coef_table.TryGetValue(alpha, out BesselYXiTable xi)) {
+                xi = new BesselYXiTable(alpha, eta);
+                xi_coef_table.Add(alpha, xi);
             }
-
-            BesselYXiTable xi = xi_table;
-
-            if (!phi_coef_table.TryGetValue(alpha, out BesselJPhiTable phi_table)) {
-                phi_table = new BesselJPhiTable(alpha);
-                phi_coef_table.Add(alpha, phi_table);
+            if (!phi_coef_table.TryGetValue(alpha, out BesselJPhiTable phi)) {
+                phi = new BesselJPhiTable(alpha);
+                phi_coef_table.Add(alpha, phi);
             }
-
-            BesselJPhiTable phi = phi_table;
 
             Complex f0 = 1e-256, f1 = 0d, lambda = 0d;
             Complex se = 0d, sxo = 0d, sxe = 0d;
@@ -446,12 +436,10 @@ namespace DDoubleComplexBessel {
         private static Complex BesselY0Kernel(Complex z, int m) {
             Debug.Assert(m >= 2 && (m & 1) == 0);
 
-            if (!eta_coef_table.TryGetValue(0, out BesselYEtaTable eta_table)) {
-                eta_table = new BesselYEtaTable(0);
-                eta_coef_table.Add(0, eta_table);
+            if (!eta_coef_table.TryGetValue(0, out BesselYEtaTable eta)) {
+                eta = new BesselYEtaTable(0);
+                eta_coef_table.Add(0, eta);
             }
-
-            BesselYEtaTable eta = eta_table;
 
             Complex f0 = 1e-256, f1 = 0d, lambda = 0d;
             Complex se = 0d;
@@ -579,12 +567,10 @@ namespace DDoubleComplexBessel {
 
             Debug.Assert(m >= 2 && (m & 1) == 0 && n < m);
 
-            if (!psi_coef_table.TryGetValue(alpha, out BesselIPsiTable psi_table)) {
-                psi_table = new BesselIPsiTable(alpha);
-                psi_coef_table.Add(alpha, psi_table);
+            if (!psi_coef_table.TryGetValue(alpha, out BesselIPsiTable psi)) {
+                psi = new BesselIPsiTable(alpha);
+                psi_coef_table.Add(alpha, psi);
             }
-
-            BesselIPsiTable psi = psi_table;
 
             Complex g0 = 1e-256, g1 = 0d, lambda = 0d;
             Complex v = 1d / z;
