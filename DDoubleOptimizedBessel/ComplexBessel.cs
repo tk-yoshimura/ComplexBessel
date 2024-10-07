@@ -1130,12 +1130,12 @@ namespace DDoubleOptimizedBessel {
                     return omega;
                 }
 
-                public (Complex c_even, Complex c_odd) BesselJYCoef(Complex z, int max_term = 35) {
+                public (Complex c_even, Complex c_odd) BesselJYCoef(Complex z, int terms = 35) {
                     Complex v = 1 / (z * z), w = -v;
 
                     Complex c_even = ACoef(0), c_odd = ACoef(1);
 
-                    for (int k = 1; k <= max_term; k++) {
+                    for (int k = 1; k <= terms; k++) {
                         Complex dc_even = w * ACoef(2 * k);
                         Complex dc_odd = w * ACoef(2 * k + 1);
 
@@ -1154,12 +1154,12 @@ namespace DDoubleOptimizedBessel {
                     return (c_even, c_odd / z);
                 }
 
-                public Complex BesselICoef(Complex z, int max_term = 75) {
+                public Complex BesselICoef(Complex z, int terms = 75) {
                     Complex v = 1d / z, w = -v;
 
                     Complex c = ACoef(0);
 
-                    for (int k = 1; k <= max_term; k++) {
+                    for (int k = 1; k <= terms; k++) {
                         Complex dc = w * ACoef(k);
 
                         c += dc;
@@ -1174,12 +1174,12 @@ namespace DDoubleOptimizedBessel {
                     return c;
                 }
 
-                public Complex BesselKCoef(Complex z, int max_term = 58) {
+                public Complex BesselKCoef(Complex z, int terms = 58) {
                     Complex v = 1d / z, w = v;
 
                     Complex c = ACoef(0);
 
-                    for (int k = 1; k <= max_term; k++) {
+                    for (int k = 1; k <= terms; k++) {
                         Complex dc = w * ACoef(k);
 
                         c += dc;

@@ -1070,12 +1070,12 @@ namespace DDoubleOptimizedBessel {
                     return omega;
                 }
 
-                public (ddouble c_even, ddouble c_odd) BesselJYCoef(ddouble x, int max_term = 35) {
+                public (ddouble c_even, ddouble c_odd) BesselJYCoef(ddouble x, int terms = 35) {
                     ddouble v = 1 / (x * x), w = -v;
 
                     ddouble c_even = ACoef(0), c_odd = ACoef(1);
 
-                    for (int k = 1; k <= max_term; k++) {
+                    for (int k = 1; k <= terms; k++) {
                         ddouble dc_even = w * ACoef(2 * k);
                         ddouble dc_odd = w * ACoef(2 * k + 1);
 
@@ -1094,12 +1094,12 @@ namespace DDoubleOptimizedBessel {
                     return (c_even, c_odd / x);
                 }
 
-                public ddouble BesselICoef(ddouble x, int max_term = 72) {
+                public ddouble BesselICoef(ddouble x, int terms = 72) {
                     ddouble v = 1d / x, w = -v;
 
                     ddouble c = ACoef(0);
 
-                    for (int k = 1; k <= max_term; k++) {
+                    for (int k = 1; k <= terms; k++) {
                         ddouble dc = w * ACoef(k);
 
                         c += dc;
@@ -1114,12 +1114,12 @@ namespace DDoubleOptimizedBessel {
                     return c;
                 }
 
-                public ddouble BesselKCoef(ddouble x, int max_term = 52) {
+                public ddouble BesselKCoef(ddouble x, int terms = 52) {
                     ddouble v = 1d / x, w = v;
 
                     ddouble c = ACoef(0);
 
-                    for (int k = 1; k <= max_term; k++) {
+                    for (int k = 1; k <= terms; k++) {
                         ddouble dc = w * ACoef(k);
 
                         c += dc;
