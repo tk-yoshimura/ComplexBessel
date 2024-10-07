@@ -994,7 +994,6 @@ namespace DDoubleOptimizedBessel {
                     table.Add(nu, hankel);
                 }
 
-
                 (ddouble c_even, ddouble c_odd) = hankel.BesselJYCoef(x);
 
                 ddouble omega = hankel.Omega(x);
@@ -1226,12 +1225,10 @@ namespace DDoubleOptimizedBessel {
 
                 Debug.Assert(m >= 2 && (m & 1) == 0 && n < m);
 
-                if (!phi_coef_table.TryGetValue(alpha, out BesselJPhiTable phi_table)) {
-                    phi_table = new BesselJPhiTable(alpha);
-                    phi_coef_table.Add(alpha, phi_table);
+                if (!phi_coef_table.TryGetValue(alpha, out BesselJPhiTable phi)) {
+                    phi = new BesselJPhiTable(alpha);
+                    phi_coef_table.Add(alpha, phi);
                 }
-
-                BesselJPhiTable phi = phi_table;
 
                 ddouble f0 = 1e-256d, f1 = 0d, lambda = 0d;
                 ddouble v = 1d / x;
@@ -1323,6 +1320,8 @@ namespace DDoubleOptimizedBessel {
             }
 
             private static ddouble BesselJNKernel(int n, ddouble x, int m) {
+                Debug.Assert(m >= 2 && (m & 1) == 0);
+
                 ddouble f0 = 1e-256d, f1 = 0d, fn = 0d, lambda = 0d;
                 ddouble v = 1d / x;
 
@@ -1368,26 +1367,18 @@ namespace DDoubleOptimizedBessel {
 
                 Debug.Assert(m >= 2 && (m & 1) == 0 && n < m);
 
-                if (!eta_coef_table.TryGetValue(alpha, out BesselYEtaTable eta_table)) {
-                    eta_table = new BesselYEtaTable(alpha);
-                    eta_coef_table.Add(alpha, eta_table);
+                if (!eta_coef_table.TryGetValue(alpha, out BesselYEtaTable eta)) {
+                    eta = new BesselYEtaTable(alpha);
+                    eta_coef_table.Add(alpha, eta);
                 }
-
-                BesselYEtaTable eta = eta_table;
-
-                if (!xi_coef_table.TryGetValue(alpha, out BesselYXiTable xi_table)) {
-                    xi_table = new BesselYXiTable(alpha, eta);
-                    xi_coef_table.Add(alpha, xi_table);
+                if (!xi_coef_table.TryGetValue(alpha, out BesselYXiTable xi)) {
+                    xi = new BesselYXiTable(alpha, eta);
+                    xi_coef_table.Add(alpha, xi);
                 }
-
-                BesselYXiTable xi = xi_table;
-
-                if (!phi_coef_table.TryGetValue(alpha, out BesselJPhiTable phi_table)) {
-                    phi_table = new BesselJPhiTable(alpha);
-                    phi_coef_table.Add(alpha, phi_table);
+                if (!phi_coef_table.TryGetValue(alpha, out BesselJPhiTable phi)) {
+                    phi = new BesselJPhiTable(alpha);
+                    phi_coef_table.Add(alpha, phi);
                 }
-
-                BesselJPhiTable phi = phi_table;
 
                 ddouble f0 = 1e-256, f1 = 0d, lambda = 0d;
                 ddouble se = 0d, sxo = 0d, sxe = 0d;
@@ -1531,12 +1522,10 @@ namespace DDoubleOptimizedBessel {
             private static ddouble BesselY0Kernel(ddouble x, int m) {
                 Debug.Assert(m >= 2 && (m & 1) == 0);
 
-                if (!eta_coef_table.TryGetValue(0, out BesselYEtaTable eta_table)) {
-                    eta_table = new BesselYEtaTable(0);
-                    eta_coef_table.Add(0, eta_table);
+                if (!eta_coef_table.TryGetValue(0, out BesselYEtaTable eta)) {
+                    eta = new BesselYEtaTable(0);
+                    eta_coef_table.Add(0, eta);
                 }
-
-                BesselYEtaTable eta = eta_table;
 
                 ddouble f0 = 1e-256, f1 = 0d, lambda = 0d;
                 ddouble se = 0d;
@@ -1562,15 +1551,15 @@ namespace DDoubleOptimizedBessel {
             private static ddouble BesselY1Kernel(ddouble x, int m) {
                 Debug.Assert(m >= 2 && (m & 1) == 0);
 
-                if (!xi_coef_table.ContainsKey(0)) {
-                    if (!eta_coef_table.ContainsKey(0)) {
-                        eta_coef_table.Add(0, new BesselYEtaTable(0));
+                if (!xi_coef_table.TryGetValue(0, out BesselYXiTable xi)) {
+                    if (!eta_coef_table.TryGetValue(0, out BesselYEtaTable eta)) {
+                        eta = new BesselYEtaTable(0);
+                        eta_coef_table.Add(0, eta);
                     }
 
-                    xi_coef_table.Add(0, new BesselYXiTable(0, eta_coef_table[0]));
+                    xi = new BesselYXiTable(0, eta);
+                    xi_coef_table.Add(0, xi);
                 }
-
-                BesselYXiTable xi = xi_coef_table[0];
 
                 ddouble f0 = 1e-256, f1 = 0d, lambda = 0d;
                 ddouble sx = 0d;
@@ -1595,17 +1584,16 @@ namespace DDoubleOptimizedBessel {
             }
 
             private static ddouble BesselYNKernel(int n, ddouble x, int m) {
-                if (!eta_coef_table.ContainsKey(0)) {
-                    eta_coef_table.Add(0, new BesselYEtaTable(0));
+                Debug.Assert(m >= 2 && (m & 1) == 0);
+
+                if (!eta_coef_table.TryGetValue(0, out BesselYEtaTable eta)) {
+                    eta = new BesselYEtaTable(0);
+                    eta_coef_table.Add(0, eta);
                 }
-
-                BesselYEtaTable eta = eta_coef_table[0];
-
-                if (!xi_coef_table.ContainsKey(0)) {
-                    xi_coef_table.Add(0, new BesselYXiTable(0, eta));
+                if (!xi_coef_table.TryGetValue(0, out BesselYXiTable xi)) {
+                    xi = new BesselYXiTable(0, eta);
+                    xi_coef_table.Add(0, xi);
                 }
-
-                BesselYXiTable xi = xi_coef_table[0];
 
                 ddouble f0 = 1e-256, f1 = 0d, lambda = 0d;
                 ddouble se = 0d, sx = 0d;

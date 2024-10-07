@@ -477,15 +477,15 @@ namespace DDoubleComplexBessel {
         private static Complex BesselY1Kernel(Complex z, int m) {
             Debug.Assert(m >= 2 && (m & 1) == 0);
 
-            if (!xi_coef_table.ContainsKey(0)) {
-                if (!eta_coef_table.ContainsKey(0)) {
-                    eta_coef_table.Add(0, new BesselYEtaTable(0));
+            if (!xi_coef_table.TryGetValue(0, out BesselYXiTable xi)) {
+                if (!eta_coef_table.TryGetValue(0, out BesselYEtaTable eta)) {
+                    eta = new BesselYEtaTable(0);
+                    eta_coef_table.Add(0, eta);
                 }
 
-                xi_coef_table.Add(0, new BesselYXiTable(0, eta_coef_table[0]));
+                xi = new BesselYXiTable(0, eta);
+                xi_coef_table.Add(0, xi);
             }
-
-            BesselYXiTable xi = xi_coef_table[0];
 
             Complex f0 = 1e-256, f1 = 0d, lambda = 0d;
             Complex sx = 0d;
@@ -510,17 +510,15 @@ namespace DDoubleComplexBessel {
         }
 
         private static Complex BesselYNKernel(int n, Complex z, int m) {
-            if (!eta_coef_table.ContainsKey(0)) {
-                eta_coef_table.Add(0, new BesselYEtaTable(0));
+            if (!eta_coef_table.TryGetValue(0, out BesselYEtaTable eta)) {
+                eta = new BesselYEtaTable(0);
+                eta_coef_table.Add(0, eta);
             }
 
-            BesselYEtaTable eta = eta_coef_table[0];
-
-            if (!xi_coef_table.ContainsKey(0)) {
-                xi_coef_table.Add(0, new BesselYXiTable(0, eta));
+            if (!xi_coef_table.TryGetValue(0, out BesselYXiTable xi)) {
+                xi = new BesselYXiTable(0, eta);
+                xi_coef_table.Add(0, xi);
             }
-
-            BesselYXiTable xi = xi_coef_table[0];
 
             Complex f0 = 1e-256, f1 = 0d, lambda = 0d;
             Complex se = 0d, sx = 0d;

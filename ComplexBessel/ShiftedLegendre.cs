@@ -15,12 +15,10 @@ namespace ComplexBessel {
                 throw new ArgumentOutOfRangeException($"{nameof(n)},{nameof(k)}", $"{nameof(n)}>={nameof(k)}>=0");
             }
 
-            if (table.ContainsKey((n, k))) {
-                return table[(n, k)];
+            if (!table.TryGetValue((n, k), out BigInteger v)) {
+                v = -((n == k) ? (Table(n, k - 1) * 2 / n) : (Table(n - 1, k) * (n + k) / (n - k)));
+                table.Add((n, k), v);
             }
-
-            BigInteger v = -((n == k) ? (Table(n, k - 1) * 2 / n) : (Table(n - 1, k) * (n + k) / (n - k)));
-            table.Add((n, k), v);
 
             return v;
         }

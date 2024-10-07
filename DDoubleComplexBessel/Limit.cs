@@ -35,7 +35,6 @@ namespace DDoubleComplexBessel {
                 table.Add(nu, hankel);
             }
 
-
             (Complex c_even, Complex c_odd) = hankel.BesselJYCoef(z);
 
             Complex omega = hankel.Omega(z);
