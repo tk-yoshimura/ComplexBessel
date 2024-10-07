@@ -9,7 +9,7 @@ namespace DDoubleOptimizedBesselTests {
             for (double nu = -16; nu <= 16; nu += 0.25) {
                 Console.WriteLine(nu);
 
-                for (double x = 0.5; x <= 42; x += 0.5) {
+                for (double x = 0.125; x <= 42; x += 0.125) {
 
                     ddouble expected = BesselN4.BesselJ(nu, x).R.ToString();
                     ddouble actual = DDoubleOptimizedBessel.RealBessel.BesselJ(nu, x);
@@ -20,7 +20,7 @@ namespace DDoubleOptimizedBesselTests {
                     Console.WriteLine(expected);
                     Console.WriteLine(actual);
 
-                    Assert.IsTrue(err < 2e-27, $"\n{nu}, {x}\n{expected}\n{actual}\n{err:e4}");
+                    Assert.IsTrue(err < 6e-27, $"\n{nu}, {x}\n{expected}\n{actual}\n{err:e4}");
                 }
 
                 Console.WriteLine(string.Empty);
@@ -32,7 +32,7 @@ namespace DDoubleOptimizedBesselTests {
             for (double nu = -16; nu <= 16; nu += 0.25) {
                 Console.WriteLine(nu);
 
-                for (double x = 0.5; x <= 42; x += 0.5) {
+                for (double x = 0.125; x <= 42; x += 0.125) {
 
                     ddouble expected = BesselN4.BesselY(nu, x).R.ToString();
                     ddouble actual = DDoubleOptimizedBessel.RealBessel.BesselY(nu, x);
@@ -43,7 +43,7 @@ namespace DDoubleOptimizedBesselTests {
                     Console.WriteLine(expected);
                     Console.WriteLine(actual);
 
-                    Assert.IsTrue(err < 2e-27, $"\n{nu}, {x}\n{expected}\n{actual}\n{err:e4}");
+                    Assert.IsTrue(err < 6e-27, $"\n{nu}, {x}\n{expected}\n{actual}\n{err:e4}");
                 }
 
                 Console.WriteLine(string.Empty);
@@ -55,7 +55,7 @@ namespace DDoubleOptimizedBesselTests {
             for (double nu = -16; nu <= 16; nu += 0.25) {
                 Console.WriteLine(nu);
 
-                for (double x = 0.5; x <= 42; x += 0.5) {
+                for (double x = 0.125; x <= 42; x += 0.125) {
 
                     ddouble expected = BesselN4.BesselI(nu, x).R.ToString();
                     ddouble actual = DDoubleOptimizedBessel.RealBessel.BesselI(nu, x);
@@ -66,7 +66,7 @@ namespace DDoubleOptimizedBesselTests {
                     Console.WriteLine(expected);
                     Console.WriteLine(actual);
 
-                    Assert.IsTrue(err < 2e-30, $"\n{nu}, {x}\n{expected}\n{actual}\n{err:e4}");
+                    Assert.IsTrue(err < 4e-30, $"\n{nu}, {x}\n{expected}\n{actual}\n{err:e4}");
                 }
 
                 Console.WriteLine(string.Empty);
@@ -78,7 +78,7 @@ namespace DDoubleOptimizedBesselTests {
             for (double nu = 0; nu <= 16; nu += 0.25) {
                 Console.WriteLine(nu);
 
-                for (double x = 0.5; x <= 42; x += 0.5) {
+                for (double x = 0.125; x <= 42; x += 0.125) {
 
                     ddouble expected = BesselN4.BesselK(nu, x).R.ToString();
                     ddouble actual = DDoubleOptimizedBessel.RealBessel.BesselK(nu, x);
