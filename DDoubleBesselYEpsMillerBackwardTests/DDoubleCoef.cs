@@ -64,6 +64,31 @@ namespace DDoubleBesselYEpsMillerBackwardTests {
             return (eta0, xi1);
         }
 
+        public static (ddouble eta0, ddouble xi1) BesselYEta0Xi1EpsR2(ddouble alpha, ddouble x) {
+            const int N = 7;
+
+            ReadOnlyCollection<ddouble> eta0_coef = new(DDoubleCoef.eta0_coef.Reverse().ToArray());
+            ReadOnlyCollection<ddouble> xi1_coef = new(DDoubleCoef.xi1_coef.Reverse().ToArray());
+
+            ddouble lnx = ddouble.Log(x);
+
+            ddouble eta0 = 0d, xi1 = 0d;
+            for (int i = N, k = 0; i >= 0; i--) {
+                ddouble s = eta0_coef[k], t = xi1_coef[k];
+                k++;
+
+                for (int j = i; j >= 0; j--, k++) {
+                    s = eta0_coef[k] + lnx * s;
+                    t = xi1_coef[k] + lnx * t;
+                }
+
+                eta0 = s + alpha * eta0;
+                xi1 = t + alpha * xi1;
+            }
+
+            return (eta0, xi1);
+        }
+
         private static readonly ReadOnlyCollection<ddouble> eta0_coef = new([
             (-1, -4, 0x9726B4CE5E80F444uL, 0x04F9CB1EFBE82ECCuL),
             (+1, -1, 0xA2F9836E4E441529uL, 0xFC2757D1F534DDC0uL),
