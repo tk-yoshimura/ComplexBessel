@@ -19,7 +19,7 @@ namespace DDoubleBesselYEpsMillerBackwardTests {
         }
 
         public static (ddouble eta0, ddouble xi1) BesselYEta0Xi1Eps(ddouble alpha, ddouble x) {
-            ddouble lnx = ddouble.Log(x), g = ddouble.EulerGamma;
+            ddouble lnx = ddouble.Log(x);
 
             ddouble eta0, xi1;
 
