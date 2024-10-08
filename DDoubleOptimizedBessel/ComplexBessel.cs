@@ -1929,7 +1929,18 @@ namespace DDoubleOptimizedBessel {
 
                     for (int i = table.Count; i <= k; i++) {
                         if (alpha != 0d) {
-                            g = -g * (alpha + i - 1) * (ddouble.Ldexp(alpha, 1) + i - 1d) / (i * (i - alpha));
+                            if (ddouble.ILogB(alpha) >= BesselYEpsExponent) {
+                                g = -g * (alpha + i - 1) * (ddouble.Ldexp(alpha, 1) + i - 1d) / (i * (i - alpha));
+                            }
+                            else {
+                                ddouble c0 = checked(i * i - 2 * i + 1);
+                                ddouble c1 = checked(4 * i * i - 5 * i + 1);
+                                ddouble c2 = checked(6 * i * i - 5 * i + 1);
+
+                                ddouble v = alpha / i;
+
+                                g = -g * (c0 + v * (c1 + v * (c2 + v * (c2 + v * (c2 + v * (c2 + v * (c2 + v * (c2 + v * c2)))))))) / (i * i);
+                            }
 
                             ddouble eta = g * (alpha + 2 * i);
 
