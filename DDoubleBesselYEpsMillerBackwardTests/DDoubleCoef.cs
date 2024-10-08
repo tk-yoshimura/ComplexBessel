@@ -1,5 +1,4 @@
 ﻿using DoubleDouble;
-using MultiPrecision;
 using System.Collections.ObjectModel;
 
 namespace DDoubleBesselYEpsMillerBackwardTests {

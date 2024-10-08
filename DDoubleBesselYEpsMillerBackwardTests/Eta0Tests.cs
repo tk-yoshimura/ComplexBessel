@@ -9,14 +9,14 @@ namespace DDoubleBesselYEpsMillerBackwardTests {
         public void AlphaPlusExpM10Test() {
             double eps = double.ScaleB(1, -10);
 
-            for (double x = 1; x <= 64; x += 0.5) { 
+            for (double x = 1; x <= 64; x += 0.5) {
                 ddouble eta0_eps = DDoubleCoef.BesselYEta0Xi1Eps(eps, x).eta0;
                 ddouble eta0_raw = DDoubleCoef.BesselYEta0Xi1(eps, x).eta0;
                 ddouble eta0_mp = MPCoef<Pow2.N16>.BesselYEta0Xi1(eps, x).eta0.ToString();
 
                 ddouble err_eps = ddouble.Abs((eta0_eps - eta0_mp) / eta0_mp);
                 ddouble err_raw = ddouble.Abs((eta0_raw - eta0_mp) / eta0_mp);
-                                
+
                 Console.WriteLine(x);
 
                 Console.WriteLine($"exp: {eta0_mp}");
@@ -34,14 +34,14 @@ namespace DDoubleBesselYEpsMillerBackwardTests {
         public void AlphaPlusExpM12Test() {
             double eps = double.ScaleB(1, -12);
 
-            for (double x = 1; x <= 64; x += 0.5) { 
+            for (double x = 1; x <= 64; x += 0.5) {
                 ddouble eta0_eps = DDoubleCoef.BesselYEta0Xi1Eps(eps, x).eta0;
                 ddouble eta0_raw = DDoubleCoef.BesselYEta0Xi1(eps, x).eta0;
                 ddouble eta0_mp = MPCoef<Pow2.N16>.BesselYEta0Xi1(eps, x).eta0.ToString();
 
                 ddouble err_eps = ddouble.Abs((eta0_eps - eta0_mp) / eta0_mp);
                 ddouble err_raw = ddouble.Abs((eta0_raw - eta0_mp) / eta0_mp);
-                                
+
                 Console.WriteLine(x);
 
                 Console.WriteLine($"exp: {eta0_mp}");
@@ -59,14 +59,14 @@ namespace DDoubleBesselYEpsMillerBackwardTests {
         public void AlphaPlusExpM16Test() {
             double eps = double.ScaleB(1, -16);
 
-            for (double x = 1; x <= 64; x += 0.5) { 
+            for (double x = 1; x <= 64; x += 0.5) {
                 ddouble eta0_eps = DDoubleCoef.BesselYEta0Xi1Eps(eps, x).eta0;
                 ddouble eta0_raw = DDoubleCoef.BesselYEta0Xi1(eps, x).eta0;
                 ddouble eta0_mp = MPCoef<Pow2.N16>.BesselYEta0Xi1(eps, x).eta0.ToString();
 
                 ddouble err_eps = ddouble.Abs((eta0_eps - eta0_mp) / eta0_mp);
                 ddouble err_raw = ddouble.Abs((eta0_raw - eta0_mp) / eta0_mp);
-                                
+
                 Console.WriteLine(x);
 
                 Console.WriteLine($"exp: {eta0_mp}");
@@ -84,14 +84,14 @@ namespace DDoubleBesselYEpsMillerBackwardTests {
         public void AlphaPlusExpM20Test() {
             double eps = double.ScaleB(1, -20);
 
-            for (double x = 1; x <= 64; x += 0.5) { 
+            for (double x = 1; x <= 64; x += 0.5) {
                 ddouble eta0_eps = DDoubleCoef.BesselYEta0Xi1Eps(eps, x).eta0;
                 ddouble eta0_raw = DDoubleCoef.BesselYEta0Xi1(eps, x).eta0;
                 ddouble eta0_mp = MPCoef<Pow2.N16>.BesselYEta0Xi1(eps, x).eta0.ToString();
 
                 ddouble err_eps = ddouble.Abs((eta0_eps - eta0_mp) / eta0_mp);
                 ddouble err_raw = ddouble.Abs((eta0_raw - eta0_mp) / eta0_mp);
-                                
+
                 Console.WriteLine(x);
 
                 Console.WriteLine($"exp: {eta0_mp}");
@@ -109,14 +109,14 @@ namespace DDoubleBesselYEpsMillerBackwardTests {
         public void AlphaPlusExpM24Test() {
             double eps = double.ScaleB(1, -24);
 
-            for (double x = 1; x <= 64; x += 0.5) { 
+            for (double x = 1; x <= 64; x += 0.5) {
                 ddouble eta0_eps = DDoubleCoef.BesselYEta0Xi1Eps(eps, x).eta0;
                 ddouble eta0_raw = DDoubleCoef.BesselYEta0Xi1(eps, x).eta0;
                 ddouble eta0_mp = MPCoef<Pow2.N16>.BesselYEta0Xi1(eps, x).eta0.ToString();
 
                 ddouble err_eps = ddouble.Abs((eta0_eps - eta0_mp) / eta0_mp);
                 ddouble err_raw = ddouble.Abs((eta0_raw - eta0_mp) / eta0_mp);
-                                
+
                 Console.WriteLine(x);
 
                 Console.WriteLine($"exp: {eta0_mp}");
@@ -134,14 +134,14 @@ namespace DDoubleBesselYEpsMillerBackwardTests {
         public void AlphaPlusExpM28Test() {
             double eps = double.ScaleB(1, -28);
 
-            for (double x = 1; x <= 64; x += 0.5) { 
+            for (double x = 1; x <= 64; x += 0.5) {
                 ddouble eta0_eps = DDoubleCoef.BesselYEta0Xi1Eps(eps, x).eta0;
                 ddouble eta0_raw = DDoubleCoef.BesselYEta0Xi1(eps, x).eta0;
                 ddouble eta0_mp = MPCoef<Pow2.N16>.BesselYEta0Xi1(eps, x).eta0.ToString();
 
                 ddouble err_eps = ddouble.Abs((eta0_eps - eta0_mp) / eta0_mp);
                 ddouble err_raw = ddouble.Abs((eta0_raw - eta0_mp) / eta0_mp);
-                                
+
                 Console.WriteLine(x);
 
                 Console.WriteLine($"exp: {eta0_mp}");
@@ -159,14 +159,14 @@ namespace DDoubleBesselYEpsMillerBackwardTests {
         public void AlphaPlusExpM32Test() {
             double eps = double.ScaleB(1, -32);
 
-            for (double x = 1; x <= 64; x += 0.5) { 
+            for (double x = 1; x <= 64; x += 0.5) {
                 ddouble eta0_eps = DDoubleCoef.BesselYEta0Xi1Eps(eps, x).eta0;
                 ddouble eta0_raw = DDoubleCoef.BesselYEta0Xi1(eps, x).eta0;
                 ddouble eta0_mp = MPCoef<Pow2.N16>.BesselYEta0Xi1(eps, x).eta0.ToString();
 
                 ddouble err_eps = ddouble.Abs((eta0_eps - eta0_mp) / eta0_mp);
                 ddouble err_raw = ddouble.Abs((eta0_raw - eta0_mp) / eta0_mp);
-                                
+
                 Console.WriteLine(x);
 
                 Console.WriteLine($"exp: {eta0_mp}");
@@ -184,14 +184,14 @@ namespace DDoubleBesselYEpsMillerBackwardTests {
         public void AlphaMinusExpM10Test() {
             double eps = -double.ScaleB(1, -10);
 
-            for (double x = 1; x <= 64; x += 0.5) { 
+            for (double x = 1; x <= 64; x += 0.5) {
                 ddouble eta0_eps = DDoubleCoef.BesselYEta0Xi1Eps(eps, x).eta0;
                 ddouble eta0_raw = DDoubleCoef.BesselYEta0Xi1(eps, x).eta0;
                 ddouble eta0_mp = MPCoef<Pow2.N16>.BesselYEta0Xi1(eps, x).eta0.ToString();
 
                 ddouble err_eps = ddouble.Abs((eta0_eps - eta0_mp) / eta0_mp);
                 ddouble err_raw = ddouble.Abs((eta0_raw - eta0_mp) / eta0_mp);
-                                
+
                 Console.WriteLine(x);
 
                 Console.WriteLine($"exp: {eta0_mp}");
@@ -209,14 +209,14 @@ namespace DDoubleBesselYEpsMillerBackwardTests {
         public void AlphaMinusExpM12Test() {
             double eps = -double.ScaleB(1, -12);
 
-            for (double x = 1; x <= 64; x += 0.5) { 
+            for (double x = 1; x <= 64; x += 0.5) {
                 ddouble eta0_eps = DDoubleCoef.BesselYEta0Xi1Eps(eps, x).eta0;
                 ddouble eta0_raw = DDoubleCoef.BesselYEta0Xi1(eps, x).eta0;
                 ddouble eta0_mp = MPCoef<Pow2.N16>.BesselYEta0Xi1(eps, x).eta0.ToString();
 
                 ddouble err_eps = ddouble.Abs((eta0_eps - eta0_mp) / eta0_mp);
                 ddouble err_raw = ddouble.Abs((eta0_raw - eta0_mp) / eta0_mp);
-                                
+
                 Console.WriteLine(x);
 
                 Console.WriteLine($"exp: {eta0_mp}");
@@ -234,14 +234,14 @@ namespace DDoubleBesselYEpsMillerBackwardTests {
         public void AlphaMinusExpM16Test() {
             double eps = -double.ScaleB(1, -16);
 
-            for (double x = 1; x <= 64; x += 0.5) { 
+            for (double x = 1; x <= 64; x += 0.5) {
                 ddouble eta0_eps = DDoubleCoef.BesselYEta0Xi1Eps(eps, x).eta0;
                 ddouble eta0_raw = DDoubleCoef.BesselYEta0Xi1(eps, x).eta0;
                 ddouble eta0_mp = MPCoef<Pow2.N16>.BesselYEta0Xi1(eps, x).eta0.ToString();
 
                 ddouble err_eps = ddouble.Abs((eta0_eps - eta0_mp) / eta0_mp);
                 ddouble err_raw = ddouble.Abs((eta0_raw - eta0_mp) / eta0_mp);
-                                
+
                 Console.WriteLine(x);
 
                 Console.WriteLine($"exp: {eta0_mp}");
@@ -259,14 +259,14 @@ namespace DDoubleBesselYEpsMillerBackwardTests {
         public void AlphaMinusExpM20Test() {
             double eps = -double.ScaleB(1, -20);
 
-            for (double x = 1; x <= 64; x += 0.5) { 
+            for (double x = 1; x <= 64; x += 0.5) {
                 ddouble eta0_eps = DDoubleCoef.BesselYEta0Xi1Eps(eps, x).eta0;
                 ddouble eta0_raw = DDoubleCoef.BesselYEta0Xi1(eps, x).eta0;
                 ddouble eta0_mp = MPCoef<Pow2.N16>.BesselYEta0Xi1(eps, x).eta0.ToString();
 
                 ddouble err_eps = ddouble.Abs((eta0_eps - eta0_mp) / eta0_mp);
                 ddouble err_raw = ddouble.Abs((eta0_raw - eta0_mp) / eta0_mp);
-                                
+
                 Console.WriteLine(x);
 
                 Console.WriteLine($"exp: {eta0_mp}");
@@ -284,14 +284,14 @@ namespace DDoubleBesselYEpsMillerBackwardTests {
         public void AlphaMinusExpM24Test() {
             double eps = -double.ScaleB(1, -24);
 
-            for (double x = 1; x <= 64; x += 0.5) { 
+            for (double x = 1; x <= 64; x += 0.5) {
                 ddouble eta0_eps = DDoubleCoef.BesselYEta0Xi1Eps(eps, x).eta0;
                 ddouble eta0_raw = DDoubleCoef.BesselYEta0Xi1(eps, x).eta0;
                 ddouble eta0_mp = MPCoef<Pow2.N16>.BesselYEta0Xi1(eps, x).eta0.ToString();
 
                 ddouble err_eps = ddouble.Abs((eta0_eps - eta0_mp) / eta0_mp);
                 ddouble err_raw = ddouble.Abs((eta0_raw - eta0_mp) / eta0_mp);
-                                
+
                 Console.WriteLine(x);
 
                 Console.WriteLine($"exp: {eta0_mp}");
@@ -309,14 +309,14 @@ namespace DDoubleBesselYEpsMillerBackwardTests {
         public void AlphaMinusExpM28Test() {
             double eps = -double.ScaleB(1, -28);
 
-            for (double x = 1; x <= 64; x += 0.5) { 
+            for (double x = 1; x <= 64; x += 0.5) {
                 ddouble eta0_eps = DDoubleCoef.BesselYEta0Xi1Eps(eps, x).eta0;
                 ddouble eta0_raw = DDoubleCoef.BesselYEta0Xi1(eps, x).eta0;
                 ddouble eta0_mp = MPCoef<Pow2.N16>.BesselYEta0Xi1(eps, x).eta0.ToString();
 
                 ddouble err_eps = ddouble.Abs((eta0_eps - eta0_mp) / eta0_mp);
                 ddouble err_raw = ddouble.Abs((eta0_raw - eta0_mp) / eta0_mp);
-                                
+
                 Console.WriteLine(x);
 
                 Console.WriteLine($"exp: {eta0_mp}");
@@ -334,14 +334,14 @@ namespace DDoubleBesselYEpsMillerBackwardTests {
         public void AlphaMinusExpM32Test() {
             double eps = -double.ScaleB(1, -32);
 
-            for (double x = 1; x <= 64; x += 0.5) { 
+            for (double x = 1; x <= 64; x += 0.5) {
                 ddouble eta0_eps = DDoubleCoef.BesselYEta0Xi1Eps(eps, x).eta0;
                 ddouble eta0_raw = DDoubleCoef.BesselYEta0Xi1(eps, x).eta0;
                 ddouble eta0_mp = MPCoef<Pow2.N16>.BesselYEta0Xi1(eps, x).eta0.ToString();
 
                 ddouble err_eps = ddouble.Abs((eta0_eps - eta0_mp) / eta0_mp);
                 ddouble err_raw = ddouble.Abs((eta0_raw - eta0_mp) / eta0_mp);
-                                
+
                 Console.WriteLine(x);
 
                 Console.WriteLine($"exp: {eta0_mp}");
@@ -358,7 +358,7 @@ namespace DDoubleBesselYEpsMillerBackwardTests {
         [TestMethod]
         public void AccuracyTest() {
 
-            for (int exp = -32; exp <= -10; exp++){
+            for (int exp = -32; exp <= -10; exp++) {
                 double eps = -double.ScaleB(1, exp);
 
                 Console.WriteLine($"eps: 2^{eps}");
@@ -413,7 +413,7 @@ namespace DDoubleBesselYEpsMillerBackwardTests {
 
         [TestMethod]
         public void R2Test() {
-            for (int exp = -32; exp <= -10; exp++){
+            for (int exp = -32; exp <= -10; exp++) {
                 double eps = -double.ScaleB(1, exp);
 
                 Console.WriteLine($"eps: 2^{eps}");

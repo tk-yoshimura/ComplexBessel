@@ -1,6 +1,4 @@
 ﻿using DoubleDouble;
-using MultiPrecision;
-using MultiPrecisionComplex;
 using System.Diagnostics;
 
 namespace ComplexBesselSandbox {
@@ -8,13 +6,13 @@ namespace ComplexBesselSandbox {
         static void Main() {
             for (double alpha = -0.5; alpha <= 0.5; alpha += 1d / 64) {
                 ddouble c0 = BesselYKernel(2 + alpha, 2);
-                                
+
                 Console.WriteLine($"{alpha},{c0}");
             }
 
             for (double alpha = -MillerBwdBesselYEps * 8; alpha <= MillerBwdBesselYEps * 8; alpha += MillerBwdBesselYEps / 8) {
                 ddouble c0 = BesselYKernel(2 + alpha, 2);
-                                
+
                 Console.WriteLine($"{alpha},{c0}");
             }
 

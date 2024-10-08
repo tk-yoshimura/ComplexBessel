@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 
 namespace DDoubleOptimizedBessel {
-    public static class MillerBackwardCoef    {
+    public static class MillerBackwardCoef {
         public static readonly ReadOnlyCollection<ddouble> Eta0 = new([
             (-1, -4, 0x9726B4CE5E80F444uL, 0x04F9CB1EFBE82ECCuL),
             (+1, -1, 0xA2F9836E4E441529uL, 0xFC2757D1F534DDC0uL),

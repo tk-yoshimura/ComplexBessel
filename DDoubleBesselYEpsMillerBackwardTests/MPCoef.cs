@@ -2,7 +2,7 @@
 
 namespace DDoubleBesselYEpsMillerBackwardTests {
     public static class MPCoef<N> where N : struct, IConstant {
-        public static (MultiPrecision<N> eta0, MultiPrecision<N> xi1) BesselYEta0Xi1(MultiPrecision<N> alpha, MultiPrecision<N> x) { 
+        public static (MultiPrecision<N> eta0, MultiPrecision<N> xi1) BesselYEta0Xi1(MultiPrecision<N> alpha, MultiPrecision<N> x) {
             MultiPrecision<N> s = MultiPrecision<N>.Pow(MultiPrecision<N>.Ldexp(1 / x, 1), alpha), sqs = s * s;
 
             MultiPrecision<N> rcot = 1d / MultiPrecision<N>.TanPI(alpha), rgamma = MultiPrecision<N>.Gamma(1d + alpha), rsqgamma = rgamma * rgamma;
