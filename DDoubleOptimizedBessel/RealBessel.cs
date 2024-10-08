@@ -1131,11 +1131,13 @@ namespace DDoubleOptimizedBessel {
         }
 
         public class MillerBackward {
-            public static readonly double MillerBwdBesselYEps = double.ScaleB(1, -30);
+            public static readonly int BesselYEpsExponent = -12;
 
             private static readonly Dictionary<ddouble, BesselJPhiTable> phi_coef_table = [];
             private static readonly Dictionary<ddouble, BesselYEtaTable> eta_coef_table = [];
             private static readonly Dictionary<ddouble, BesselYXiTable> xi_coef_table = [];
+            private static readonly ReadOnlyCollection<ddouble> eta0_coef = new(MillerBackwardCoef.Eta0.Reverse().ToArray());
+            private static readonly ReadOnlyCollection<ddouble> xi1_coef = new(MillerBackwardCoef.Xi1.Reverse().ToArray());
 
             public static ddouble BesselJ(int n, ddouble x) {
                 Debug.Assert(ddouble.IsPositive(x));
@@ -1402,14 +1404,11 @@ namespace DDoubleOptimizedBessel {
                 ddouble r = ddouble.Ldexp(ddouble.RcpPI * sqs, 1);
                 ddouble p = sqs * rsqgamma * ddouble.RcpPI;
 
-                ddouble eta0 = ddouble.Abs(alpha) > MillerBwdBesselYEps
-                    ? rcot - p / alpha
-                    : BesselYEta0Eps(alpha, x);
-
                 ddouble xi0 = -ddouble.Ldexp(v, 1) * p;
-                ddouble xi1 = ddouble.Abs(alpha) > MillerBwdBesselYEps
-                    ? rcot + p * (alpha * (alpha + 1d) + 1d) / (alpha * (alpha - 1d))
-                    : BesselYXi1Eps(alpha, x);
+
+                (ddouble eta0, ddouble xi1) = ddouble.ILogB(alpha) >= BesselYEpsExponent
+                    ? (rcot - p / alpha, rcot + p * (alpha * (alpha + 1d) + 1d) / (alpha * (alpha - 1d)))
+                    : BesselYEta0Xi1Eps(alpha, x);
 
                 ddouble y0 = r * se + eta0 * f0;
                 ddouble y1 = r * (3d * alpha * v * sxe + sxo) + xi0 * f0 + xi1 * f1;
@@ -1444,74 +1443,26 @@ namespace DDoubleOptimizedBessel {
                 }
             }
 
-            private static ddouble BesselYEta0Eps(ddouble alpha, ddouble x) {
-                ddouble lnx = ddouble.Log(x), lnhalfx = ddouble.Log(ddouble.Ldexp(x, -1));
-                ddouble pi = ddouble.PI, sqpi = pi * pi;
-                ddouble ln2 = ddouble.Ln2, sqln2 = ln2 * ln2, cbln2 = sqln2 * ln2, qdln2 = sqln2 * sqln2;
-                ddouble g = ddouble.EulerGamma;
+            private static (ddouble eta0, ddouble xi1) BesselYEta0Xi1Eps(ddouble alpha, ddouble x) {
+                const int N = 7;
 
-                ddouble r0 = lnhalfx + g;
-                ddouble r1 =
-                    (-sqln2 + lnx * (ln2 * 2d - lnx)) * 4d
-                    - sqpi
-                    - g * (lnhalfx * 2d + g) * 4d;
-                ddouble r2 =
-                    (-cbln2 + lnx * (sqln2 * 3d + lnx * (ln2 * -3d + lnx))) * 4d
-                    + ddouble.Zeta3 * 2d
-                    + sqpi * (lnhalfx + g)
-                    + g * ((sqln2 + lnx * (ln2 * -2d + lnx)) * 3d + g * (lnhalfx * 3d + g)) * 4d;
-                ddouble r3 =
-                    (-qdln2 + lnx * (cbln2 * 4d + lnx * (sqln2 * -6d + lnx * (ln2 * 4d - lnx)))) * 16d
-                    - ddouble.Zeta3 * (lnhalfx + g) * 32d
-                    - sqpi * ((sqln2 + lnx * (-ln2 * 2d + lnx) + g * (lnhalfx * 2d + g)) * 8d + sqpi)
-                    + g * ((cbln2 + lnx * (sqln2 * -3d + lnx * (ln2 * 3d - lnx))) * 4d
-                    + g * ((sqln2 + lnx * (ln2 * -2d + lnx)) * -6d
-                    + g * (lnhalfx * -4d
-                    - g))) * 16d;
+                ddouble lnx = ddouble.Log(x);
 
-                ddouble eta0 = (r0 * 48d + alpha * (r1 * 12d + alpha * (r2 * 8d + alpha * r3))) / (24d * ddouble.PI);
+                ddouble eta0 = 0d, xi1 = 0d;
+                for (int i = N, k = 0; i >= 0; i--) {
+                    ddouble s = eta0_coef[k], t = xi1_coef[k];
+                    k++;
 
-                return eta0;
-            }
+                    for (int j = i; j >= 0; j--, k++) {
+                        s = eta0_coef[k] + lnx * s;
+                        t = xi1_coef[k] + lnx * t;
+                    }
 
-            private static ddouble BesselYXi1Eps(ddouble alpha, ddouble x) {
-                ddouble lnx = ddouble.Log(x), lnhalfx = ddouble.Log(ddouble.Ldexp(x, -1)), lnxm1 = lnx - 1, lnhalfxm1 = lnhalfx - 1;
-                ddouble pi = ddouble.PI, sqpi = pi * pi;
-                ddouble ln2 = ddouble.Ln2, sqln2 = ln2 * ln2, cbln2 = sqln2 * ln2, qdln2 = sqln2 * sqln2;
-                ddouble g = ddouble.EulerGamma;
+                    eta0 = s + alpha * eta0;
+                    xi1 = t + alpha * xi1;
+                }
 
-                ddouble r0 = lnhalfxm1 + g;
-                ddouble r1 =
-                    (-sqln2 + ln2 * lnxm1 * 2d + lnx * (2 - lnx)) * 4d
-                    - sqpi
-                    - g * (lnhalfxm1 * 2d + g) * 4d
-                    - 6d;
-                ddouble r2 =
-                    -cbln2 * 4d + sqln2 * lnxm1 * 12d + lnx * (18d + lnx * (-12d + lnx * 4d))
-                    + ln2 * (lnx * (2d - lnx) * 12d - 18d)
-                    + ddouble.Zeta3 * 2d
-                    + sqpi * (lnhalfxm1 + g)
-                    + g * ((sqln2 - ln2 * lnxm1 * 2d + lnx * (-2d + lnx)) * 12d + 18d
-                    + g * (lnhalfxm1 * 12d
-                    + g * 4d))
-                    - 9d;
-                ddouble r3 =
-                    -qdln2 * 16d
-                    + cbln2 * lnxm1 * 64d
-                    + sqln2 * (lnx * (2d - lnx) * 96d - 144d)
-                    + ln2 * (lnx * (9d + lnx * (-6d + lnx * 2d)) * 32d - 144d)
-                    + lnx * (9d + lnx * (-9d + lnx * (4d - lnx))) * 16d
-                    + ddouble.Zeta3 * (lnhalfxm1 + g) * -32d
-                    + sqpi * ((-sqln2 + ln2 * lnxm1 * 2d + lnx * (2d - lnx) - g * (lnhalfxm1 * 2d + g)) * 8d - 12d - sqpi)
-                    + g * ((cbln2 - sqln2 * lnxm1 * 3d) * 64d + ln2 * (lnx * (-2d + lnx) * 192d + 288d) + lnx * (-9d + lnx * (6d - lnx * 2d)) * 32d + 144d
-                    + g * ((-sqln2 + ln2 * lnxm1 * 2d + lnx * (2d - lnx)) * 96d - 144d
-                    + g * (lnhalfxm1 * -64d
-                    - g * 16d)))
-                    - 72d;
-
-                ddouble xi1 = (r0 * 48d + alpha * (r1 * 12d + alpha * (r2 * 8d + alpha * r3))) / (24d * ddouble.PI);
-
-                return xi1;
+                return (eta0, xi1);
             }
 
             private static ddouble BesselY0Kernel(ddouble x, int m) {

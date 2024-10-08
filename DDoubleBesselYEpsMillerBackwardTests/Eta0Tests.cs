@@ -410,5 +410,30 @@ namespace DDoubleBesselYEpsMillerBackwardTests {
                 }
             }
         }
+
+        [TestMethod]
+        public void R2Test() {
+            for (int exp = -32; exp <= -10; exp++){
+                double eps = -double.ScaleB(1, exp);
+
+                Console.WriteLine($"eps: 2^{eps}");
+
+                for (double x = 1; x <= 64; x += 0.5) {
+                    ddouble eta0_eps = DDoubleCoef.BesselYEta0Xi1Eps(eps, x).eta0;
+                    ddouble eta0_r2 = DDoubleCoef.BesselYEta0Xi1EpsR2(eps, x).eta0;
+
+                    Assert.AreEqual(eta0_eps, eta0_r2);
+                }
+
+                Console.WriteLine($"eps: -2^{eps}");
+
+                for (double x = 1; x <= 64; x += 0.5) {
+                    ddouble eta0_eps = DDoubleCoef.BesselYEta0Xi1Eps(eps, x).eta0;
+                    ddouble eta0_r2 = DDoubleCoef.BesselYEta0Xi1EpsR2(eps, x).eta0;
+
+                    Assert.AreEqual(eta0_eps, eta0_r2);
+                }
+            }
+        }
     }
 }
