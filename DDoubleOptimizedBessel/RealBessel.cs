@@ -1876,21 +1876,6 @@ namespace DDoubleOptimizedBessel {
                 return y;
             }
 
-            public static ddouble BesselYMillerBackward(ddouble nu, ddouble x) {
-                int n = (int)ddouble.Round(nu);
-                ddouble alpha = nu - n;
-
-                ddouble y0 = MillerBackward.BesselY(n, x);
-                ddouble y1 = MillerBackward.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold, x);
-                ddouble y2 = MillerBackward.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5d, x);
-                ddouble y3 = MillerBackward.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 2d, x);
-
-                ddouble t = ddouble.Abs(alpha) / InterpolationThreshold;
-                ddouble y = Interpolate(t, y0, y1, y2, y3);
-
-                return y;
-            }
-
             public static ddouble BesselKPowerSeries(ddouble nu, ddouble x, bool scale = false) {
                 int n = (int)ddouble.Round(nu);
                 ddouble alpha = nu - n;

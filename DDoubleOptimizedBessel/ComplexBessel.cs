@@ -65,12 +65,7 @@ namespace DDoubleOptimizedBessel {
                 }
             }
             else if (z.I <= MillerBackwardThreshold) {
-                if (NearlyInteger(nu, out _) || (ddouble.Ceiling(nu) - nu) >= InterpolationThreshold) {
-                    return MillerBackward.BesselY(nu, z);
-                }
-                else {
-                    return CubicInterpolate.BesselYMillerBackward(nu, z);
-                }
+                return MillerBackward.BesselY(nu, z);
             }
             else {
                 Complex c = (SinCosPICache.CosPI(nu / 2d), SinCosPICache.SinPI(nu / 2d));
@@ -156,9 +151,7 @@ namespace DDoubleOptimizedBessel {
                     ? ((NearlyInteger(nu, out _) || ddouble.Abs(ddouble.Round(nu) - nu) >= InterpolationThreshold)
                         ? PowerSeries.BesselY(nu, (z.I, z.R)) : CubicInterpolate.BesselYPowerSeries(nu, (z.I, z.R))
                     )
-                    : ((NearlyInteger(nu, out _) || ddouble.Abs(ddouble.Ceiling(nu) - nu) >= InterpolationThreshold)
-                        ? MillerBackward.BesselY(nu, (z.I, z.R)) : CubicInterpolate.BesselYMillerBackward(nu, (z.I, z.R))
-                    );
+                    : MillerBackward.BesselY(nu, (z.I, z.R));
 
                 Complex y = c * (-Complex.ImaginaryOne * c * bi - by.Conj) * ddouble.PI / 2d;
 
@@ -1196,12 +1189,14 @@ namespace DDoubleOptimizedBessel {
         }
 
         public class MillerBackward {
-            public static readonly double MillerBwdBesselYEps = double.ScaleB(1, -30);
+            public static readonly int BesselYEpsExponent = -12;
 
             private static readonly Dictionary<ddouble, BesselJPhiTable> phi_coef_table = [];
             private static readonly Dictionary<ddouble, BesselIPsiTable> psi_coef_table = [];
             private static readonly Dictionary<ddouble, BesselYEtaTable> eta_coef_table = [];
             private static readonly Dictionary<ddouble, BesselYXiTable> xi_coef_table = [];
+            private static readonly ReadOnlyCollection<ddouble> eta0_coef = new(MillerBackwardCoef.Eta0.Reverse().ToArray());
+            private static readonly ReadOnlyCollection<ddouble> xi1_coef = new(MillerBackwardCoef.Xi1.Reverse().ToArray());
 
             public static Complex BesselJ(int n, Complex z) {
                 Debug.Assert(ddouble.IsPositive(z.R));
@@ -1462,7 +1457,7 @@ namespace DDoubleOptimizedBessel {
             }
 
             private static Complex BesselYKernel(ddouble nu, Complex z, int m) {
-                int n = (int)ddouble.Floor(nu);
+                int n = (int)ddouble.Round(nu);
                 ddouble alpha = nu - n;
 
                 Debug.Assert(m >= 2 && (m & 1) == 0 && n < m);
@@ -1507,14 +1502,11 @@ namespace DDoubleOptimizedBessel {
                 Complex r = Complex.Ldexp(ddouble.RcpPI * sqs, 1);
                 Complex p = sqs * rsqgamma * ddouble.RcpPI;
 
-                Complex eta0 = ddouble.Abs(alpha) > MillerBwdBesselYEps
-                    ? rcot - p / alpha
-                    : BesselYEta0Eps(alpha, z);
-
                 Complex xi0 = -Complex.Ldexp(v, 1) * p;
-                Complex xi1 = ddouble.Abs(alpha) > MillerBwdBesselYEps
-                    ? rcot + p * (alpha * (alpha + 1d) + 1d) / (alpha * (alpha - 1d))
-                    : BesselYXi1Eps(alpha, z);
+
+                (Complex eta0, Complex xi1) = ddouble.ILogB(alpha) >= BesselYEpsExponent
+                    ? (rcot - p / alpha, rcot + p * (alpha * (alpha + 1d) + 1d) / (alpha * (alpha - 1d)))
+                    : BesselYEta0Xi1Eps(alpha, z);
 
                 Complex y0 = r * se + eta0 * f0;
                 Complex y1 = r * (3d * alpha * v * sxe + sxo) + xi0 * f0 + xi1 * f1;
@@ -1549,74 +1541,26 @@ namespace DDoubleOptimizedBessel {
                 }
             }
 
-            private static Complex BesselYEta0Eps(ddouble alpha, Complex z) {
-                Complex lnz = Complex.Log(z), lnhalfz = Complex.Log(Complex.Ldexp(z, -1));
-                ddouble pi = ddouble.PI, sqpi = pi * pi;
-                ddouble ln2 = ddouble.Ln2, sqln2 = ln2 * ln2, cbln2 = sqln2 * ln2, qdln2 = sqln2 * sqln2;
-                ddouble g = ddouble.EulerGamma;
+            private static (Complex eta0, Complex xi1) BesselYEta0Xi1Eps(ddouble alpha, Complex z) {
+                const int N = 7;
 
-                Complex r0 = lnhalfz + g;
-                Complex r1 =
-                    (-sqln2 + lnz * (ln2 * 2d - lnz)) * 4d
-                    - sqpi
-                    - g * (lnhalfz * 2d + g) * 4d;
-                Complex r2 =
-                    (-cbln2 + lnz * (sqln2 * 3d + lnz * (ln2 * -3d + lnz))) * 4d
-                    + ddouble.Zeta3 * 2d
-                    + sqpi * (lnhalfz + g)
-                    + g * ((sqln2 + lnz * (ln2 * -2d + lnz)) * 3d + g * (lnhalfz * 3d + g)) * 4d;
-                Complex r3 =
-                    (-qdln2 + lnz * (cbln2 * 4d + lnz * (sqln2 * -6d + lnz * (ln2 * 4d - lnz)))) * 16d
-                    - ddouble.Zeta3 * (lnhalfz + g) * 32d
-                    - sqpi * ((sqln2 + lnz * (-ln2 * 2d + lnz) + g * (lnhalfz * 2d + g)) * 8d + sqpi)
-                    + g * ((cbln2 + lnz * (sqln2 * -3d + lnz * (ln2 * 3d - lnz))) * 4d
-                    + g * ((sqln2 + lnz * (ln2 * -2d + lnz)) * -6d
-                    + g * (lnhalfz * -4d
-                    - g))) * 16d;
+                Complex lnz = Complex.Log(z);
 
-                Complex eta0 = (r0 * 48d + alpha * (r1 * 12d + alpha * (r2 * 8d + alpha * r3))) / (24d * ddouble.PI);
+                Complex eta0 = 0d, xi1 = 0d;
+                for (int i = N, k = 0; i >= 0; i--) {
+                    Complex s = eta0_coef[k], t = xi1_coef[k];
+                    k++;
 
-                return eta0;
-            }
+                    for (int j = i; j >= 0; j--, k++) {
+                        s = eta0_coef[k] + lnz * s;
+                        t = xi1_coef[k] + lnz * t;
+                    }
 
-            private static Complex BesselYXi1Eps(ddouble alpha, Complex z) {
-                Complex lnz = Complex.Log(z), lnhalfz = Complex.Log(Complex.Ldexp(z, -1)), lnzm1 = lnz - 1, lnhalfzm1 = lnhalfz - 1;
-                ddouble pi = ddouble.PI, sqpi = pi * pi;
-                ddouble ln2 = ddouble.Ln2, sqln2 = ln2 * ln2, cbln2 = sqln2 * ln2, qdln2 = sqln2 * sqln2;
-                ddouble g = ddouble.EulerGamma;
+                    eta0 = s + alpha * eta0;
+                    xi1 = t + alpha * xi1;
+                }
 
-                Complex r0 = lnhalfzm1 + g;
-                Complex r1 =
-                    (-sqln2 + ln2 * lnzm1 * 2d + lnz * (2 - lnz)) * 4d
-                    - sqpi
-                    - g * (lnhalfzm1 * 2d + g) * 4d
-                    - 6d;
-                Complex r2 =
-                    -cbln2 * 4d + sqln2 * lnzm1 * 12d + lnz * (18d + lnz * (-12d + lnz * 4d))
-                    + ln2 * (lnz * (2d - lnz) * 12d - 18d)
-                    + ddouble.Zeta3 * 2d
-                    + sqpi * (lnhalfzm1 + g)
-                    + g * ((sqln2 - ln2 * lnzm1 * 2d + lnz * (-2d + lnz)) * 12d + 18d
-                    + g * (lnhalfzm1 * 12d
-                    + g * 4d))
-                    - 9d;
-                Complex r3 =
-                    -qdln2 * 16d
-                    + cbln2 * lnzm1 * 64d
-                    + sqln2 * (lnz * (2d - lnz) * 96d - 144d)
-                    + ln2 * (lnz * (9d + lnz * (-6d + lnz * 2d)) * 32d - 144d)
-                    + lnz * (9d + lnz * (-9d + lnz * (4d - lnz))) * 16d
-                    + ddouble.Zeta3 * (lnhalfzm1 + g) * -32d
-                    + sqpi * ((-sqln2 + ln2 * lnzm1 * 2d + lnz * (2d - lnz) - g * (lnhalfzm1 * 2d + g)) * 8d - 12d - sqpi)
-                    + g * ((cbln2 - sqln2 * lnzm1 * 3d) * 64d + ln2 * (lnz * (-2d + lnz) * 192d + 288d) + lnz * (-9d + lnz * (6d - lnz * 2d)) * 32d + 144d
-                    + g * ((-sqln2 + ln2 * lnzm1 * 2d + lnz * (2d - lnz)) * 96d - 144d
-                    + g * (lnhalfzm1 * -64d
-                    - g * 16d)))
-                    - 72d;
-
-                Complex xi1 = (r0 * 48d + alpha * (r1 * 12d + alpha * (r2 * 8d + alpha * r3))) / (24d * ddouble.PI);
-
-                return xi1;
+                return (eta0, xi1);
             }
 
             private static Complex BesselY0Kernel(Complex z, int m) {
@@ -1876,7 +1820,7 @@ namespace DDoubleOptimizedBessel {
                 private ddouble g;
 
                 public BesselJPhiTable(ddouble alpha) {
-                    Debug.Assert(alpha > 0d && alpha < 1d, nameof(alpha));
+                    Debug.Assert(alpha > -1d && alpha < 1d, nameof(alpha));
 
                     this.alpha = alpha;
 
@@ -1917,7 +1861,7 @@ namespace DDoubleOptimizedBessel {
                 private ddouble g;
 
                 public BesselIPsiTable(ddouble alpha) {
-                    Debug.Assert(alpha > 0d && alpha < 1d, nameof(alpha));
+                    Debug.Assert(alpha > -1d && alpha < 1d, nameof(alpha));
 
                     this.alpha = alpha;
 
@@ -1958,12 +1902,12 @@ namespace DDoubleOptimizedBessel {
                 private ddouble g;
 
                 public BesselYEtaTable(ddouble alpha) {
-                    Debug.Assert(alpha >= 0d && alpha < 1d, nameof(alpha));
+                    Debug.Assert(alpha > -1d && alpha < 1d, nameof(alpha));
 
                     this.alpha = alpha;
                     this.table.Add(ddouble.NaN);
 
-                    if (alpha > 0d) {
+                    if (alpha != 0d) {
                         ddouble c = ddouble.Gamma(1d + alpha);
                         c *= c;
                         this.g = 1d / (1d - alpha) * c;
@@ -1984,7 +1928,7 @@ namespace DDoubleOptimizedBessel {
                     }
 
                     for (int i = table.Count; i <= k; i++) {
-                        if (alpha > 0d) {
+                        if (alpha != 0d) {
                             g = -g * (alpha + i - 1) * (ddouble.Ldexp(alpha, 1) + i - 1d) / (i * (i - alpha));
 
                             ddouble eta = g * (alpha + 2 * i);
@@ -2008,7 +1952,7 @@ namespace DDoubleOptimizedBessel {
                 private readonly BesselYEtaTable eta;
 
                 public BesselYXiTable(ddouble alpha, BesselYEtaTable eta) {
-                    Debug.Assert(alpha >= 0d && alpha < 1d, nameof(alpha));
+                    Debug.Assert(alpha >= -1d && alpha < 1d, nameof(alpha));
 
                     this.alpha = alpha;
                     this.table.Add(ddouble.NaN);
@@ -2027,7 +1971,7 @@ namespace DDoubleOptimizedBessel {
                     }
 
                     for (int i = table.Count; i <= k; i++) {
-                        if (alpha > 0d) {
+                        if (alpha != 0d) {
                             if ((i & 1) == 0) {
                                 table.Add(eta[i / 2]);
                             }
@@ -2162,21 +2106,6 @@ namespace DDoubleOptimizedBessel {
                 Complex y1 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold, z);
                 Complex y2 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5d, z);
                 Complex y3 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 2d, z);
-
-                ddouble t = ddouble.Abs(alpha) / InterpolationThreshold;
-                Complex y = Interpolate(t, y0, y1, y2, y3);
-
-                return y;
-            }
-
-            public static Complex BesselYMillerBackward(ddouble nu, Complex z) {
-                int n = (int)ddouble.Round(nu);
-                ddouble alpha = nu - n;
-
-                Complex y0 = MillerBackward.BesselY(n, z);
-                Complex y1 = MillerBackward.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold, z);
-                Complex y2 = MillerBackward.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5d, z);
-                Complex y3 = MillerBackward.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 2d, z);
 
                 ddouble t = ddouble.Abs(alpha) / InterpolationThreshold;
                 Complex y = Interpolate(t, y0, y1, y2, y3);

@@ -1,10 +1,11 @@
 ﻿using DoubleDouble;
 using DoubleDoubleComplex;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 
 namespace DDoubleComplexBessel {
     public class MillerBackward {
-        public static readonly double MillerBwdBesselYEps = double.ScaleB(1, -30);
+        public static readonly int BesselYEpsExponent = -12;
 
         private static readonly Dictionary<ddouble, BesselJPhiTable> phi_coef_table = [];
         private static readonly Dictionary<ddouble, BesselIPsiTable> psi_coef_table = [];
@@ -272,7 +273,7 @@ namespace DDoubleComplexBessel {
         }
 
         public static Complex BesselYKernel(ddouble nu, Complex z, int m) {
-            int n = (int)ddouble.Floor(nu);
+            int n = (int)ddouble.Round(nu);
             ddouble alpha = nu - n;
 
             if (alpha == 0d) {
@@ -321,14 +322,11 @@ namespace DDoubleComplexBessel {
             Complex r = Complex.Ldexp(ddouble.RcpPI * sqs, 1);
             Complex p = sqs * rsqgamma * ddouble.RcpPI;
 
-            Complex eta0 = ddouble.Abs(alpha) > MillerBwdBesselYEps
-                ? rcot - p / alpha
-                : BesselYEta0Eps(alpha, z);
-
             Complex xi0 = -Complex.Ldexp(v, 1) * p;
-            Complex xi1 = ddouble.Abs(alpha) > MillerBwdBesselYEps
-                ? rcot + p * (alpha * (alpha + 1d) + 1d) / (alpha * (alpha - 1d))
-                : BesselYXi1Eps(alpha, z);
+
+            (Complex eta0, Complex xi1) = ddouble.ILogB(alpha) >= BesselYEpsExponent
+                ? (rcot - p / alpha, rcot + p * (alpha * (alpha + 1d) + 1d) / (alpha * (alpha - 1d)))
+                : BesselYEta0Xi1Eps(alpha, z);
 
             Complex y0 = r * se + eta0 * f0;
             Complex y1 = r * (3d * alpha * v * sxe + sxo) + xi0 * f0 + xi1 * f1;
@@ -363,74 +361,26 @@ namespace DDoubleComplexBessel {
             }
         }
 
-        private static Complex BesselYEta0Eps(ddouble alpha, Complex z) {
-            Complex lnz = Complex.Log(z), lnhalfz = Complex.Log(Complex.Ldexp(z, -1));
-            ddouble pi = ddouble.PI, sqpi = pi * pi;
-            ddouble ln2 = ddouble.Ln2, sqln2 = ln2 * ln2, cbln2 = sqln2 * ln2, qdln2 = sqln2 * sqln2;
-            ddouble g = ddouble.EulerGamma;
+        private static (Complex eta0, Complex xi1) BesselYEta0Xi1Eps(ddouble alpha, Complex z) {
+            const int N = 7;
 
-            Complex r0 = lnhalfz + g;
-            Complex r1 =
-                (-sqln2 + lnz * (ln2 * 2d - lnz)) * 4d
-                - sqpi
-                - g * (lnhalfz * 2d + g) * 4d;
-            Complex r2 =
-                (-cbln2 + lnz * (sqln2 * 3d + lnz * (ln2 * -3d + lnz))) * 4d
-                + ddouble.Zeta3 * 2d
-                + sqpi * (lnhalfz + g)
-                + g * ((sqln2 + lnz * (ln2 * -2d + lnz)) * 3d + g * (lnhalfz * 3d + g)) * 4d;
-            Complex r3 =
-                (-qdln2 + lnz * (cbln2 * 4d + lnz * (sqln2 * -6d + lnz * (ln2 * 4d - lnz)))) * 16d
-                - ddouble.Zeta3 * (lnhalfz + g) * 32d
-                - sqpi * ((sqln2 + lnz * (-ln2 * 2d + lnz) + g * (lnhalfz * 2d + g)) * 8d + sqpi)
-                + g * ((cbln2 + lnz * (sqln2 * -3d + lnz * (ln2 * 3d - lnz))) * 4d
-                + g * ((sqln2 + lnz * (ln2 * -2d + lnz)) * -6d
-                + g * (lnhalfz * -4d
-                - g))) * 16d;
+            Complex lnz = Complex.Log(z);
 
-            Complex eta0 = (r0 * 48d + alpha * (r1 * 12d + alpha * (r2 * 8d + alpha * r3))) / (24d * ddouble.PI);
+            Complex eta0 = 0d, xi1 = 0d;
+            for (int i = N, k = 1; i >= 0; i--) {
+                Complex s = eta0_coef[^k], t = xi1_coef[^k];
+                k++;
 
-            return eta0;
-        }
+                for (int j = i; j >= 0; j--, k++) {
+                    s = eta0_coef[k] + lnz * s;
+                    t = xi1_coef[k] + lnz * t;
+                }
 
-        private static Complex BesselYXi1Eps(ddouble alpha, Complex z) {
-            Complex lnz = Complex.Log(z), lnhalfz = Complex.Log(Complex.Ldexp(z, -1)), lnzm1 = lnz - 1, lnhalfzm1 = lnhalfz - 1;
-            ddouble pi = ddouble.PI, sqpi = pi * pi;
-            ddouble ln2 = ddouble.Ln2, sqln2 = ln2 * ln2, cbln2 = sqln2 * ln2, qdln2 = sqln2 * sqln2;
-            ddouble g = ddouble.EulerGamma;
+                eta0 = s + alpha * eta0;
+                xi1 = t + alpha * xi1;
+            }
 
-            Complex r0 = lnhalfzm1 + g;
-            Complex r1 =
-                (-sqln2 + ln2 * lnzm1 * 2d + lnz * (2 - lnz)) * 4d
-                - sqpi
-                - g * (lnhalfzm1 * 2d + g) * 4d
-                - 6d;
-            Complex r2 =
-                -cbln2 * 4d + sqln2 * lnzm1 * 12d + lnz * (18d + lnz * (-12d + lnz * 4d))
-                + ln2 * (lnz * (2d - lnz) * 12d - 18d)
-                + ddouble.Zeta3 * 2d
-                + sqpi * (lnhalfzm1 + g)
-                + g * ((sqln2 - ln2 * lnzm1 * 2d + lnz * (-2d + lnz)) * 12d + 18d
-                + g * (lnhalfzm1 * 12d
-                + g * 4d))
-                - 9d;
-            Complex r3 =
-                -qdln2 * 16d
-                + cbln2 * lnzm1 * 64d
-                + sqln2 * (lnz * (2d - lnz) * 96d - 144d)
-                + ln2 * (lnz * (9d + lnz * (-6d + lnz * 2d)) * 32d - 144d)
-                + lnz * (9d + lnz * (-9d + lnz * (4d - lnz))) * 16d
-                + ddouble.Zeta3 * (lnhalfzm1 + g) * -32d
-                + sqpi * ((-sqln2 + ln2 * lnzm1 * 2d + lnz * (2d - lnz) - g * (lnhalfzm1 * 2d + g)) * 8d - 12d - sqpi)
-                + g * ((cbln2 - sqln2 * lnzm1 * 3d) * 64d + ln2 * (lnz * (-2d + lnz) * 192d + 288d) + lnz * (-9d + lnz * (6d - lnz * 2d)) * 32d + 144d
-                + g * ((-sqln2 + ln2 * lnzm1 * 2d + lnz * (2d - lnz)) * 96d - 144d
-                + g * (lnhalfzm1 * -64d
-                - g * 16d)))
-                - 72d;
-
-            Complex xi1 = (r0 * 48d + alpha * (r1 * 12d + alpha * (r2 * 8d + alpha * r3))) / (24d * ddouble.PI);
-
-            return xi1;
+            return (eta0, xi1);
         }
 
         private static Complex BesselY0Kernel(Complex z, int m) {
@@ -691,7 +641,7 @@ namespace DDoubleComplexBessel {
             private ddouble g;
 
             public BesselJPhiTable(ddouble alpha) {
-                Debug.Assert(alpha > 0d && alpha < 1d, nameof(alpha));
+                Debug.Assert(alpha > -1d && alpha < 1d, nameof(alpha));
 
                 this.alpha = alpha;
 
@@ -732,7 +682,7 @@ namespace DDoubleComplexBessel {
             private ddouble g;
 
             public BesselIPsiTable(ddouble alpha) {
-                Debug.Assert(alpha > 0d && alpha < 1d, nameof(alpha));
+                Debug.Assert(alpha > -1d && alpha < 1d, nameof(alpha));
 
                 this.alpha = alpha;
 
@@ -773,12 +723,12 @@ namespace DDoubleComplexBessel {
             private ddouble g;
 
             public BesselYEtaTable(ddouble alpha) {
-                Debug.Assert(alpha >= 0d && alpha < 1d, nameof(alpha));
+                Debug.Assert(alpha > -1d && alpha < 1d, nameof(alpha));
 
                 this.alpha = alpha;
                 this.table.Add(ddouble.NaN);
 
-                if (alpha > 0d) {
+                if (alpha != 0d) {
                     ddouble c = ddouble.Gamma(1d + alpha);
                     c *= c;
                     this.g = 1d / (1d - alpha) * c;
@@ -799,7 +749,7 @@ namespace DDoubleComplexBessel {
                 }
 
                 for (int i = table.Count; i <= k; i++) {
-                    if (alpha > 0d) {
+                    if (alpha != 0d) {
                         g = -g * (alpha + i - 1) * (ddouble.Ldexp(alpha, 1) + i - 1d) / (i * (i - alpha));
 
                         ddouble eta = g * (alpha + 2 * i);
@@ -823,7 +773,7 @@ namespace DDoubleComplexBessel {
             private readonly BesselYEtaTable eta;
 
             public BesselYXiTable(ddouble alpha, BesselYEtaTable eta) {
-                Debug.Assert(alpha >= 0d && alpha < 1d, nameof(alpha));
+                Debug.Assert(alpha >= -1d && alpha < 1d, nameof(alpha));
 
                 this.alpha = alpha;
                 this.table.Add(ddouble.NaN);
@@ -842,7 +792,7 @@ namespace DDoubleComplexBessel {
                 }
 
                 for (int i = table.Count; i <= k; i++) {
-                    if (alpha > 0d) {
+                    if (alpha != 0d) {
                         if ((i & 1) == 0) {
                             table.Add(eta[i / 2]);
                         }
@@ -864,5 +814,99 @@ namespace DDoubleComplexBessel {
                 return table[k];
             }
         }
+
+        private static readonly ReadOnlyCollection<ddouble> eta0_coef = new([
+            (-1, -4, 0x9726B4CE5E80F444uL, 0x04F9CB1EFBE82ECCuL),
+            (+1, -1, 0xA2F9836E4E441529uL, 0xFC2757D1F534DDC0uL),
+            (-1, 0, 0xCA28399BC43B5702uL, 0xF0B44645EF33148BuL),
+            (+1, -3, 0x9726B4CE5E80F444uL, 0x04F9CB1EFBE82ECCuL),
+            (-1, -1, 0xA2F9836E4E441529uL, 0xFC2757D1F534DDC0uL),
+            (+1, -3, 0x88365EC53E16C12CuL, 0x0368736407A27244uL),
+            (+1, 0, 0x883B4FB4B14055BFuL, 0x85B55E7C87EB57FFuL),
+            (-1, -3, 0x9726B4CE5E80F444uL, 0x04F9CB1EFBE82ECCuL),
+            (+1, -2, 0xD94CAF3DBDB01C37uL, 0xFADF1FC29C467D01uL),
+            (-1, 0, 0x9F9A4CA27EFFD464uL, 0xD17DF0A9838B4A3CuL),
+            (-1, -2, 0x88365EC53E16C12CuL, 0x0368736407A27244uL),
+            (-1, 0, 0x883B4FB4B14055BFuL, 0x85B55E7C87EB57FFuL),
+            (+1, -4, 0xC988F11328ABF05AuL, 0xB14D0ED3FA8AE911uL),
+            (-1, -3, 0xD94CAF3DBDB01C37uL, 0xFADF1FC29C467D01uL),
+            (+1, -2, 0xD5CFA23DFF728E8CuL, 0x4FA05F9875BE7FDBuL),
+            (+1, 0, 0x8ED06F76EF1F08D4uL, 0xFAAFF2FC72E0F22EuL),
+            (+1, -2, 0x88365EC53E16C12CuL, 0x0368736407A27244uL),
+            (+1, -1, 0xB5A46A4641AB1CFFuL, 0x5CF1D350B539CAA9uL),
+            (-1, -5, 0xC988F11328ABF05AuL, 0xB14D0ED3FA8AE911uL),
+            (+1, -4, 0xADD6F297CAF349C6uL, 0x624C19687D0530CDuL),
+            (-1, 0, 0xA1EFBF6811197CC5uL, 0xEA0BD6E32998A1A1uL),
+            (-1, -1, 0xD5CFA23DFF728E8CuL, 0x4FA05F9875BE7FDBuL),
+            (-1, 0, 0x8ED06F76EF1F08D4uL, 0xFAAFF2FC72E0F22EuL),
+            (-1, -3, 0xB59DD3B1A81E56E5uL, 0x59E099DAB4D8985AuL),
+            (-1, -2, 0xB5A46A4641AB1CFFuL, 0x5CF1D350B539CAA9uL),
+            (+1, -6, 0xA13A5A75BA2326AEuL, 0xF43DA5766208BA74uL),
+            (-1, -6, 0xE7C943750E99B7B3uL, 0x2DBACC8B515C4112uL),
+            (+1, -1, 0xA2EEA6FBB819E07EuL, 0x95CCA4D4A4C628CEuL),
+            (+1, 0, 0x9E1267360C8533E2uL, 0xF1588EFC26ADAEDBuL),
+            (+1, -1, 0xD5CFA23DFF728E8CuL, 0x4FA05F9875BE7FDBuL),
+            (+1, -1, 0xBE6B3F493ED40BC6uL, 0xA39543FB43D6983EuL),
+            (+1, -4, 0xB59DD3B1A81E56E5uL, 0x59E099DAB4D8985AuL),
+            (+1, -3, 0x915055050155B0CCuL, 0x4A5B0F73C42E3BBAuL),
+            (-1, -8, 0xD6F8789CF82EDE3EuL, 0x9AFCDC9DD80BA345uL),
+            (+1, -7, 0x847301F9BF334466uL, 0x63462BBD5310252FuL),
+            (-1, 0, 0xB0EDF45B2A0853AFuL, 0x2A42C979CA5D0596uL),
+            (-1, 0, 0xA2EEA6FBB819E07EuL, 0x95CCA4D4A4C628CEuL),
+            (-1, 0, 0x9E1267360C8533E2uL, 0xF1588EFC26ADAEDBuL),
+            (-1, -1, 0x8E8A6C2954F709B2uL, 0xDFC03FBAF929AA92uL),
+            (-1, -2, 0xBE6B3F493ED40BC6uL, 0xA39543FB43D6983EuL),
+            (-1, -5, 0x914B0FC1534B78B7uL, 0x7B1A14AEF713AD15uL),
+            (-1, -5, 0xC1C0715C01C79665uL, 0xB87969EFB03DA4F9uL),
+            (+1, -10, 0xF5AE40B364C7D96CuL, 0x1ED7D78FD2567173uL),
+            (-1, -9, 0x847301F9BF334466uL, 0x63462BBD5310252FuL),
+        ]);
+
+        private static readonly ReadOnlyCollection<ddouble> xi1_coef = new([
+            (-1, -1, 0xB5DE5A081A1433B2uL, 0x7CC69135D4B1E39AuL),
+            (+1, -1, 0xA2F9836E4E441529uL, 0xFC2757D1F534DDC0uL),
+            (-1, 1, 0xABA41964255F42B5uL, 0x773880C3A34BE05AuL),
+            (+1, 0, 0xB5DE5A081A1433B2uL, 0x7CC69135D4B1E39AuL),
+            (-1, -1, 0xA2F9836E4E441529uL, 0xFC2757D1F534DDC0uL),
+            (-1, 1, 0x86E3742ABAF45DA3uL, 0x21AA5401A70D1C66uL),
+            (+1, 1, 0xD13DA106DF235947uL, 0xC0976A7F9B5A5829uL),
+            (-1, 0, 0xB5DE5A081A1433B2uL, 0x7CC69135D4B1E39AuL),
+            (+1, -2, 0xD94CAF3DBDB01C37uL, 0xFADF1FC29C467D01uL),
+            (-1, 1, 0xF03C087CD2E2F132uL, 0xABA01CBF4A537060uL),
+            (+1, 2, 0x86E3742ABAF45DA3uL, 0x21AA5401A70D1C66uL),
+            (-1, 1, 0xD13DA106DF235947uL, 0xC0976A7F9B5A5829uL),
+            (+1, -1, 0xF27DCD6022C59A43uL, 0x5108C19D1B97DA23uL),
+            (-1, -3, 0xD94CAF3DBDB01C37uL, 0xFADF1FC29C467D01uL),
+            (-1, 1, 0xC499BFB2F722CD86uL, 0x760E8ABF72CC4D3AuL),
+            (+1, 2, 0xC422FE094F2AC935uL, 0x818D2129A54607CEuL),
+            (-1, 2, 0x86E3742ABAF45DA3uL, 0x21AA5401A70D1C66uL),
+            (+1, 1, 0x8B7E6B59EA1790DAuL, 0x8064F1AA6791901BuL),
+            (-1, -2, 0xF27DCD6022C59A43uL, 0x5108C19D1B97DA23uL),
+            (+1, -4, 0xADD6F297CAF349C6uL, 0x624C19687D0530CDuL),
+            (-1, 2, 0x8F45E37E7DC47E26uL, 0x8FE6337E8ACC854DuL),
+            (+1, 2, 0xC499BFB2F722CD86uL, 0x760E8ABF72CC4D3AuL),
+            (-1, 2, 0xC422FE094F2AC935uL, 0x818D2129A54607CEuL),
+            (+1, 1, 0xB3D9F038F945D22EuL, 0xD78DC5578966D089uL),
+            (-1, 0, 0x8B7E6B59EA1790DAuL, 0x8064F1AA6791901BuL),
+            (+1, -3, 0xC1FE3DE68237AE9CuL, 0x40D3CE174946481CuL),
+            (-1, -6, 0xE7C943750E99B7B3uL, 0x2DBACC8B515C4112uL),
+            (-1, 1, 0xD9277CDD4B4A0DEAuL, 0x740B8DE15C3A3708uL),
+            (+1, 2, 0xF5188116761D8AE2uL, 0xE71C9F4A8A782581uL),
+            (-1, 2, 0xC499BFB2F722CD86uL, 0x760E8ABF72CC4D3AuL),
+            (+1, 2, 0x82C1FEB0DF71DB79uL, 0x0108C0C66E2EAFDEuL),
+            (-1, 0, 0xB3D9F038F945D22EuL, 0xD78DC5578966D089uL),
+            (+1, -2, 0xDF30ABC31025B490uL, 0xCD6E4F770C1C19C6uL),
+            (-1, -4, 0x8154294456CFC9BDuL, 0x808D340F862EDABDuL),
+            (+1, -7, 0x847301F9BF334466uL, 0x63462BBD5310252FuL),
+            (-1, 2, 0x9833B38CBAB4864DuL, 0x9007F69410F14DABuL),
+            (+1, 2, 0xD9277CDD4B4A0DEAuL, 0x740B8DE15C3A3708uL),
+            (-1, 2, 0xF5188116761D8AE2uL, 0xE71C9F4A8A782581uL),
+            (+1, 2, 0x83112A774F6C8904uL, 0x4EB45C7FA1DD88D1uL),
+            (-1, 1, 0x82C1FEB0DF71DB79uL, 0x0108C0C66E2EAFDEuL),
+            (+1, -1, 0x8FE18CFA6104A825uL, 0x793E37793AB8A6D4uL),
+            (-1, -3, 0x94CB1D2CB56E7860uL, 0x88F434FA0812BBD9uL),
+            (+1, -6, 0x93CDE604F57FC1FDuL, 0x2533A93650358C46uL),
+            (-1, -9, 0x847301F9BF334466uL, 0x63462BBD5310252FuL),
+        ]);
     }
 }

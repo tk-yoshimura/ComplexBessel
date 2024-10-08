@@ -678,8 +678,8 @@ namespace DDoubleOptimizedBesselTests {
 
             for (int n = -16; n <= 16; n++) {
                 foreach (ddouble u in new ddouble[] {
-                    Math.ScaleB(-1, -25), Math.ScaleB(-1, -30), Math.ScaleB(-1, -50), Math.ScaleB(-1, 96),
-                    Math.ScaleB(1, -25), Math.ScaleB(1, -30), Math.ScaleB(1, -50), Math.ScaleB(-1, -96) }) {
+                    Math.ScaleB(-1, -12), Math.ScaleB(-1, -13), Math.ScaleB(-1, -11), Math.ScaleB(-1, -26), Math.ScaleB(-1, 96),
+                    Math.ScaleB(1, -12), Math.ScaleB(1, -13), Math.ScaleB(-1, -11), Math.ScaleB(1, -26), Math.ScaleB(-1, -96) }) {
                     ddouble nu = n + u;
 
                     if (ddouble.Abs(nu) > 16) {
@@ -691,8 +691,8 @@ namespace DDoubleOptimizedBesselTests {
                         Complex y_dec = DDoubleOptimizedBessel.ComplexBessel.BesselY(ddouble.BitDecrement(nu), x);
                         Complex y_inc = DDoubleOptimizedBessel.ComplexBessel.BesselY(ddouble.BitIncrement(nu), x);
 
-                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 2e-21);
-                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 2e-21);
+                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 1e-22);
+                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 1e-22);
                     }
                 }
             }
@@ -707,7 +707,7 @@ namespace DDoubleOptimizedBesselTests {
 
                     Complex actual = DDoubleOptimizedBessel.ComplexBessel.BesselY(nu, x);
 
-                    Assert.IsTrue((actual - expected).Magnitude / expected.Magnitude < 2e-21);
+                    Assert.IsTrue((actual - expected).Magnitude / expected.Magnitude < 2e-24);
                 }
             }
         }
