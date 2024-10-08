@@ -39,15 +39,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDoubleComplexBesselTests",
 		{D99B1853-1A26-43DE-9F67-86039C0921BE} = {D99B1853-1A26-43DE-9F67-86039C0921BE}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplexBesselMillerBackwardIteration", "ComplexBesselMillerBackwardIteration\ComplexBesselMillerBackwardIteration.csproj", "{ACB6E77B-123F-49C6-A7EC-6850E3ABF634}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComplexBesselMillerBackwardIteration", "ComplexBesselMillerBackwardIteration\ComplexBesselMillerBackwardIteration.csproj", "{ACB6E77B-123F-49C6-A7EC-6850E3ABF634}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDoubleOptimizedBessel", "DDoubleOptimizedBessel\DDoubleOptimizedBessel.csproj", "{2937B6C0-3270-4EF5-9F7E-EF67D673B0D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDoubleOptimizedBessel", "DDoubleOptimizedBessel\DDoubleOptimizedBessel.csproj", "{2937B6C0-3270-4EF5-9F7E-EF67D673B0D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDoubleOptimizedBesselTests", "DDoubleOptimizedBesselTests\DDoubleOptimizedBesselTests.csproj", "{B6C16D3B-B831-4BFF-99C4-84A50FC82DFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDoubleOptimizedBesselTests", "DDoubleOptimizedBesselTests\DDoubleOptimizedBesselTests.csproj", "{B6C16D3B-B831-4BFF-99C4-84A50FC82DFF}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2937B6C0-3270-4EF5-9F7E-EF67D673B0D7} = {2937B6C0-3270-4EF5-9F7E-EF67D673B0D7}
 		{D99B1853-1A26-43DE-9F67-86039C0921BE} = {D99B1853-1A26-43DE-9F67-86039C0921BE}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDoubleBesselYEpsMillerBackwardTests", "DDoubleBesselYEpsMillerBackwardTests\DDoubleBesselYEpsMillerBackwardTests.csproj", "{C80CC7E0-810E-4C58-B551-20A0738745A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,6 +105,10 @@ Global
 		{B6C16D3B-B831-4BFF-99C4-84A50FC82DFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6C16D3B-B831-4BFF-99C4-84A50FC82DFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6C16D3B-B831-4BFF-99C4-84A50FC82DFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C80CC7E0-810E-4C58-B551-20A0738745A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C80CC7E0-810E-4C58-B551-20A0738745A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C80CC7E0-810E-4C58-B551-20A0738745A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C80CC7E0-810E-4C58-B551-20A0738745A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
