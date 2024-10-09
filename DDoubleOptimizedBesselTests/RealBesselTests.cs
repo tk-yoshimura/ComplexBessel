@@ -630,8 +630,8 @@ namespace DDoubleOptimizedBesselTests {
 
             for (int n = -16; n <= 16; n++) {
                 foreach (ddouble u in new ddouble[] {
-                    Math.ScaleB(-1, -10), Math.ScaleB(-1, -20), Math.ScaleB(-1, -25), Math.ScaleB(-1, 96),
-                    Math.ScaleB(1, -10), Math.ScaleB(1, -20), Math.ScaleB(1, -25), Math.ScaleB(1, -96) }) {
+                    Math.ScaleB(-1, -10), Math.ScaleB(-1, -16), Math.ScaleB(-1, -20), Math.ScaleB(-1, -25), Math.ScaleB(-1, 96),
+                    Math.ScaleB(1, -10), Math.ScaleB(1, -16), Math.ScaleB(1, -20), Math.ScaleB(1, -25), Math.ScaleB(1, -96) }) {
                     ddouble nu = n + u;
 
                     if (ddouble.Abs(nu) > 16) {
@@ -648,8 +648,8 @@ namespace DDoubleOptimizedBesselTests {
                         Console.WriteLine(y_dec);
                         Console.WriteLine(y_inc);
 
-                        Assert.IsTrue(ddouble.Abs((y_dec - y) / y) < 1e-25);
-                        Assert.IsTrue(ddouble.Abs((y_inc - y) / y) < 1e-25);
+                        Assert.IsTrue(ddouble.Abs((y_dec - y) / y) < 1e-27);
+                        Assert.IsTrue(ddouble.Abs((y_inc - y) / y) < 1e-27);
                     }
                 }
             }
@@ -669,7 +669,7 @@ namespace DDoubleOptimizedBesselTests {
                     Console.WriteLine(expected);
                     Console.WriteLine(actual);
 
-                    Assert.IsTrue(ddouble.Abs((expected - actual) / expected) < 1e-25);
+                    Assert.IsTrue(ddouble.Abs((expected - actual) / expected) < 1e-27);
                 }
             }
         }
@@ -1031,8 +1031,8 @@ namespace DDoubleOptimizedBesselTests {
                         Console.WriteLine(y_dec);
                         Console.WriteLine(y_inc);
 
-                        Assert.IsTrue(ddouble.Abs((y_dec - y) / y) < 1e-25);
-                        Assert.IsTrue(ddouble.Abs((y_inc - y) / y) < 1e-25);
+                        Assert.IsTrue(ddouble.Abs((y_dec - y) / y) < 1e-26);
+                        Assert.IsTrue(ddouble.Abs((y_inc - y) / y) < 1e-26);
                     }
                 }
             }
@@ -1052,7 +1052,7 @@ namespace DDoubleOptimizedBesselTests {
                     Console.WriteLine(expected);
                     Console.WriteLine(actual);
 
-                    Assert.IsTrue(ddouble.Abs((expected - actual) / expected) < 2e-24);
+                    Assert.IsTrue(ddouble.Abs((expected - actual) / expected) < 2e-25);
                 }
             }
         }
