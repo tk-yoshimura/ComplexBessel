@@ -48,8 +48,8 @@ namespace DDoubleOptimizedBessel {
                     if (NearlyInteger(nu, out int n) || ddouble.Abs(n - nu) >= InterpolationThreshold) {
                         return PowerSeries.BesselY(nu, x);
                     }
-                    else { 
-                        return CubicInterpolate.BesselYPowerSeries(nu, x);
+                    else {
+                        return Interpolation.BesselYPowerSeries(nu, x);
                     }
                 }
             }
@@ -90,7 +90,7 @@ namespace DDoubleOptimizedBessel {
                     return PowerSeries.BesselK(nu, x, scale);
                 }
                 else {
-                    return CubicInterpolate.BesselKPowerSeries(nu, x, scale);
+                    return Interpolation.BesselKPowerSeries(nu, x, scale);
                 }
             }
             else {
@@ -104,7 +104,7 @@ namespace DDoubleOptimizedBessel {
         public static readonly double Eps = double.ScaleB(1, -105);
         public static readonly double BesselYNearZero = 0.125d;
         public static readonly double BesselYForcedMillerBackwardThreshold = double.ScaleB(1, -8);
-        public static readonly double InterpolationThreshold = double.ScaleB(1, -25);
+        public static readonly double InterpolationThreshold = double.ScaleB(1, -20);
         public const double HankelThreshold = 38.875, MillerBackwardThreshold = 6;
         public const double BesselKPadeThreshold = 1, BesselKNearZeroThreshold = 2, BesselJYPowerseriesBias = 2;
 
@@ -1957,7 +1957,7 @@ namespace DDoubleOptimizedBessel {
             }
         }
 
-        public static class CubicInterpolate {
+        public static class Interpolation {
             public static ddouble BesselYPowerSeries(ddouble nu, ddouble x) {
                 int n = (int)ddouble.Round(nu);
                 ddouble alpha = nu - n;
@@ -1969,15 +1969,16 @@ namespace DDoubleOptimizedBessel {
                 }
 
                 ddouble y1 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold, x);
-                ddouble y2 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5d, x);
-                ddouble y3 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 2d, x);
+                ddouble y2 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.25d, x);
+                ddouble y3 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5d, x);
+                ddouble y4 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 2d, x);
 
-                if (!ddouble.IsFinite(y1) || !ddouble.IsFinite(y2) || !ddouble.IsFinite(y3)) {
+                if (!ddouble.IsFinite(y1) || !ddouble.IsFinite(y2) || !ddouble.IsFinite(y3) || !ddouble.IsFinite(y4)) {
                     return y1;
                 }
 
                 ddouble t = ddouble.Abs(alpha) / InterpolationThreshold;
-                ddouble y = Interpolate(t, y0, y1, y2, y3);
+                ddouble y = Interpolate(t, y0, y1, y2, y3, y4);
 
                 return y;
             }
@@ -1993,25 +1994,29 @@ namespace DDoubleOptimizedBessel {
                 }
 
                 ddouble y1 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold, x, scale);
-                ddouble y2 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5d, x, scale);
-                ddouble y3 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold * 2d, x, scale);
+                ddouble y2 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.25d, x, scale);
+                ddouble y3 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5d, x, scale);
+                ddouble y4 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold * 2d, x, scale);
 
-                if (!ddouble.IsFinite(y1) || !ddouble.IsFinite(y2) || !ddouble.IsFinite(y3)) {
+                if (!ddouble.IsFinite(y1) || !ddouble.IsFinite(y2) || !ddouble.IsFinite(y3) || !ddouble.IsFinite(y4)) {
                     return y1;
                 }
 
                 ddouble t = ddouble.Abs(alpha) / InterpolationThreshold;
-                ddouble y = Interpolate(t, y0, y1, y2, y3);
+                ddouble y = Interpolate(t, y0, y1, y2, y3, y4);
 
                 return y;
             }
 
-            private static ddouble Interpolate(ddouble t, ddouble y0, ddouble y1, ddouble y2, ddouble y3) {
-                return y0 + (
-                    -(13d + t * (-9d + t * 2d)) / 6d * y0
-                    + (6d + t * (-7d + t * 2d)) * y1
-                    - (16d + t * (-24d + t * 8d)) / 3d * y2
-                    + (3d + t * (-5d + t * 2d)) / 2d * y3) * t;
+            private static ddouble Interpolate(ddouble t, ddouble y0, ddouble y1, ddouble y2, ddouble y3, ddouble y4) {
+                ddouble y =
+                    (30d * y0
+                    + t * (-89d * y0 + 900d * y1 - 1536d * y2 + 800d * y3 - 75d * y4
+                    + t * (97d * y0 - 1770d * y1 + 3328d * y2 - 1840d * y3 + 185d * y4
+                    + t * (-46d * y0 + 1140d * y1 - 2304d * y2 + 1360d * y3 - 150d * y4
+                    + t * (8d * y0 - 240d * y1 + 512d * y2 - 320d * y3 + 40d * y4))))) / 30d;
+
+                return y;
             }
         }
     }
