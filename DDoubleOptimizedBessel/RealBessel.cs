@@ -2009,9 +2009,8 @@ namespace DDoubleOptimizedBessel {
             }
 
             private static ddouble Interpolate(ddouble t, ddouble y0, ddouble y1, ddouble y2, ddouble y3, ddouble y4) {
-                ddouble y =
-                    (30d * y0
-                    + t * (-89d * y0 + 900d * y1 - 1536d * y2 + 800d * y3 - 75d * y4
+                ddouble y = y0 + (
+                      t * (-89d * y0 + 900d * y1 - 1536d * y2 + 800d * y3 - 75d * y4
                     + t * (97d * y0 - 1770d * y1 + 3328d * y2 - 1840d * y3 + 185d * y4
                     + t * (-46d * y0 + 1140d * y1 - 2304d * y2 + 1360d * y3 - 150d * y4
                     + t * (8d * y0 - 240d * y1 + 512d * y2 - 320d * y3 + 40d * y4))))) / 30d;
