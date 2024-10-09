@@ -36,11 +36,21 @@ namespace DDoubleOptimizedBessel {
                 return Limit.BesselY(nu, x);
             }
             else if (x <= PowerSeriesThreshold(nu) - BesselJYPowerseriesBias) {
-                if (NearlyInteger(nu, out _) || ddouble.Abs(ddouble.Round(nu) - nu) >= InterpolationThreshold) {
-                    return PowerSeries.BesselY(nu, x);
+                if (x >= BesselYNearZero) {
+                    if (NearlyInteger(nu, out int n) || ddouble.Abs(n - nu) >= BesselYForcedMillerBackwardThreshold) {
+                        return PowerSeries.BesselY(nu, x);
+                    }
+                    else {
+                        return MillerBackward.BesselY(nu, x);
+                    }
                 }
                 else {
-                    return CubicInterpolate.BesselYPowerSeries(nu, x);
+                    if (NearlyInteger(nu, out int n) || ddouble.Abs(n - nu) >= InterpolationThreshold) {
+                        return PowerSeries.BesselY(nu, x);
+                    }
+                    else { 
+                        return CubicInterpolate.BesselYPowerSeries(nu, x);
+                    }
                 }
             }
             else {
@@ -76,7 +86,7 @@ namespace DDoubleOptimizedBessel {
                 return Limit.BesselK(nu, x, scale);
             }
             else if (x <= BesselKNearZeroThreshold) {
-                if (NearlyInteger(nu, out _) || ddouble.Abs(ddouble.Round(nu) - nu) >= InterpolationThreshold) {
+                if (NearlyInteger(nu, out int n) || ddouble.Abs(n - nu) >= InterpolationThreshold) {
                     return PowerSeries.BesselK(nu, x, scale);
                 }
                 else {
@@ -92,7 +102,8 @@ namespace DDoubleOptimizedBessel {
     static class RealBesselUtil {
         public const int MaxN = 16;
         public static readonly double Eps = double.ScaleB(1, -105);
-        public static readonly double ExtremelyNearZero = double.ScaleB(1, -28);
+        public static readonly double BesselYNearZero = 0.125d;
+        public static readonly double BesselYForcedMillerBackwardThreshold = double.ScaleB(1, -8);
         public static readonly double InterpolationThreshold = double.ScaleB(1, -25);
         public const double HankelThreshold = 38.875, MillerBackwardThreshold = 6;
         public const double BesselKPadeThreshold = 1, BesselKNearZeroThreshold = 2, BesselJYPowerseriesBias = 2;
@@ -151,6 +162,7 @@ namespace DDoubleOptimizedBessel {
         }
 
         public class PowerSeries {
+            public static readonly int NearZeroExponent = -950;
             private static readonly Dictionary<ddouble, DoubleFactDenomTable> dfactdenom_coef_table = [];
             private static readonly Dictionary<ddouble, X2DenomTable> x2denom_coef_table = [];
             private static readonly Dictionary<ddouble, GammaDenomTable> gammadenom_coef_table = [];
@@ -254,6 +266,16 @@ namespace DDoubleOptimizedBessel {
 
                 ddouble c = 0d, u = ddouble.Pow(ddouble.Ldexp(x, -1), nu);
 
+                if (!ddouble.IsFinite(u) || ddouble.IsZero(x2)) {
+                    if (ddouble.IsZero(nu)) {
+                        return 1d;
+                    }
+                    if (NearlyInteger(nu, out _) || ddouble.IsPositive(nu)) {
+                        return 0d;
+                    }
+                    return (((int)ddouble.Floor(nu) & 1) == 0) ? ddouble.NegativeInfinity : ddouble.PositiveInfinity;
+                }
+
                 for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
                     ddouble w = x2 * d[k];
                     ddouble dc = u * r[k] * (1d - w);
@@ -291,9 +313,24 @@ namespace DDoubleOptimizedBessel {
                 YCoefTable r = y_coef_table;
 
                 ddouble cos = SinCosPICache.CosPI(nu), sin = SinCosPICache.SinPI(nu);
-                ddouble p = ddouble.IsZero(cos) ? 0d : ddouble.Pow(x, ddouble.Ldexp(nu, 1)) * cos, s = ddouble.Ldexp(ddouble.Pow(ddouble.Ldexp(x, 1), nu), 2);
-
+                ddouble p = ddouble.IsZero(cos) ? 0d : ddouble.Pow(x, ddouble.Ldexp(nu, 1)) * cos;
+                ddouble s = ddouble.Ldexp(ddouble.Pow(ddouble.Ldexp(x, 1), nu), 2);
                 ddouble x2 = x * x, x4 = x2 * x2;
+
+                if (!ddouble.IsFinite(p) || !ddouble.IsFinite(s) || ddouble.ILogB(s) < NearZeroExponent || ddouble.IsZero(x2)) {
+                    if (ddouble.IsPositive(nu)) {
+                        return ddouble.NegativeInfinity;
+                    }
+
+                    int n = (int)(ddouble.Floor(nu + 0.5d));
+                    ddouble alpha = nu - n;
+
+                    if (ddouble.Abs(ddouble.Abs(alpha) - 0.5d) < Eps) {
+                        return ddouble.Zero;
+                    }
+
+                    return ((n & 1) == 0) ? ddouble.NegativeInfinity : ddouble.PositiveInfinity;
+                }
 
                 ddouble c = 0d, u = 1d / sin;
 
@@ -353,8 +390,11 @@ namespace DDoubleOptimizedBessel {
                 Y0CoefTable q = y0_coef_table;
 
                 ddouble h = ddouble.Log(ddouble.Ldexp(x, -1)) + ddouble.EulerGamma;
-
                 ddouble x2 = x * x, x4 = x2 * x2;
+
+                if (ddouble.IsNegativeInfinity(h) || ddouble.IsZero(x2)) {
+                    return ddouble.NegativeInfinity;
+                }
 
                 ddouble c = 0d, u = ddouble.Ldexp(ddouble.RcpPI, 1);
 
@@ -392,8 +432,11 @@ namespace DDoubleOptimizedBessel {
                 }
 
                 ddouble h = ddouble.Ldexp(ddouble.Log(ddouble.Ldexp(x, -1)) + ddouble.EulerGamma, 1);
-
                 ddouble x2 = x * x, x4 = x2 * x2;
+
+                if (ddouble.IsNegativeInfinity(h) || ddouble.IsZero(x2)) {
+                    return ddouble.NegativeInfinity;
+                }
 
                 ddouble c = -2d / (x * ddouble.PI), u = x / ddouble.Ldexp(ddouble.PI, 1);
 
@@ -434,6 +477,12 @@ namespace DDoubleOptimizedBessel {
                     yn_finitecoef_table.Add(n, f);
                 }
 
+                ddouble h = ddouble.Ldexp(ddouble.Log(ddouble.Ldexp(x, -1)) + ddouble.EulerGamma, 1);
+
+                if (ddouble.IsNegativeInfinity(h)) {
+                    return ddouble.NegativeInfinity;
+                }
+
                 ddouble c = 0d;
                 ddouble x2 = x * x, x4 = x2 * x2;
                 ddouble u = 1d, v = 1d, w = ddouble.Ldexp(x2, -2);
@@ -444,7 +493,9 @@ namespace DDoubleOptimizedBessel {
                 }
                 c /= -v;
 
-                ddouble h = ddouble.Ldexp(ddouble.Log(ddouble.Ldexp(x, -1)) + ddouble.EulerGamma, 1);
+                if (!ddouble.IsFinite(c) || ddouble.IsZero(x2)) {
+                    return ddouble.NegativeInfinity;
+                }
 
                 for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
                     ddouble dc = u * r[k] * ((h - ddouble.HarmonicNumber(2 * k) - ddouble.HarmonicNumber(2 * k + n)) * (1d - x2 * d[k]) + x2 * q[k]);
@@ -480,6 +531,16 @@ namespace DDoubleOptimizedBessel {
                 ddouble x2 = x * x, x4 = x2 * x2;
 
                 ddouble c = 0d, u = ddouble.Pow(ddouble.Ldexp(x, -1), nu);
+
+                if (!ddouble.IsFinite(u) || ddouble.IsZero(x2)) {
+                    if (ddouble.IsZero(nu)) {
+                        return 1d;
+                    }
+                    if (NearlyInteger(nu, out _) || ddouble.IsPositive(nu)) {
+                        return 0d;
+                    }
+                    return (((int)ddouble.Floor(nu) & 1) == 0) ? ddouble.NegativeInfinity : ddouble.PositiveInfinity;
+                }
 
                 for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
                     ddouble w = x2 * d[k];
@@ -520,6 +581,10 @@ namespace DDoubleOptimizedBessel {
                 ddouble tp = ddouble.Pow(ddouble.Ldexp(x, -1), nu), tn = 1d / tp;
 
                 ddouble x2 = x * x;
+
+                if (ddouble.ILogB(tp) < NearZeroExponent || ddouble.IsZero(x2)) {
+                    return ddouble.PositiveInfinity;
+                }
 
                 ddouble c = 0d, u = ddouble.PI / ddouble.Ldexp(ddouble.SinPI(nu), 1);
 
@@ -562,7 +627,15 @@ namespace DDoubleOptimizedBessel {
                 K0CoefTable r = k0_coef_table;
                 ddouble h = -ddouble.Log(ddouble.Ldexp(x, -1)) - ddouble.EulerGamma;
 
+                if (ddouble.IsPositiveInfinity(h)) {
+                    return ddouble.PositiveInfinity;
+                }
+
                 ddouble x2 = x * x;
+
+                if (ddouble.IsZero(x2)) {
+                    return ddouble.PositiveInfinity;
+                }
 
                 ddouble c = 0d, u = 1d;
 
@@ -589,7 +662,15 @@ namespace DDoubleOptimizedBessel {
                 K1CoefTable r = k1_coef_table;
                 ddouble h = ddouble.Log(ddouble.Ldexp(x, -1)) + ddouble.EulerGamma;
 
+                if (ddouble.IsNegativeInfinity(h)) {
+                    return ddouble.PositiveInfinity;
+                }
+
                 ddouble x2 = x * x;
+
+                if (ddouble.IsZero(x2)) {
+                    return ddouble.PositiveInfinity;
+                }
 
                 ddouble c = 1d / x, u = ddouble.Ldexp(x, -1);
 
@@ -970,6 +1051,10 @@ namespace DDoubleOptimizedBessel {
                     table.Add(nu, hankel);
                 }
 
+                if (ddouble.IsPositiveInfinity(x)) {
+                    return ddouble.Zero;
+                }
+
                 (ddouble c_even, ddouble c_odd) = hankel.BesselJYCoef(x);
 
                 ddouble omega = hankel.Omega(x);
@@ -987,6 +1072,10 @@ namespace DDoubleOptimizedBessel {
                 if (!table.TryGetValue(nu, out HankelExpansion hankel)) {
                     hankel = new HankelExpansion(nu);
                     table.Add(nu, hankel);
+                }
+
+                if (ddouble.IsPositiveInfinity(x)) {
+                    return ddouble.Zero;
                 }
 
                 (ddouble c_even, ddouble c_odd) = hankel.BesselJYCoef(x);
@@ -1012,6 +1101,10 @@ namespace DDoubleOptimizedBessel {
 
                 ddouble y = ddouble.Sqrt(1d / (2d * ddouble.PI * x)) * c;
 
+                if (ddouble.IsPositiveInfinity(x) || ddouble.IsZero(y)) {
+                    return scale ? ddouble.PlusZero : ddouble.PositiveInfinity;
+                }
+
                 if (!scale) {
                     y *= ddouble.Exp(x);
                 }
@@ -1031,6 +1124,10 @@ namespace DDoubleOptimizedBessel {
                 ddouble c = hankel.BesselKCoef(x);
 
                 ddouble y = ddouble.Sqrt(ddouble.PI / (2d * x)) * c;
+
+                if (ddouble.IsPositiveInfinity(x) || ddouble.IsZero(y)) {
+                    return ddouble.PlusZero;
+                }
 
                 if (!scale) {
                     y *= ddouble.Exp(-x);
@@ -1613,7 +1710,7 @@ namespace DDoubleOptimizedBessel {
 
                     return table[k];
                 }
-            };
+            }
 
             private class BesselIPsiTable {
                 private readonly ddouble alpha;
@@ -1654,7 +1751,7 @@ namespace DDoubleOptimizedBessel {
 
                     return table[k];
                 }
-            };
+            }
 
             private class BesselYEtaTable {
                 private readonly ddouble alpha;
@@ -1705,7 +1802,7 @@ namespace DDoubleOptimizedBessel {
 
                     return table[k];
                 }
-            };
+            }
 
             private class BesselYXiTable {
                 private readonly ddouble alpha;
@@ -1866,9 +1963,18 @@ namespace DDoubleOptimizedBessel {
                 ddouble alpha = nu - n;
 
                 ddouble y0 = PowerSeries.BesselY(n, x);
+
+                if (!ddouble.IsFinite(y0)) {
+                    return y0;
+                }
+
                 ddouble y1 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold, x);
                 ddouble y2 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5d, x);
                 ddouble y3 = PowerSeries.BesselY(n + ddouble.Sign(alpha) * InterpolationThreshold * 2d, x);
+
+                if (!ddouble.IsFinite(y1) || !ddouble.IsFinite(y2) || !ddouble.IsFinite(y3)) {
+                    return y1;
+                }
 
                 ddouble t = ddouble.Abs(alpha) / InterpolationThreshold;
                 ddouble y = Interpolate(t, y0, y1, y2, y3);
@@ -1881,9 +1987,18 @@ namespace DDoubleOptimizedBessel {
                 ddouble alpha = nu - n;
 
                 ddouble y0 = PowerSeries.BesselK(n, x, scale);
+
+                if (!ddouble.IsFinite(y0)) {
+                    return y0;
+                }
+
                 ddouble y1 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold, x, scale);
                 ddouble y2 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold * 1.5d, x, scale);
                 ddouble y3 = PowerSeries.BesselK(n + ddouble.Sign(alpha) * InterpolationThreshold * 2d, x, scale);
+
+                if (!ddouble.IsFinite(y1) || !ddouble.IsFinite(y2) || !ddouble.IsFinite(y3)) {
+                    return y1;
+                }
 
                 ddouble t = ddouble.Abs(alpha) / InterpolationThreshold;
                 ddouble y = Interpolate(t, y0, y1, y2, y3);
