@@ -648,7 +648,7 @@ namespace ComplexBessel {
 
                 return table[k];
             }
-        };
+        }
 
         private class BesselIPsiTable {
             private readonly MultiPrecision<N> alpha;
@@ -688,7 +688,7 @@ namespace ComplexBessel {
 
                 return table[k];
             }
-        };
+        }
 
         private class BesselYEtaTable {
             private readonly MultiPrecision<N> alpha;
@@ -739,7 +739,7 @@ namespace ComplexBessel {
 
                 return table[k];
             }
-        };
+        }
 
         private class BesselYXiTable {
             private readonly MultiPrecision<N> alpha;

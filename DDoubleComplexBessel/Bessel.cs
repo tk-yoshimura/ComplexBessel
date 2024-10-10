@@ -1,5 +1,6 @@
 ﻿using DoubleDouble;
 using DoubleDoubleComplex;
+using System.Diagnostics;
 
 namespace DDoubleComplexBessel {
     public static class Bessel {
@@ -47,6 +48,8 @@ namespace DDoubleComplexBessel {
                 return Limit.BesselY(nu, z);
             }
             else if (z.R <= PowerSeriesThreshold(nu, z.I) - besseljy_powerseries_bias) {
+                Debug.Assert(ddouble.Round(nu) == nu || ddouble.ILogB(ddouble.Round(nu) - nu) >= -4);
+
                 return PowerSeries.BesselY(nu, z);
             }
             else if (z.I <= miller_backward_threshold) {
@@ -103,6 +106,8 @@ namespace DDoubleComplexBessel {
                 return Limit.BesselK(nu, z);
             }
             else if (z.Magnitude <= besselk_nz_threshold) {
+                Debug.Assert(ddouble.Round(nu) == nu || ddouble.ILogB(ddouble.Round(nu) - nu) >= -4);
+
                 return PowerSeries.BesselK(nu, z);
             }
             else if (z.R >= besselk_pade_threshold) {

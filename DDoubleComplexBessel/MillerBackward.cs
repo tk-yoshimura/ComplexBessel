@@ -673,7 +673,7 @@ namespace DDoubleComplexBessel {
 
                 return table[k];
             }
-        };
+        }
 
         private class BesselIPsiTable {
             private readonly ddouble alpha;
@@ -714,7 +714,7 @@ namespace DDoubleComplexBessel {
 
                 return table[k];
             }
-        };
+        }
 
         private class BesselYEtaTable {
             private readonly ddouble alpha;
@@ -765,7 +765,7 @@ namespace DDoubleComplexBessel {
 
                 return table[k];
             }
-        };
+        }
 
         private class BesselYXiTable {
             private readonly ddouble alpha;

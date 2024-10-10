@@ -1,5 +1,4 @@
 ﻿using DoubleDouble;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DDoubleOptimizedBesselTests {
     [TestClass()]
@@ -188,7 +187,7 @@ namespace DDoubleOptimizedBesselTests {
                 ddouble.Zero,
             };
 
-            foreach ((ddouble x, ddouble[] expecteds) in new (ddouble, ddouble[])[] {(0, x0_expecteds)}) {
+            foreach ((ddouble x, ddouble[] expecteds) in new (ddouble, ddouble[])[] { (0, x0_expecteds) }) {
 
                 for ((ddouble nu, int i) = (-16, 0); i < expecteds.Length; nu += 0.25d, i++) {
                     ddouble expected = expecteds[i];
@@ -332,7 +331,7 @@ namespace DDoubleOptimizedBesselTests {
                 ddouble.NegativeInfinity,
             };
 
-            foreach ((ddouble x, ddouble[] expecteds) in new (ddouble, ddouble[])[] {(0, x0_expecteds)}) {
+            foreach ((ddouble x, ddouble[] expecteds) in new (ddouble, ddouble[])[] { (0, x0_expecteds) }) {
 
                 for ((ddouble nu, int i) = (-16, 0); i < expecteds.Length; nu += 0.25d, i++) {
                     ddouble expected = expecteds[i];
@@ -477,7 +476,7 @@ namespace DDoubleOptimizedBesselTests {
                 ddouble.Zero,
             };
 
-            foreach ((ddouble x, ddouble[] expecteds) in new (ddouble, ddouble[])[] {(0, x0_expecteds)}) {
+            foreach ((ddouble x, ddouble[] expecteds) in new (ddouble, ddouble[])[] { (0, x0_expecteds) }) {
 
                 for ((ddouble nu, int i) = (-16, 0); i < expecteds.Length; nu += 0.25d, i++) {
                     ddouble expected = expecteds[i];
@@ -558,7 +557,7 @@ namespace DDoubleOptimizedBesselTests {
                 ddouble.PositiveInfinity,
             };
 
-            foreach ((ddouble x, ddouble[] expecteds) in new (ddouble, ddouble[])[] {(0, x0_expecteds)}) {
+            foreach ((ddouble x, ddouble[] expecteds) in new (ddouble, ddouble[])[] { (0, x0_expecteds) }) {
 
                 for ((ddouble nu, int i) = (0, 0); i < expecteds.Length; nu += 0.25d, i++) {
                     ddouble expected = expecteds[i];
