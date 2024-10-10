@@ -36,21 +36,11 @@ namespace DDoubleOptimizedBessel {
                 return Limit.BesselY(nu, x);
             }
             else if (x <= PowerSeriesThreshold(nu) - BesselJYPowerseriesBias) {
-                if (x >= BesselYNearZero) {
-                    if (NearlyInteger(nu, out int n) || ddouble.Abs(n - nu) >= BesselYForcedMillerBackwardThreshold) {
-                        return PowerSeries.BesselY(nu, x);
-                    }
-                    else {
-                        return MillerBackward.BesselY(nu, x);
-                    }
+                if (NearlyInteger(nu, out int n) || ddouble.Abs(n - nu) >= BesselYForcedMillerBackwardThreshold) {
+                    return PowerSeries.BesselY(nu, x);
                 }
                 else {
-                    if (NearlyInteger(nu, out int n) || ddouble.Abs(n - nu) >= BesselYInterpolationDelta) {
-                        return PowerSeries.BesselY(nu, x);
-                    }
-                    else {
-                        return Interpolation.BesselYPowerSeries(nu, x);
-                    }
+                    return MillerBackward.BesselY(nu, x);
                 }
             }
             else {
@@ -104,7 +94,6 @@ namespace DDoubleOptimizedBessel {
         public static readonly double Eps = double.ScaleB(1, -105);
         public static readonly double BesselYNearZero = 0.125d;
         public static readonly double BesselYForcedMillerBackwardThreshold = double.ScaleB(1, -8);
-        public static readonly double BesselYInterpolationDelta = double.ScaleB(1, -16);
         public static readonly double BesselKInterpolationDelta = double.ScaleB(1, -8);
         public const double HankelThreshold = 38.875, MillerBackwardThreshold = 6;
         public const double BesselKPadeThreshold = 1, BesselKNearZeroThreshold = 2, BesselJYPowerseriesBias = 2;
@@ -1287,6 +1276,15 @@ namespace DDoubleOptimizedBessel {
                 else {
                     ddouble y = BesselYKernel(nu, x, m);
 
+                    if (!ddouble.IsFinite(y)) {
+                        if (n >= 0) {
+                            y = ddouble.NegativeInfinity;
+                        }
+                        else {
+                            y = ((-n) & 1) == 1 ? ddouble.PositiveInfinity : ddouble.NegativeInfinity;
+                        }
+                    }
+
                     return y;
                 }
             }
@@ -1959,36 +1957,6 @@ namespace DDoubleOptimizedBessel {
         }
 
         public static class Interpolation {
-            public static ddouble BesselYPowerSeries(ddouble nu, ddouble x) {
-                int n = (int)ddouble.Round(nu);
-                ddouble alpha = nu - n;
-
-                Debug.Assert(ddouble.Abs(alpha) <= BesselYInterpolationDelta);
-
-                ddouble y0 = PowerSeries.BesselY(n, x);
-
-                if (!ddouble.IsFinite(y0)) {
-                    return y0;
-                }
-
-                ddouble dnu = ddouble.Sign(alpha) * BesselYInterpolationDelta;
-
-                ddouble y1 = PowerSeries.BesselY(n + dnu, x);
-                ddouble y2 = PowerSeries.BesselY(n + dnu * 1.25d, x);
-                ddouble y3 = PowerSeries.BesselY(n + dnu * 1.5d, x);
-                ddouble y4 = PowerSeries.BesselY(n + dnu * 1.75d, x);
-                ddouble y5 = PowerSeries.BesselY(n + dnu * 2d, x);
-
-                if (!ddouble.IsFinite(y1) || !ddouble.IsFinite(y2) || !ddouble.IsFinite(y3) || !ddouble.IsFinite(y4) || !ddouble.IsFinite(y5)) {
-                    return y1;
-                }
-
-                ddouble t = ddouble.Abs(alpha) / BesselYInterpolationDelta;
-                ddouble y = Interpolate(t, y0, y1, y2, y3, y4, y5);
-
-                return y;
-            }
-
             public static ddouble BesselKPowerSeries(ddouble nu, ddouble x, bool scale = false) {
                 int n = (int)ddouble.Round(nu);
                 ddouble alpha = nu - n;
@@ -2036,17 +2004,6 @@ namespace DDoubleOptimizedBessel {
                 }
 
                 return k1;
-            }
-
-            private static ddouble Interpolate(ddouble t, ddouble y0, ddouble y1, ddouble y2, ddouble y3, ddouble y4, ddouble y5) {
-                ddouble y = y0
-                    + t * (-743 * y0 + 14700 * y1 - 37632 * y2 + 39200 * y3 - 19200 * y4 + 3675 * y5
-                    + t * (1035 * y0 - 37310 * y1 + 103040 * y2 - 112560 * y3 + 56960 * y4 - 11165 * y5
-                    + t * (-710 * y0 + 35140 * y1 - 103040 * y2 + 118160 * y3 - 62080 * y4 + 12530 * y5
-                    + t * (240 * y0 - 14560 * y1 + 44800 * y2 - 53760 * y3 + 29440 * y4 - 6160 * y5
-                    + t * (-32 * y0 + 2240 * y1 - 7168 * y2 + 8960 * y3 - 5120 * y4 + 1120 * y5))))) / 210d;
-
-                return y;
             }
 
             private static ddouble InterpolateEvenConvex(ddouble t, ddouble y0, ddouble y1, ddouble y2, ddouble y3, ddouble y4, ddouble y5) {
