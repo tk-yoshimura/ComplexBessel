@@ -35,13 +35,10 @@ namespace DDoubleOptimizedBessel {
             if (x >= HankelThreshold) {
                 return Limit.BesselY(nu, x);
             }
-            else if (x <= PowerSeriesThreshold(nu) - BesselJYPowerseriesBias) {
-                if (NearlyInteger(nu, out int n) || ddouble.Abs(n - nu) >= BesselYForcedMillerBackwardThreshold) {
-                    return PowerSeries.BesselY(nu, x);
-                }
-                else {
-                    return MillerBackward.BesselY(nu, x);
-                }
+            else if ((x <= PowerSeriesThreshold(nu) - BesselJYPowerseriesBias) &&
+                (NearlyInteger(nu, out int n) || ddouble.Abs(n - nu) >= BesselYForcedMillerBackwardThreshold)) {
+
+                return PowerSeries.BesselY(nu, x);
             }
             else {
                 return MillerBackward.BesselY(nu, x);
