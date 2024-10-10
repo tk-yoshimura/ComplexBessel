@@ -964,6 +964,62 @@ namespace DDoubleOptimizedBesselTests {
                         Assert.IsTrue(ddouble.Abs((y_dec.R - y.R) / y.R) < 8e-25);
                         Assert.IsTrue(ddouble.Abs((y_inc.R - y.R) / y.R) < 8e-25);
                     }
+
+                    for (ddouble x = 1d / 32; x <= 8; x += 1d / 32) {
+                        Complex y = DDoubleOptimizedBessel.ComplexBessel.BesselY(nu, (x, x));
+                        Complex y_dec = DDoubleOptimizedBessel.ComplexBessel.BesselY(ddouble.BitDecrement(nu), (x, x));
+                        Complex y_inc = DDoubleOptimizedBessel.ComplexBessel.BesselY(ddouble.BitIncrement(nu), (x, x));
+
+                        Console.WriteLine($"{nu}, {(x, x)}");
+                        Console.WriteLine(y);
+                        Console.WriteLine(y_dec);
+                        Console.WriteLine(y_inc);
+
+                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-26);
+                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-26);
+                    }
+
+                    for (ddouble x = 1d / 32; x <= 8; x += 1d / 32) {
+                        Complex y = DDoubleOptimizedBessel.ComplexBessel.BesselY(nu, (0, x));
+                        Complex y_dec = DDoubleOptimizedBessel.ComplexBessel.BesselY(ddouble.BitDecrement(nu), (0, x));
+                        Complex y_inc = DDoubleOptimizedBessel.ComplexBessel.BesselY(ddouble.BitIncrement(nu), (0, x));
+
+                        Console.WriteLine($"{nu}, {(0, x)}");
+                        Console.WriteLine(y);
+                        Console.WriteLine(y_dec);
+                        Console.WriteLine(y_inc);
+
+                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-27);
+                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-27);
+                    }
+
+                    for (ddouble x = 1d / 32; x <= 8; x += 1d / 32) {
+                        Complex y = DDoubleOptimizedBessel.ComplexBessel.BesselY(nu, (-x, x));
+                        Complex y_dec = DDoubleOptimizedBessel.ComplexBessel.BesselY(ddouble.BitDecrement(nu), (-x, x));
+                        Complex y_inc = DDoubleOptimizedBessel.ComplexBessel.BesselY(ddouble.BitIncrement(nu), (-x, x));
+
+                        Console.WriteLine($"{nu}, {(-x, x)}");
+                        Console.WriteLine(y);
+                        Console.WriteLine(y_dec);
+                        Console.WriteLine(y_inc);
+
+                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-26);
+                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-26);
+                    }
+
+                    for (ddouble x = 1d / 32; x <= 8; x += 1d / 32) {
+                        Complex y = DDoubleOptimizedBessel.ComplexBessel.BesselY(nu, -x);
+                        Complex y_dec = DDoubleOptimizedBessel.ComplexBessel.BesselY(ddouble.BitDecrement(nu), -x);
+                        Complex y_inc = DDoubleOptimizedBessel.ComplexBessel.BesselY(ddouble.BitIncrement(nu), -x);
+
+                        Console.WriteLine($"{nu}, {-x}");
+                        Console.WriteLine(y);
+                        Console.WriteLine(y_dec);
+                        Console.WriteLine(y_inc);
+
+                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-25);
+                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-25);
+                    }
                 }
             }
 
@@ -1340,6 +1396,62 @@ namespace DDoubleOptimizedBesselTests {
                         Complex y_inc = DDoubleOptimizedBessel.ComplexBessel.BesselK(ddouble.BitIncrement(nu), x);
 
                         Console.WriteLine($"{nu}, {x}");
+                        Console.WriteLine(y);
+                        Console.WriteLine(y_dec);
+                        Console.WriteLine(y_inc);
+
+                        Assert.IsTrue(ddouble.Abs((y_dec.R - y.R) / y.R) < 8e-27);
+                        Assert.IsTrue(ddouble.Abs((y_inc.R - y.R) / y.R) < 8e-27);
+                    }
+
+                    for (ddouble x = 1d / 32; x <= 8; x += 1d / 32) {
+                        Complex y = DDoubleOptimizedBessel.ComplexBessel.BesselK(nu, (x, x));
+                        Complex y_dec = DDoubleOptimizedBessel.ComplexBessel.BesselK(ddouble.BitDecrement(nu), (x, x));
+                        Complex y_inc = DDoubleOptimizedBessel.ComplexBessel.BesselK(ddouble.BitIncrement(nu), (x, x));
+
+                        Console.WriteLine($"{nu}, {(x, x)}");
+                        Console.WriteLine(y);
+                        Console.WriteLine(y_dec);
+                        Console.WriteLine(y_inc);
+
+                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-26);
+                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-26);
+                    }
+
+                    for (ddouble x = 1d / 32; x <= 8; x += 1d / 32) {
+                        Complex y = DDoubleOptimizedBessel.ComplexBessel.BesselK(nu, (0, x));
+                        Complex y_dec = DDoubleOptimizedBessel.ComplexBessel.BesselK(ddouble.BitDecrement(nu), (0, x));
+                        Complex y_inc = DDoubleOptimizedBessel.ComplexBessel.BesselK(ddouble.BitIncrement(nu), (0, x));
+
+                        Console.WriteLine($"{nu}, {(0, x)}");
+                        Console.WriteLine(y);
+                        Console.WriteLine(y_dec);
+                        Console.WriteLine(y_inc);
+
+                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-25);
+                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-25);
+                    }
+
+                    for (ddouble x = 1d / 32; x <= 8; x += 1d / 32) {
+                        Complex y = DDoubleOptimizedBessel.ComplexBessel.BesselK(nu, (-x, x));
+                        Complex y_dec = DDoubleOptimizedBessel.ComplexBessel.BesselK(ddouble.BitDecrement(nu), (-x, x));
+                        Complex y_inc = DDoubleOptimizedBessel.ComplexBessel.BesselK(ddouble.BitIncrement(nu), (-x, x));
+
+                        Console.WriteLine($"{nu}, {(-x, x)}");
+                        Console.WriteLine(y);
+                        Console.WriteLine(y_dec);
+                        Console.WriteLine(y_inc);
+
+                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-26);
+                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-26);
+                    }
+
+                    for (ddouble x = 1d / 4; x <= 8; x += 1d / 4) {
+                        Complex y = DDoubleOptimizedBessel.ComplexBessel.BesselK(nu, -x);
+                        Complex y_dec = DDoubleOptimizedBessel.ComplexBessel.BesselK(ddouble.BitDecrement(nu), -x);
+                        Complex y_inc = DDoubleOptimizedBessel.ComplexBessel.BesselK(ddouble.BitIncrement(nu), -x);
+
+                        Console.WriteLine($"{nu}, {-x}");
                         Console.WriteLine(y);
                         Console.WriteLine(y_dec);
                         Console.WriteLine(y_inc);
