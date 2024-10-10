@@ -1,6 +1,9 @@
 # ComplexBessel
  Complex Bessel Function Numerical Evaluation Note
  
+# Optimized Code
+[DoubleDouble |&nu;| \leq 16](DDoubleOptimizedBessel)
+ 
 ## Im(z) &lt; 0
 Complex Bessel functions are analytically connected so that they are complex conjugate symmetrically about the real axis.
 
