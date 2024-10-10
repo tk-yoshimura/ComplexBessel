@@ -1917,7 +1917,7 @@ namespace DDoubleOptimizedBessel {
 
                     this.alpha = alpha;
 
-                    ddouble phi0 = ddouble.Gamma(1 + alpha);
+                    ddouble phi0 = ddouble.Gamma(1d + alpha);
                     ddouble phi1 = phi0 * (alpha + 2d);
 
                     this.g = phi0;
