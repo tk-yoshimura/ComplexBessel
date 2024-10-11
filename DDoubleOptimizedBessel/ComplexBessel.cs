@@ -172,6 +172,18 @@ namespace DDoubleOptimizedBessel {
                 return y;
             }
         }
+
+        public static Complex HankelH1(ddouble nu, Complex z) {
+            Complex y = BesselJ(nu, z) + Complex.ImaginaryOne * BesselY(nu, z);
+
+            return y;
+        }
+
+        public static Complex HankelH2(ddouble nu, Complex z) {
+            Complex y = BesselJ(nu, z) - Complex.ImaginaryOne * BesselY(nu, z);
+
+            return y;
+        }
     }
 
     static class ComplexBesselUtil {
