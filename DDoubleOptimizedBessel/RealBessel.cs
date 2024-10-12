@@ -1143,7 +1143,7 @@ namespace DDoubleOptimizedBessel {
                 }
 
                 public ddouble Omega(ddouble x) {
-                    ddouble omega = x - ddouble.Ldexp(2 * Nu + 1, -2) * ddouble.PI;
+                    ddouble omega = x - ddouble.Ldexp(2d * Nu + 1d, -2) * ddouble.PI;
 
                     return omega;
                 }
