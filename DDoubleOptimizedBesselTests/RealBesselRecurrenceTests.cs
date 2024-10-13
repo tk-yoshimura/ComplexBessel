@@ -2544,10 +2544,10 @@ namespace DDoubleOptimizedBesselTests {
                 (18.5, nu18p5_expecteds), (19.5, nu19p5_expecteds), (20, nu20_expecteds), (20.25, nu20p25_expecteds),
                 (20.5, nu20p5_expecteds), (20.75, nu20p75_expecteds), (21, nu21_expecteds), (63.75, nu63p75_expecteds),
                 (64, nu64_expecteds), (127.75, nu127p75_expecteds), (128, nu128_expecteds), (255.5, nu255p5_expecteds),
-                (255.75, nu255p75_expecteds), (256, nu256_expecteds), (-16.25, num16p25_expecteds), (-16.75, num16p75_expecteds), 
-                (-17, num17_expecteds), (-17.5, num17p5_expecteds), (-18.5, num18p5_expecteds), (-19.5, num19p5_expecteds), 
-                (-20, num20_expecteds), (-20.25, num20p25_expecteds), (-20.5, num20p5_expecteds), (-20.75, num20p75_expecteds), 
-                (-21, num21_expecteds), (-63.75, num63p75_expecteds), (-64, num64_expecteds), (-127.75, num127p75_expecteds), 
+                (255.75, nu255p75_expecteds), (256, nu256_expecteds), (-16.25, num16p25_expecteds), (-16.75, num16p75_expecteds),
+                (-17, num17_expecteds), (-17.5, num17p5_expecteds), (-18.5, num18p5_expecteds), (-19.5, num19p5_expecteds),
+                (-20, num20_expecteds), (-20.25, num20p25_expecteds), (-20.5, num20p5_expecteds), (-20.75, num20p75_expecteds),
+                (-21, num21_expecteds), (-63.75, num63p75_expecteds), (-64, num64_expecteds), (-127.75, num127p75_expecteds),
                 (-128, num128_expecteds), (-255.5, num255p5_expecteds), (-255.75, num255p75_expecteds), (-256, num256_expecteds)}) {
 
                 ddouble[] xs = [0.125, 0.25, 0.5, 1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 64, 128, 256];

@@ -136,7 +136,7 @@ namespace DDoubleOptimizedBessel {
             }
         }
 
-        public static bool UseRecurrence(ddouble nu) { 
+        public static bool UseRecurrence(ddouble nu) {
             return ddouble.Abs(nu) > DirectMaxN;
         }
 
@@ -2094,7 +2094,7 @@ namespace DDoubleOptimizedBessel {
 
                     return y;
                 }
-                else { 
+                else {
                     if (NearlyInteger(nu, out int near_n)) {
                         return (near_n & 1) == 0 ? BesselJ(-near_n, x) : -BesselJ(-near_n, x);
                     }
@@ -2106,7 +2106,7 @@ namespace DDoubleOptimizedBessel {
                         (j1, j0) = (-ddouble.Ldexp(k + alpha, 1) * v * j1 - j0, j1);
                     }
 
-                    if (ddouble.IsNaN(j1)) { 
+                    if (ddouble.IsNaN(j1)) {
                         return (((int)ddouble.Floor(nu) & 1) == 0) ? ddouble.NegativeInfinity : ddouble.PositiveInfinity;
                     }
 
@@ -2203,19 +2203,18 @@ namespace DDoubleOptimizedBessel {
                     }
                 }
 
-                ddouble y = ddouble.Ldexp(
-                    RealBessel.BesselI(alpha + (DirectMaxN - 1), x, scale: true) / i1,
-                    (int)long.Max(-exp_sum, int.MinValue)
-                );
+                ddouble y = RealBessel.BesselI(alpha + (DirectMaxN - 1), x, scale: true) / i1;
 
                 if (!scale) {
                     y *= ddouble.Exp(x);
                 }
 
-                if (ddouble.IsNegative(nu) && !ddouble.IsInteger(nu_abs)) {
-                    ddouble bk = 2d * ddouble.RcpPI * ddouble.SinPI(nu_abs) * BesselK(nu_abs, x, scale: true);
+                y = ddouble.Ldexp(y, (int)long.Max(-exp_sum, int.MinValue));
 
-                    y += bk * (scale ? ddouble.Exp(-2d * x) : ddouble.Exp(-x));
+                if (ddouble.IsNegative(nu) && !ddouble.IsInteger(nu_abs)) {
+                    ddouble bk = 2d * ddouble.RcpPI * ddouble.SinPI(nu_abs) * BesselK(nu_abs, x, scale: false);
+
+                    y += scale ? (bk * ddouble.Exp(-x)) : bk;
                 }
 
                 return y;
@@ -2239,19 +2238,26 @@ namespace DDoubleOptimizedBessel {
                     return 0d;
                 }
 
-                (int exp, (k0, k1)) = ddouble.AdjustScale(0, (k0, k1));
+                long exp_sum = 0;
+                (int exp_bias, (k0, k1)) = ddouble.AdjustScale(0, (k0, k1));
 
                 ddouble v = 1d / x;
 
                 for (int k = DirectMaxN - 1; k < n; k++) {
                     (k1, k0) = (ddouble.Ldexp(k + alpha, 1) * v * k1 + k0, k1);
+
+                    if (ddouble.ILogB(k1) > 0) {
+                        int exp = ddouble.ILogB(k1);
+                        exp_sum += exp;
+                        (k0, k1) = (ddouble.Ldexp(k0, -exp), ddouble.Ldexp(k1, -exp));
+                    }
                 }
 
                 if (!scale) {
                     k1 *= ddouble.Exp(-x);
                 }
 
-                k1 = ddouble.Ldexp(k1, -exp);
+                k1 = ddouble.Ldexp(k1, (int)long.Max(exp_sum - exp_bias, int.MinValue));
 
                 return k1;
             }
