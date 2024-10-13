@@ -2208,12 +2208,11 @@ namespace DDoubleOptimizedBessel {
                     (int)long.Max(-exp_sum, int.MinValue)
                 );
 
-                if (ddouble.IsPositive(nu)) {
-                    if (!scale) {
-                        y *= ddouble.Exp(x);
-                    }
+                if (!scale) {
+                    y *= ddouble.Exp(x);
                 }
-                else if (!ddouble.IsInteger(nu_abs)) {
+
+                if (ddouble.IsNegative(nu) && !ddouble.IsInteger(nu_abs)) {
                     ddouble bk = 2d * ddouble.RcpPI * ddouble.SinPI(nu_abs) * BesselK(nu_abs, x, scale: true);
 
                     y += bk * (scale ? ddouble.Exp(-2d * x) : ddouble.Exp(-x));
