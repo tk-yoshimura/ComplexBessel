@@ -2043,6 +2043,10 @@ namespace DDoubleOptimizedBessel {
             public static ddouble BesselJ(ddouble nu, ddouble x) {
                 Debug.Assert(nu > DirectMaxN || nu < -DirectMaxN);
 
+                if (ddouble.IsPositiveInfinity(x)) {
+                    return 0d;
+                }
+
                 ddouble nu_abs = ddouble.Abs(nu);
                 int n = (int)ddouble.Floor(nu_abs);
                 ddouble alpha = nu_abs - n;
@@ -2117,6 +2121,10 @@ namespace DDoubleOptimizedBessel {
             public static ddouble BesselY(ddouble nu, ddouble x) {
                 Debug.Assert(nu > DirectMaxN || nu < -DirectMaxN);
 
+                if (ddouble.IsPositiveInfinity(x)) {
+                    return 0d;
+                }
+
                 ddouble nu_abs = ddouble.Abs(nu);
                 int n = (int)ddouble.Floor(nu_abs);
                 ddouble alpha = nu_abs - n;
@@ -2159,6 +2167,10 @@ namespace DDoubleOptimizedBessel {
 
             public static ddouble BesselI(ddouble nu, ddouble x, bool scale) {
                 Debug.Assert(nu > DirectMaxN || nu < -DirectMaxN);
+
+                if (ddouble.IsPositiveInfinity(x)) {
+                    return scale ? 0d : ddouble.PositiveInfinity;
+                }
 
                 ddouble nu_abs = ddouble.Abs(nu);
                 int n = (int)ddouble.Floor(nu_abs);
@@ -2207,6 +2219,10 @@ namespace DDoubleOptimizedBessel {
 
                 if (!scale) {
                     y *= ddouble.Exp(x);
+                }
+
+                if (ddouble.IsNaN(y)) {
+                    return scale ? 0d : ddouble.PositiveInfinity;
                 }
 
                 y = ddouble.Ldexp(y, (int)long.Max(-exp_sum, int.MinValue));
