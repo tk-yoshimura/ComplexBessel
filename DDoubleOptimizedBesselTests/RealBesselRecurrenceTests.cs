@@ -2554,12 +2554,14 @@ namespace DDoubleOptimizedBesselTests {
 
                 foreach ((ddouble x, ddouble expected) in xs.Zip(expecteds)) {
                     ddouble actual = RealBessel.BesselI(nu, x);
+                    ddouble actual_scaled = RealBessel.BesselI(nu, x, scale: true) * ddouble.Exp(x);
 
                     ddouble err = ddouble.Abs((expected - actual) / expected);
 
                     Console.WriteLine($"{nu}, {x}, {err:e10}");
                     Console.WriteLine(expected);
                     Console.WriteLine(actual);
+                    Console.WriteLine(actual_scaled);
 
                     Assert.IsFalse(ddouble.IsNaN(actual));
                     
@@ -2573,6 +2575,7 @@ namespace DDoubleOptimizedBesselTests {
                     }
 
                     Assert.IsTrue(err < 4e-27, $"\n{nu}, {x}\n{expected}\n{actual}\n{err}");
+                    Assert.IsTrue(ddouble.Abs((actual_scaled - actual) / actual) < 8e-26);
                 }
             }
         }
@@ -3041,12 +3044,14 @@ namespace DDoubleOptimizedBesselTests {
 
                 foreach ((ddouble x, ddouble expected) in xs.Zip(expecteds)) {
                     ddouble actual = RealBessel.BesselK(nu, x);
+                    ddouble actual_scaled = RealBessel.BesselK(nu, x, scale: true) * ddouble.Exp(-x);
 
                     ddouble err = ddouble.Abs((expected - actual) / expected);
 
                     Console.WriteLine($"{nu}, {x}, {err:e10}");
                     Console.WriteLine(expected);
                     Console.WriteLine(actual);
+                    Console.WriteLine(actual_scaled);
 
                     Assert.IsFalse(ddouble.IsNaN(actual));
                     
@@ -3060,6 +3065,10 @@ namespace DDoubleOptimizedBesselTests {
                     }
 
                     Assert.IsTrue(err < 4e-27, $"\n{nu}, {x}\n{expected}\n{actual}\n{err}");
+
+                    if (ddouble.IsFinite(actual_scaled)) {
+                        Assert.IsTrue(ddouble.Abs((actual_scaled - actual) / actual) < 8e-26);
+                    }
                 }
             }
         }
