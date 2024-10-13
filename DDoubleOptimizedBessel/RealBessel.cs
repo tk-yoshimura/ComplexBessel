@@ -2228,7 +2228,7 @@ namespace DDoubleOptimizedBessel {
                 y = ddouble.Ldexp(y, (int)long.Max(-exp_sum, int.MinValue));
 
                 if (ddouble.IsNegative(nu) && !ddouble.IsInteger(nu_abs)) {
-                    ddouble bk = 2d * ddouble.RcpPI * ddouble.SinPI(nu_abs) * BesselK(nu_abs, x, scale: false);
+                    ddouble bk = 2d * ddouble.RcpPI * SinCosPICache.SinPI(nu_abs) * BesselK(nu_abs, x, scale: false);
 
                     y += scale ? (bk * ddouble.Exp(-x)) : bk;
                 }
