@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>7ed18429-0e89-4ff2-a614-150a8ba208a6</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>bessely_accuracy.py</StartupFile>
+    <StartupFile>besselk_accuracy.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>

@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>9b8377fd-9e5f-4705-aa2d-bc6baaedc917</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>real.py</StartupFile>
+    <StartupFile>real_nuplus16.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -21,6 +21,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="real_nuplus16.py" />
     <Compile Include="real.py" />
     <Compile Include="besselk.py" />
     <Compile Include="besseli.py" />
