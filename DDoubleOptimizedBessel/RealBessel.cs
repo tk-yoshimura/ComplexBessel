@@ -2233,6 +2233,15 @@ namespace DDoubleOptimizedBessel {
                 ddouble k0 = RealBessel.BesselK(alpha + (DirectMaxN - 2), x, scale: true);
                 ddouble k1 = RealBessel.BesselK(alpha + (DirectMaxN - 1), x, scale: true);
 
+                if (ddouble.IsPositiveInfinity(k0) || ddouble.IsPositiveInfinity(k1)) {
+                    return ddouble.PositiveInfinity;
+                }
+                if (ddouble.IsZero(k0) && ddouble.IsZero(k1)) {
+                    return 0d;
+                }
+
+                (int exp, (k0, k1)) = ddouble.AdjustScale(0, (k0, k1));
+
                 ddouble v = 1d / x;
 
                 for (int k = DirectMaxN - 1; k < n; k++) {
@@ -2242,6 +2251,8 @@ namespace DDoubleOptimizedBessel {
                 if (!scale) {
                     k1 *= ddouble.Exp(-x);
                 }
+
+                k1 = ddouble.Ldexp(k1, -exp);
 
                 return k1;
             }
