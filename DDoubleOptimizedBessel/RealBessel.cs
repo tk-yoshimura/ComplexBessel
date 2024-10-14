@@ -284,20 +284,13 @@ namespace DDoubleOptimizedBessel {
                     return (((int)ddouble.Floor(nu) & 1) == 0) ? ddouble.NegativeInfinity : ddouble.PositiveInfinity;
                 }
 
-                for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                    ddouble w = x2 * d[k];
-                    ddouble dc = u * r[k] * (1d - w);
+                for (int k = 0; k <= terms; k++) {
+                    c = SeriesUtil.Add(c, u * r[k], 1d, -x2 * d[k], out bool convergence);
 
-                    ddouble c_next = c + dc;
-
-                    if (c == c_next || !ddouble.IsFinite(c_next)) {
-                        conv_times++;
-                    }
-                    else {
-                        conv_times = 0;
+                    if (convergence) {
+                        break;
                     }
 
-                    c = c_next;
                     u *= x4;
 
                     if (!ddouble.IsFinite(c)) {
@@ -342,22 +335,17 @@ namespace DDoubleOptimizedBessel {
 
                 ddouble c = 0d, u = 1d / sin;
 
-                for (int k = 0, t = 1, conv_times = 0; k <= terms && conv_times < 2; k++, t += 2) {
+                for (int k = 0, t = 1; k <= terms; k++, t += 2) {
                     ddouble a = t * s * g[t], q = gpn[t];
                     ddouble pa = p / a, qa = q / a;
 
-                    ddouble dc = u * r[k] * (4 * t * nu * (pa + qa) - (x2 - 4 * t * t) * (pa - qa));
+                    ddouble v = 4 * t * t - x2;
+                    c = SeriesUtil.Add(c, u * r[k], 4 * t * nu * (pa + qa), v * (pa - qa), out bool convergence);
 
-                    ddouble c_next = c + dc;
-
-                    if (c == c_next || !ddouble.IsFinite(c_next)) {
-                        conv_times++;
-                    }
-                    else {
-                        conv_times = 0;
+                    if (convergence && ddouble.ILogB(v) >= -4) {
+                        break;
                     }
 
-                    c = c_next;
                     u *= x4;
 
                     if (!ddouble.IsFinite(c)) {
@@ -406,19 +394,15 @@ namespace DDoubleOptimizedBessel {
 
                 ddouble c = 0d, u = ddouble.Ldexp(ddouble.RcpPI, 1);
 
-                for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                    ddouble dc = u * r[k] * ((h - ddouble.HarmonicNumber(2 * k)) * (1d - x2 * d[k]) + x2 * q[k]);
+                for (int k = 0; k <= terms; k++) {
+                    ddouble s = u * r[k], t = h - ddouble.HarmonicNumber(2 * k);
+                    c = SeriesUtil.Add(c, s * t, 1d, -x2 * d[k], out bool convergence1);
+                    c = SeriesUtil.Add(c, s, x2 * q[k], out bool convergence2);
 
-                    ddouble c_next = c + dc;
-
-                    if (c == c_next || !ddouble.IsFinite(c_next)) {
-                        conv_times++;
-                    }
-                    else {
-                        conv_times = 0;
+                    if (convergence1 && convergence2 && ddouble.ILogB(t) >= -4) {
+                        break;
                     }
 
-                    c = c_next;
                     u *= x4;
                 }
 
@@ -448,19 +432,15 @@ namespace DDoubleOptimizedBessel {
 
                 ddouble c = -2d / (x * ddouble.PI), u = x / ddouble.Ldexp(ddouble.PI, 1);
 
-                for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                    ddouble dc = u * r[k] * ((h - ddouble.HarmonicNumber(2 * k) - ddouble.HarmonicNumber(2 * k + 1)) * (1d - x2 * d[k]) + x2 * q[k]);
+                for (int k = 0; k <= terms; k++) {
+                    ddouble s = u * r[k], t = h - ddouble.HarmonicNumber(2 * k) - ddouble.HarmonicNumber(2 * k + 1);
+                    c = SeriesUtil.Add(c, s * t, 1d, -x2 * d[k], out bool convergence1);
+                    c = SeriesUtil.Add(c, s, x2 * q[k], out bool convergence2);
 
-                    ddouble c_next = c + dc;
-
-                    if (c == c_next || !ddouble.IsFinite(c_next)) {
-                        conv_times++;
-                    }
-                    else {
-                        conv_times = 0;
+                    if (convergence1 && convergence2 && ddouble.ILogB(t) >= -4) {
+                        break;
                     }
 
-                    c = c_next;
                     u *= x4;
                 }
 
@@ -505,19 +485,15 @@ namespace DDoubleOptimizedBessel {
                     return ddouble.NegativeInfinity;
                 }
 
-                for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                    ddouble dc = u * r[k] * ((h - ddouble.HarmonicNumber(2 * k) - ddouble.HarmonicNumber(2 * k + n)) * (1d - x2 * d[k]) + x2 * q[k]);
+                for (int k = 0; k <= terms; k++) {
+                    ddouble s = u * r[k], t = (h - ddouble.HarmonicNumber(2 * k) - ddouble.HarmonicNumber(2 * k + n));
+                    c = SeriesUtil.Add(c, s * t, 1d, -x2 * d[k], out bool convergence1);
+                    c = SeriesUtil.Add(c, s, x2 * q[k], out bool convergence2);
 
-                    ddouble c_next = c + dc;
-
-                    if (c == c_next || !ddouble.IsFinite(c_next)) {
-                        conv_times++;
-                    }
-                    else {
-                        conv_times = 0;
+                    if (convergence1 && convergence2 && ddouble.ILogB(t) >= -4) {
+                        break;
                     }
 
-                    c = c_next;
                     u *= x4;
                 }
 
@@ -550,20 +526,13 @@ namespace DDoubleOptimizedBessel {
                     return (((int)ddouble.Floor(nu) & 1) == 0) ? ddouble.NegativeInfinity : ddouble.PositiveInfinity;
                 }
 
-                for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                    ddouble w = x2 * d[k];
-                    ddouble dc = u * r[k] * (1d + w);
+                for (int k = 0; k <= terms; k++) {
+                    c = SeriesUtil.Add(c, u * r[k], 1d, x2 * d[k], out bool convergence);
 
-                    ddouble c_next = c + dc;
-
-                    if (c == c_next || !ddouble.IsFinite(c_next)) {
-                        conv_times++;
-                    }
-                    else {
-                        conv_times = 0;
+                    if (convergence) {
+                        break;
                     }
 
-                    c = c_next;
                     u *= x4;
 
                     if (!ddouble.IsFinite(c)) {
@@ -596,19 +565,13 @@ namespace DDoubleOptimizedBessel {
 
                 ddouble c = 0d, u = ddouble.PI / ddouble.Ldexp(ddouble.SinPI(nu), 1);
 
-                for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                    ddouble dc = u * r[k] * (tn * gn[k] - tp * gp[k]);
+                for (int k = 0; k <= terms; k++) {
+                    c = SeriesUtil.Add(c, u * r[k], tn * gn[k], -tp * gp[k], out bool convergence);
 
-                    ddouble c_next = c + dc;
-
-                    if (c == c_next || !ddouble.IsFinite(c_next)) {
-                        conv_times++;
-                    }
-                    else {
-                        conv_times = 0;
+                    if (convergence) {
+                        break;
                     }
 
-                    c = c_next;
                     u *= x2;
 
                     if (!ddouble.IsFinite(c)) {
@@ -647,19 +610,13 @@ namespace DDoubleOptimizedBessel {
 
                 ddouble c = 0d, u = 1d;
 
-                for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                    ddouble dc = u * r[k] * (h + ddouble.HarmonicNumber(k));
+                for (int k = 0; k <= terms; k++) {
+                    c = SeriesUtil.Add(c, u * r[k], h, ddouble.HarmonicNumber(k), out bool convergence);
 
-                    ddouble c_next = c + dc;
-
-                    if (c == c_next || !ddouble.IsFinite(c_next)) {
-                        conv_times++;
-                    }
-                    else {
-                        conv_times = 0;
+                    if (convergence) {
+                        break;
                     }
 
-                    c = c_next;
                     u *= x2;
                 }
 
@@ -682,19 +639,13 @@ namespace DDoubleOptimizedBessel {
 
                 ddouble c = 1d / x, u = ddouble.Ldexp(x, -1);
 
-                for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                    ddouble dc = u * r[k] * (h - ddouble.Ldexp(ddouble.HarmonicNumber(k) + ddouble.HarmonicNumber(k + 1), -1));
+                for (int k = 0; k <= terms; k++) {
+                    c = SeriesUtil.Add(c, u * r[k], h, -ddouble.Ldexp(ddouble.HarmonicNumber(k) + ddouble.HarmonicNumber(k + 1), -1), out bool convergence);
 
-                    ddouble c_next = c + dc;
-
-                    if (c == c_next || !ddouble.IsFinite(c_next)) {
-                        conv_times++;
-                    }
-                    else {
-                        conv_times = 0;
+                    if (convergence) {
+                        break;
                     }
 
-                    c = c_next;
                     u *= x2;
                 }
 
@@ -2081,18 +2032,21 @@ namespace DDoubleOptimizedBessel {
                     long exp_sum = 0;
                     (ddouble j0, ddouble j1) = (ddouble.Abs(s) > 1d) ? ((ddouble)1d, 1d / s) : (s, 1d);
 
-                    for (int k = n - 1; k >= DirectMaxN; k--) {
+                    for (int k = n - 1; k >= DirectMaxN - 1; k--) {
                         (j1, j0) = (ddouble.Ldexp(k + alpha, 1) * v * j1 - j0, j1);
 
-                        if (int.Sign(ddouble.ILogB(j0)) == int.Sign(ddouble.ILogB(j1))) {
-                            int exp = ddouble.ILogB(j1);
+                        int j0_exp = ddouble.ILogB(j0), j1_exp = ddouble.ILogB(j1);
+                        if (int.Sign(j0_exp) * int.Sign(j1_exp) > 0) {
+                            int exp = j0_exp > 0 ? int.Max(j0_exp, j1_exp) : int.Min(j0_exp, j1_exp);
                             exp_sum += exp;
                             (j0, j1) = (ddouble.Ldexp(j0, -exp), ddouble.Ldexp(j1, -exp));
                         }
                     }
 
                     ddouble y = ddouble.Ldexp(
-                        RealBessel.BesselJ(alpha + (DirectMaxN - 1), x) / j1,
+                        ddouble.Abs(j0) >= ddouble.Abs(j1)
+                        ? ddouble.BesselJ(alpha + (DirectMaxN - 1), x) / j0
+                        : ddouble.BesselJ(alpha + (DirectMaxN - 2), x) / j1,
                         (int)long.Clamp(-exp_sum, int.MinValue, int.MaxValue)
                     ) * ((ddouble.Abs(s) > 1d) ? 1d : s);
 
