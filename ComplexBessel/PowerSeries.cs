@@ -1,7 +1,10 @@
-﻿using MultiPrecision;
+﻿using DDoubleOptimizedBessel;
+using MultiPrecision;
 using MultiPrecisionComplex;
+using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Numerics;
 
 namespace ComplexBessel {
     public class PowerSeries<N> where N : struct, IConstant {
@@ -96,20 +99,13 @@ namespace ComplexBessel {
 
             Complex<N> c = 0d, u = Complex<N>.Pow(Complex<N>.Ldexp(z, -1), nu);
 
-            for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                Complex<N> w = z2 * d[k];
-                Complex<N> dc = u * r[k] * (1d - w);
+            for (int k = 0; k <= terms; k++) {
+                c = SeriesUtil<N>.Add(c, u * r[k], 1d, -z2 * d[k], out bool convergence);
 
-                Complex<N> c_next = c + dc;
-
-                if (c == c_next || !Complex<N>.IsFinite(c_next)) {
-                    conv_times++;
-                }
-                else {
-                    conv_times = 0;
+                if (convergence) {
+                    break;
                 }
 
-                c = c_next;
                 u *= z4;
 
                 if (!Complex<N>.IsFinite(c)) {
@@ -139,22 +135,17 @@ namespace ComplexBessel {
 
             Complex<N> c = 0d, u = 1d / sin;
 
-            for (int k = 0, t = 1, conv_times = 0; k <= terms && conv_times < 2; k++, t += 2) {
+            for (int k = 0, t = 1; k <= terms; k++, t += 2) {
                 Complex<N> a = t * s * g[t], q = gpn[t];
                 Complex<N> pa = p / a, qa = q / a;
 
-                Complex<N> dc = u * r[k] * (4 * t * nu * (pa + qa) - (z2 - 4 * t * t) * (pa - qa));
+                Complex<N> v = 4 * t * t - z2;
+                c = SeriesUtil<N>.Add(c, u * r[k], 4 * t * nu * (pa + qa), v * (pa - qa), out bool convergence);
 
-                Complex<N> c_next = c + dc;
-
-                if (c == c_next || !Complex<N>.IsFinite(c_next)) {
-                    conv_times++;
-                }
-                else {
-                    conv_times = 0;
+                if (convergence && v.Exponent >= -4) {
+                    break;
                 }
 
-                c = c_next;
                 u *= z4;
 
                 if (!Complex<N>.IsFinite(c)) {
@@ -200,19 +191,15 @@ namespace ComplexBessel {
 
             Complex<N> c = 0d, u = Complex<N>.Ldexp(MultiPrecision<N>.RcpPI, 1);
 
-            for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                Complex<N> dc = u * r[k] * ((h - MultiPrecision<N>.HarmonicNumber(2 * k)) * (1d - z2 * d[k]) + z2 * q[k]);
+            for (int k = 0; k <= terms; k++) {
+                Complex<N> s = u * r[k], t = h - MultiPrecision<N>.HarmonicNumber(2 * k);
+                c = SeriesUtil<N>.Add(c, s * t, 1d, -z2 * d[k], out bool convergence1);
+                c = SeriesUtil<N>.Add(c, s, z2 * q[k], out bool convergence2);
 
-                Complex<N> c_next = c + dc;
-
-                if (c == c_next || !Complex<N>.IsFinite(c_next)) {
-                    conv_times++;
-                }
-                else {
-                    conv_times = 0;
+                if (convergence1 && convergence2 && t.Exponent >= -4) {
+                    break;
                 }
 
-                c = c_next;
                 u *= z4;
             }
 
@@ -239,19 +226,15 @@ namespace ComplexBessel {
 
             Complex<N> c = -2d / (z * MultiPrecision<N>.PI), u = z / Complex<N>.Ldexp(MultiPrecision<N>.PI, 1);
 
-            for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                Complex<N> dc = u * r[k] * ((h - MultiPrecision<N>.HarmonicNumber(2 * k) - MultiPrecision<N>.HarmonicNumber(2 * k + 1)) * (1d - z2 * d[k]) + z2 * q[k]);
+            for (int k = 0; k <= terms; k++) {
+                Complex<N> s = u * r[k], t = h - MultiPrecision<N>.HarmonicNumber(2 * k) - MultiPrecision<N>.HarmonicNumber(2 * k + 1);
+                c = SeriesUtil<N>.Add(c, s * t, 1d, -z2 * d[k], out bool convergence1);
+                c = SeriesUtil<N>.Add(c, s, z2 * q[k], out bool convergence2);
 
-                Complex<N> c_next = c + dc;
-
-                if (c == c_next || !Complex<N>.IsFinite(c_next)) {
-                    conv_times++;
-                }
-                else {
-                    conv_times = 0;
+                if (convergence1 && convergence2 && t.Exponent >= -4) {
+                    break;
                 }
 
-                c = c_next;
                 u *= z4;
             }
 
@@ -288,19 +271,15 @@ namespace ComplexBessel {
 
             Complex<N> h = Complex<N>.Ldexp(Complex<N>.Log(Complex<N>.Ldexp(z, -1)) + MultiPrecision<N>.EulerGamma, 1);
 
-            for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                Complex<N> dc = u * r[k] * ((h - MultiPrecision<N>.HarmonicNumber(2 * k) - MultiPrecision<N>.HarmonicNumber(2 * k + n)) * (1d - z2 * d[k]) + z2 * q[k]);
+            for (int k = 0; k <= terms; k++) {
+                Complex<N> s = u * r[k], t = (h - MultiPrecision<N>.HarmonicNumber(2 * k) - MultiPrecision<N>.HarmonicNumber(2 * k + n));
+                c = SeriesUtil<N>.Add(c, s * t, 1d, -z2 * d[k], out bool convergence1);
+                c = SeriesUtil<N>.Add(c, s, z2 * q[k], out bool convergence2);
 
-                Complex<N> c_next = c + dc;
-
-                if (c == c_next || !Complex<N>.IsFinite(c_next)) {
-                    conv_times++;
-                }
-                else {
-                    conv_times = 0;
+                if (convergence1 && convergence2 && t.Exponent >= -4) {
+                    break;
                 }
 
-                c = c_next;
                 u *= z4;
             }
 
@@ -323,20 +302,13 @@ namespace ComplexBessel {
 
             Complex<N> c = 0d, u = Complex<N>.Pow(Complex<N>.Ldexp(z, -1), nu);
 
-            for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                Complex<N> w = z2 * d[k];
-                Complex<N> dc = u * r[k] * (1d + w);
+            for (int k = 0; k <= terms; k++) {
+                c = SeriesUtil<N>.Add(c, u * r[k], 1d, z2 * d[k], out bool convergence);
 
-                Complex<N> c_next = c + dc;
-
-                if (c == c_next || !Complex<N>.IsFinite(c_next)) {
-                    conv_times++;
-                }
-                else {
-                    conv_times = 0;
+                if (convergence) {
+                    break;
                 }
 
-                c = c_next;
                 u *= z4;
 
                 if (!Complex<N>.IsFinite(c)) {
@@ -365,19 +337,13 @@ namespace ComplexBessel {
 
             Complex<N> c = 0d, u = MultiPrecision<N>.PI / Complex<N>.Ldexp(MultiPrecision<N>.SinPI(nu), 1);
 
-            for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                Complex<N> dc = u * r[k] * (tn * gn[k] - tp * gp[k]);
+            for (int k = 0; k <= terms; k++) {
+                c = SeriesUtil<N>.Add(c, u * r[k], tn * gn[k], -tp * gp[k], out bool convergence);
 
-                Complex<N> c_next = c + dc;
-
-                if (c == c_next || !Complex<N>.IsFinite(c_next)) {
-                    conv_times++;
-                }
-                else {
-                    conv_times = 0;
+                if (convergence) {
+                    break;
                 }
 
-                c = c_next;
                 u *= z2;
 
                 if (!Complex<N>.IsFinite(c)) {
@@ -408,19 +374,13 @@ namespace ComplexBessel {
 
             Complex<N> c = 0d, u = 1d;
 
-            for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                Complex<N> dc = u * r[k] * (h + MultiPrecision<N>.HarmonicNumber(k));
+            for (int k = 0; k <= terms; k++) {
+                c = SeriesUtil<N>.Add(c, u * r[k], h, MultiPrecision<N>.HarmonicNumber(k), out bool convergence);
 
-                Complex<N> c_next = c + dc;
-
-                if (c == c_next || !Complex<N>.IsFinite(c_next)) {
-                    conv_times++;
-                }
-                else {
-                    conv_times = 0;
+                if (convergence) {
+                    break;
                 }
 
-                c = c_next;
                 u *= z2;
             }
 
@@ -435,19 +395,13 @@ namespace ComplexBessel {
 
             Complex<N> c = 1d / z, u = Complex<N>.Ldexp(z, -1);
 
-            for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                Complex<N> dc = u * r[k] * (h - Complex<N>.Ldexp(MultiPrecision<N>.HarmonicNumber(k) + MultiPrecision<N>.HarmonicNumber(k + 1), -1));
+            for (int k = 0; k <= terms; k++) {
+                c = SeriesUtil<N>.Add(c, u * r[k], h, -MultiPrecision<N>.Ldexp(MultiPrecision<N>.HarmonicNumber(k) + MultiPrecision<N>.HarmonicNumber(k + 1), -1), out bool convergence);
 
-                Complex<N> c_next = c + dc;
-
-                if (c == c_next || !Complex<N>.IsFinite(c_next)) {
-                    conv_times++;
-                }
-                else {
-                    conv_times = 0;
+                if (convergence) {
+                    break;
                 }
 
-                c = c_next;
                 u *= z2;
             }
 
