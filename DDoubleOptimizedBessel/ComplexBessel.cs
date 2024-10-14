@@ -352,20 +352,13 @@ namespace DDoubleOptimizedBessel {
                     return Complex.NaN;
                 }
 
-                for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                    Complex w = z2 * d[k];
-                    Complex dc = u * r[k] * (1d - w);
+                for (int k = 0; k <= terms; k++) {
+                    c = SeriesUtil.Add(c, u * r[k], 1d, -z2 * d[k], out bool convergence);
 
-                    Complex c_next = c + dc;
-
-                    if (c == c_next || !Complex.IsFinite(c_next)) {
-                        conv_times++;
-                    }
-                    else {
-                        conv_times = 0;
+                    if (convergence) {
+                        break;
                     }
 
-                    c = c_next;
                     u *= z4;
 
                     if (!Complex.IsFinite(c)) {
@@ -400,22 +393,17 @@ namespace DDoubleOptimizedBessel {
 
                 Complex c = 0d, u = 1d / sin;
 
-                for (int k = 0, t = 1, conv_times = 0; k <= terms && conv_times < 2; k++, t += 2) {
+                for (int k = 0, t = 1; k <= terms; k++, t += 2) {
                     Complex a = t * s * g[t], q = gpn[t];
                     Complex pa = p / a, qa = q / a;
 
-                    Complex dc = u * r[k] * (4 * t * nu * (pa + qa) - (z2 - 4 * t * t) * (pa - qa));
+                    Complex v = 4 * t * t - z2;
+                    c = SeriesUtil.Add(c, u * r[k], 4 * t * nu * (pa + qa), v * (pa - qa), out bool convergence);
 
-                    Complex c_next = c + dc;
-
-                    if (c == c_next || !Complex.IsFinite(c_next)) {
-                        conv_times++;
-                    }
-                    else {
-                        conv_times = 0;
+                    if (convergence && Complex.ILogB(v) >= -4) {
+                        break;
                     }
 
-                    c = c_next;
                     u *= z4;
 
                     if (!Complex.IsFinite(c)) {
@@ -464,19 +452,15 @@ namespace DDoubleOptimizedBessel {
 
                 Complex c = 0d, u = Complex.Ldexp(ddouble.RcpPI, 1);
 
-                for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                    Complex dc = u * r[k] * ((h - ddouble.HarmonicNumber(2 * k)) * (1d - z2 * d[k]) + z2 * q[k]);
+                for (int k = 0; k <= terms; k++) {
+                    Complex s = u * r[k], t = h - ddouble.HarmonicNumber(2 * k);
+                    c = SeriesUtil.Add(c, s * t, 1d, -z2 * d[k], out bool convergence1);
+                    c = SeriesUtil.Add(c, s, z2 * q[k], out bool convergence2);
 
-                    Complex c_next = c + dc;
-
-                    if (c == c_next || !Complex.IsFinite(c_next)) {
-                        conv_times++;
-                    }
-                    else {
-                        conv_times = 0;
+                    if (convergence1 && convergence2 && Complex.ILogB(t) >= -4) {
+                        break;
                     }
 
-                    c = c_next;
                     u *= z4;
                 }
 
@@ -506,19 +490,15 @@ namespace DDoubleOptimizedBessel {
 
                 Complex c = -2d / (z * ddouble.PI), u = z / Complex.Ldexp(ddouble.PI, 1);
 
-                for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                    Complex dc = u * r[k] * ((h - ddouble.HarmonicNumber(2 * k) - ddouble.HarmonicNumber(2 * k + 1)) * (1d - z2 * d[k]) + z2 * q[k]);
+                for (int k = 0; k <= terms; k++) {
+                    Complex s = u * r[k], t = h - ddouble.HarmonicNumber(2 * k) - ddouble.HarmonicNumber(2 * k + 1);
+                    c = SeriesUtil.Add(c, s * t, 1d, -z2 * d[k], out bool convergence1);
+                    c = SeriesUtil.Add(c, s, z2 * q[k], out bool convergence2);
 
-                    Complex c_next = c + dc;
-
-                    if (c == c_next || !Complex.IsFinite(c_next)) {
-                        conv_times++;
-                    }
-                    else {
-                        conv_times = 0;
+                    if (convergence1 && convergence2 && Complex.ILogB(t) >= -4) {
+                        break;
                     }
 
-                    c = c_next;
                     u *= z4;
                 }
 
@@ -563,19 +543,15 @@ namespace DDoubleOptimizedBessel {
                     return Complex.NaN;
                 }
 
-                for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                    Complex dc = u * r[k] * ((h - ddouble.HarmonicNumber(2 * k) - ddouble.HarmonicNumber(2 * k + n)) * (1d - z2 * d[k]) + z2 * q[k]);
+                for (int k = 0; k <= terms; k++) {
+                    Complex s = u * r[k], t = (h - ddouble.HarmonicNumber(2 * k) - ddouble.HarmonicNumber(2 * k + n));
+                    c = SeriesUtil.Add(c, s * t, 1d, -z2 * d[k], out bool convergence1);
+                    c = SeriesUtil.Add(c, s, z2 * q[k], out bool convergence2);
 
-                    Complex c_next = c + dc;
-
-                    if (c == c_next || !Complex.IsFinite(c_next)) {
-                        conv_times++;
-                    }
-                    else {
-                        conv_times = 0;
+                    if (convergence1 && convergence2 && Complex.ILogB(t) >= -4) {
+                        break;
                     }
 
-                    c = c_next;
                     u *= z4;
                 }
 
@@ -609,20 +585,13 @@ namespace DDoubleOptimizedBessel {
                     return Complex.NaN;
                 }
 
-                for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                    Complex w = z2 * d[k];
-                    Complex dc = u * r[k] * (1d + w);
+                for (int k = 0; k <= terms; k++) {
+                    c = SeriesUtil.Add(c, u * r[k], 1d, z2 * d[k], out bool convergence);
 
-                    Complex c_next = c + dc;
-
-                    if (c == c_next || !Complex.IsFinite(c_next)) {
-                        conv_times++;
-                    }
-                    else {
-                        conv_times = 0;
+                    if (convergence) {
+                        break;
                     }
 
-                    c = c_next;
                     u *= z4;
 
                     if (!Complex.IsFinite(c)) {
@@ -655,19 +624,13 @@ namespace DDoubleOptimizedBessel {
 
                 Complex c = 0d, u = ddouble.PI / Complex.Ldexp(ddouble.SinPI(nu), 1);
 
-                for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                    Complex dc = u * r[k] * (tn * gn[k] - tp * gp[k]);
+                for (int k = 0; k <= terms; k++) {
+                    c = SeriesUtil.Add(c, u * r[k], tn * gn[k], -tp * gp[k], out bool convergence);
 
-                    Complex c_next = c + dc;
-
-                    if (c == c_next || !Complex.IsFinite(c_next)) {
-                        conv_times++;
-                    }
-                    else {
-                        conv_times = 0;
+                    if (convergence) {
+                        break;
                     }
 
-                    c = c_next;
                     u *= z2;
 
                     if (!Complex.IsFinite(c)) {
@@ -706,19 +669,13 @@ namespace DDoubleOptimizedBessel {
 
                 Complex c = 0d, u = 1d;
 
-                for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                    Complex dc = u * r[k] * (h + ddouble.HarmonicNumber(k));
+                for (int k = 0; k <= terms; k++) {
+                    c = SeriesUtil.Add(c, u * r[k], h, ddouble.HarmonicNumber(k), out bool convergence);
 
-                    Complex c_next = c + dc;
-
-                    if (c == c_next || !Complex.IsFinite(c_next)) {
-                        conv_times++;
-                    }
-                    else {
-                        conv_times = 0;
+                    if (convergence) {
+                        break;
                     }
 
-                    c = c_next;
                     u *= z2;
                 }
 
@@ -741,19 +698,13 @@ namespace DDoubleOptimizedBessel {
 
                 Complex c = 1d / z, u = Complex.Ldexp(z, -1);
 
-                for (int k = 0, conv_times = 0; k <= terms && conv_times < 2; k++) {
-                    Complex dc = u * r[k] * (h - Complex.Ldexp(ddouble.HarmonicNumber(k) + ddouble.HarmonicNumber(k + 1), -1));
+                for (int k = 0; k <= terms; k++) {
+                    c = SeriesUtil.Add(c, u * r[k], h, -ddouble.Ldexp(ddouble.HarmonicNumber(k) + ddouble.HarmonicNumber(k + 1), -1), out bool convergence);
 
-                    Complex c_next = c + dc;
-
-                    if (c == c_next || !Complex.IsFinite(c_next)) {
-                        conv_times++;
-                    }
-                    else {
-                        conv_times = 0;
+                    if (convergence) {
+                        break;
                     }
 
-                    c = c_next;
                     u *= z2;
                 }
 
