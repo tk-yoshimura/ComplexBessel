@@ -43,6 +43,10 @@
 \end{align*}
 
 \begin{align*}
+  Y_{-\nu}(a+b i) = i \cdot \overline{ i^{\nu} I_{\nu} (b+a i) } + \frac{2}{\pi} \left( i \cdot \overline{ i^{\nu} } \sin(\nu \pi) - i^{\nu} \right)  \overline{ K_{\nu}(b+a i) } \\
+\end{align*}
+
+\begin{align*}
   K_{\nu}(a+b i) = \frac{\pi}{2} \left( i^{-2\nu-1} I_{\nu}(a+b i) - \overline{i^{\nu} Y_{\nu}(b+a i)} \right)
 \end{align*}
 
