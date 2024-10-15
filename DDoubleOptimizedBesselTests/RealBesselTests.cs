@@ -1062,7 +1062,7 @@ namespace DDoubleOptimizedBesselTests {
             for (int n = -16; n <= 16; n++) {
                 foreach (ddouble u in new ddouble[] {
                     0, Math.ScaleB(-1, -4), Math.ScaleB(-1, -8), Math.ScaleB(-1, -16), Math.ScaleB(1, -4), Math.ScaleB(1, -8), Math.ScaleB(1, -16) }) {
-                    
+
                     ddouble nu = n + u;
 
                     if (ddouble.Abs(nu) > 16) {
@@ -1072,7 +1072,7 @@ namespace DDoubleOptimizedBesselTests {
                     for (ddouble x = 1d / 32; x <= 128; x *= 2) {
                         ddouble y = DDoubleOptimizedBessel.RealBessel.BesselI(nu, x);
                         ddouble y_scaled = DDoubleOptimizedBessel.RealBessel.BesselI(nu, x, scale: true) * ddouble.Exp(x);
-                        
+
                         Console.WriteLine($"{nu}, {x}");
                         Console.WriteLine(y);
                         Console.WriteLine(y_scaled);
@@ -1088,7 +1088,7 @@ namespace DDoubleOptimizedBesselTests {
             for (int n = -16; n <= 16; n++) {
                 foreach (ddouble u in new ddouble[] {
                     0, Math.ScaleB(-1, -4), Math.ScaleB(-1, -8), Math.ScaleB(-1, -16), Math.ScaleB(1, -4), Math.ScaleB(1, -8), Math.ScaleB(1, -16) }) {
-                    
+
                     ddouble nu = n + u;
 
                     if (ddouble.Abs(nu) > 16) {
@@ -1098,7 +1098,7 @@ namespace DDoubleOptimizedBesselTests {
                     for (ddouble x = 1d / 32; x <= 128; x *= 2) {
                         ddouble y = DDoubleOptimizedBessel.RealBessel.BesselK(nu, x);
                         ddouble y_scaled = DDoubleOptimizedBessel.RealBessel.BesselK(nu, x, scale: true) * ddouble.Exp(-x);
-                        
+
                         Console.WriteLine($"{nu}, {x}");
                         Console.WriteLine(y);
                         Console.WriteLine(y_scaled);

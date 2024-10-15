@@ -16,6 +16,10 @@ namespace ComplexBessel {
                 return (SinCosPICache<Pow2.N4>.CosPI(nu), SinCosPICache<Pow2.N4>.SinPI(nu)) * BesselJ(nu, -z);
             }
 
+            if (BesselUtil<Pow2.N4>.UseRecurrence(nu)) {
+                return Recurrence.BesselJ(nu, z);
+            }
+
             if (z.Magnitude >= 46.5) {
                 return Limit<Pow2.N4>.BesselJ(nu, z);
             }
@@ -39,6 +43,10 @@ namespace ComplexBessel {
 
             if (z.R.Sign == Sign.Minus) {
                 return (SinCosPICache<Pow2.N4>.CosPI(nu), -SinCosPICache<Pow2.N4>.SinPI(nu)) * BesselY(nu, -z) + (0, 2 * SinCosPICache<Pow2.N4>.CosPI(nu)) * BesselJ(nu, -z);
+            }
+
+            if (BesselUtil<Pow2.N4>.UseRecurrence(nu)) {
+                return Recurrence.BesselY(nu, z);
             }
 
             if (z.Magnitude >= 46.5) {
@@ -74,6 +82,10 @@ namespace ComplexBessel {
                 return (SinCosPICache<Pow2.N4>.CosPI(nu), SinCosPICache<Pow2.N4>.SinPI(nu)) * BesselI(nu, -z);
             }
 
+            if (BesselUtil<Pow2.N4>.UseRecurrence(nu)) {
+                return Recurrence.BesselI(nu, z);
+            }
+
             if (z.Magnitude >= 46.25) {
                 return Limit<Pow2.N4>.BesselI(nu, z);
             }
@@ -96,6 +108,10 @@ namespace ComplexBessel {
 
             if (z.R.Sign == Sign.Minus) {
                 return (SinCosPICache<Pow2.N4>.CosPI(nu), -SinCosPICache<Pow2.N4>.SinPI(nu)) * BesselK(nu, -z) - (0, MP4.PI) * BesselI(nu, -z);
+            }
+
+            if (BesselUtil<Pow2.N4>.UseRecurrence(nu)) {
+                return Recurrence.BesselK(nu, z);
             }
 
             if (z.Magnitude >= 44.5) {

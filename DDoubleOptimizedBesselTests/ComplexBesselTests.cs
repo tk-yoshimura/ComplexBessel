@@ -122,6 +122,211 @@ namespace DDoubleOptimizedBesselTests {
         }
 
         [TestMethod()]
+        public void BesselJRecurrenceTest() {
+            double[] vs = [0, 1 / 8d, 1 / 4d, 1 / 2d, 1, 2, 4, 8, 16, 32, 64, 128, 256];
+
+            double[] nus = [16.25, 16.5, 16.75, 17, 17.25, 17.5, 17.75, 18,
+                           18.25, 18.5, 18.75, 19, 19.5, 20, 20.25, 20.5, 20.75,
+                           21, 63.75, 64, 127.75, 128, 255.5, 255.75, 256];
+
+            foreach (double nu_abs in nus) {
+
+                foreach (double nu in new double[] { nu_abs, -nu_abs }) {
+                    Console.WriteLine(nu);
+
+                    foreach (double r in vs) {
+                        foreach (double i in vs) {
+                            if (r == 0 && i == 0) {
+                                continue;
+                            }
+
+                            Complex expected = BesselN4.BesselJ(nu, (r, i)).ToString();
+                            Complex actual = DDoubleOptimizedBessel.ComplexBessel.BesselJ(nu, (r, i));
+
+                            ddouble err = (expected - actual).Magnitude / expected.Magnitude;
+
+                            Console.WriteLine($"{nu}, {(r, i)}, {err:e4}");
+                            Console.WriteLine(expected);
+                            Console.WriteLine(actual);
+
+                            if (!Complex.IsFinite(expected)) {
+                                continue; //ignore
+                            }
+
+                            if (Complex.IsZero(expected)) {
+                                Assert.IsTrue(Complex.IsZero(actual));
+                                continue;
+                            }
+
+                            if (expected.Magnitude < 1e-292) {
+                                Assert.IsTrue(actual.Magnitude < 1e-291);
+                                continue;
+                            }
+
+                            Assert.IsTrue(err < 4e-27, $"\n{nu}, {(r, i)}\n{expected}\n{actual}\n{err:e4}");
+                        }
+                    }
+
+                    Console.WriteLine(string.Empty);
+                }
+            }
+        }
+
+        [TestMethod()]
+        public void BesselYRecurrenceTest() {
+            double[] vs = [0, 1 / 8d, 1 / 4d, 1 / 2d, 1, 2, 4, 8, 16, 32, 64, 128, 256];
+
+            double[] nus = [16.25, 16.5, 16.75, 17, 17.25, 17.5, 17.75, 18,
+                           18.25, 18.5, 18.75, 19, 19.5, 20, 20.25, 20.5, 20.75,
+                           21, 63.75, 64, 127.75, 128, 255.5, 255.75, 256];
+
+            foreach (double nu_abs in nus) {
+
+                foreach (double nu in new double[] { nu_abs, -nu_abs }) {
+                    Console.WriteLine(nu);
+
+                    foreach (double r in vs) {
+                        foreach (double i in vs) {
+                            if (r == 0 && i == 0) {
+                                continue;
+                            }
+
+                            Complex expected = BesselN4.BesselY(nu, (r, i)).ToString();
+                            Complex actual = DDoubleOptimizedBessel.ComplexBessel.BesselY(nu, (r, i));
+
+                            ddouble err = (expected - actual).Magnitude / expected.Magnitude;
+
+                            Console.WriteLine($"{nu}, {(r, i)}, {err:e4}");
+                            Console.WriteLine(expected);
+                            Console.WriteLine(actual);
+
+                            if (!Complex.IsFinite(expected)) {
+                                continue; //ignore
+                            }
+
+                            if (Complex.IsZero(expected)) {
+                                Assert.IsTrue(Complex.IsZero(actual));
+                                continue;
+                            }
+
+                            if (expected.Magnitude < 1e-292) {
+                                Assert.IsTrue(actual.Magnitude < 1e-291);
+                                continue;
+                            }
+
+                            Assert.IsTrue(err < 4e-27, $"\n{nu}, {(r, i)}\n{expected}\n{actual}\n{err:e4}");
+                        }
+                    }
+
+                    Console.WriteLine(string.Empty);
+                }
+            }
+        }
+
+        [TestMethod()]
+        public void BesselIRecurrenceTest() {
+            double[] vs = [0, 1 / 8d, 1 / 4d, 1 / 2d, 1, 2, 4, 8, 16, 32, 64, 128, 256];
+
+            double[] nus = [16.25, 16.5, 16.75, 17, 17.25, 17.5, 17.75, 18,
+                           18.25, 18.5, 18.75, 19, 19.5, 20, 20.25, 20.5, 20.75,
+                           21, 63.75, 64, 127.75, 128, 255.5, 255.75, 256];
+
+            foreach (double nu_abs in nus) {
+
+                foreach (double nu in new double[] { nu_abs, -nu_abs }) {
+                    Console.WriteLine(nu);
+
+                    foreach (double r in vs) {
+                        foreach (double i in vs) {
+                            if (r == 0 && i == 0) {
+                                continue;
+                            }
+
+                            Complex expected = BesselN4.BesselI(nu, (r, i)).ToString();
+                            Complex actual = DDoubleOptimizedBessel.ComplexBessel.BesselI(nu, (r, i));
+
+                            ddouble err = (expected - actual).Magnitude / expected.Magnitude;
+
+                            Console.WriteLine($"{nu}, {(r, i)}, {err:e4}");
+                            Console.WriteLine(expected);
+                            Console.WriteLine(actual);
+
+                            if (!Complex.IsFinite(expected)) {
+                                continue; //ignore
+                            }
+
+                            if (Complex.IsZero(expected)) {
+                                Assert.IsTrue(Complex.IsZero(actual));
+                                continue;
+                            }
+
+                            if (expected.Magnitude < 1e-292) {
+                                Assert.IsTrue(actual.Magnitude < 1e-291);
+                                continue;
+                            }
+
+                            Assert.IsTrue(err < 4e-27, $"\n{nu}, {(r, i)}\n{expected}\n{actual}\n{err:e4}");
+                        }
+                    }
+
+                    Console.WriteLine(string.Empty);
+                }
+            }
+        }
+
+        [TestMethod()]
+        public void BesselKRecurrenceTest() {
+            double[] vs = [0, 1 / 8d, 1 / 4d, 1 / 2d, 1, 2, 4, 8, 16, 32, 64, 128, 256];
+
+            double[] nus = [16.25, 16.5, 16.75, 17, 17.25, 17.5, 17.75, 18,
+                           18.25, 18.5, 18.75, 19, 19.5, 20, 20.25, 20.5, 20.75,
+                           21, 63.75, 64, 127.75, 128, 255.5, 255.75, 256];
+
+            foreach (double nu_abs in nus) {
+
+                foreach (double nu in new double[] { nu_abs, -nu_abs }) {
+                    Console.WriteLine(nu);
+
+                    foreach (double r in vs) {
+                        foreach (double i in vs) {
+                            if (r == 0 && i == 0) {
+                                continue;
+                            }
+
+                            Complex expected = BesselN4.BesselK(nu, (r, i)).ToString();
+
+                            Complex actual = DDoubleOptimizedBessel.ComplexBessel.BesselK(nu, (r, i));
+
+                            ddouble err = (expected - actual).Magnitude / expected.Magnitude;
+
+                            Console.WriteLine($"{nu}, {(r, i)}, {err:e4}");
+                            Console.WriteLine(expected);
+                            Console.WriteLine(actual);
+
+                            if (!Complex.IsFinite(expected)) {
+                                continue; //ignore
+                            }
+
+                            if (Complex.IsZero(expected)) {
+                                Assert.IsTrue(Complex.IsZero(actual));
+                                continue;
+                            }
+
+                            if (expected.Magnitude < 1e-292) {
+                                Assert.IsTrue(actual.Magnitude < 1e-291);
+                                continue;
+                            }
+
+                            Assert.IsTrue(err < 2e-27, $"\n{nu}, {(r, i)}\n{expected}\n{actual}\n{err:e4}");
+                        }
+                    }
+
+                    Console.WriteLine(string.Empty);
+                }
+            }
+        }
+
+        [TestMethod()]
         public void BesselJNu1p25Test() {
             Complex[] expecteds = [
                 "9.2145929015511005131094720273851178236-147.6159570273588415961403709192966375974i",

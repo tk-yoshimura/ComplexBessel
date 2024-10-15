@@ -1,10 +1,8 @@
 ﻿using DDoubleOptimizedBessel;
 using MultiPrecision;
 using MultiPrecisionComplex;
-using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Numerics;
 
 namespace ComplexBessel {
     public class PowerSeries<N> where N : struct, IConstant {

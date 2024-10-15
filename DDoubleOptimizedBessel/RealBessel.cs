@@ -1992,7 +1992,7 @@ namespace DDoubleOptimizedBessel {
         public static class Recurrence {
 
             public static ddouble BesselJ(ddouble nu, ddouble x) {
-                Debug.Assert(nu > DirectMaxN || nu < -DirectMaxN);
+                Debug.Assert(nu >= DirectMaxN || nu <= -DirectMaxN);
 
                 if (ddouble.IsPositiveInfinity(x)) {
                     return 0d;
@@ -2073,7 +2073,7 @@ namespace DDoubleOptimizedBessel {
             }
 
             public static ddouble BesselY(ddouble nu, ddouble x) {
-                Debug.Assert(nu > DirectMaxN || nu < -DirectMaxN);
+                Debug.Assert(nu >= DirectMaxN || nu <= -DirectMaxN);
 
                 if (ddouble.IsPositiveInfinity(x)) {
                     return 0d;
@@ -2120,7 +2120,7 @@ namespace DDoubleOptimizedBessel {
             }
 
             public static ddouble BesselI(ddouble nu, ddouble x, bool scale) {
-                Debug.Assert(nu > DirectMaxN || nu < -DirectMaxN);
+                Debug.Assert(nu >= DirectMaxN || nu <= -DirectMaxN);
 
                 if (ddouble.IsPositiveInfinity(x)) {
                     return scale ? 0d : ddouble.PositiveInfinity;
@@ -2193,7 +2193,7 @@ namespace DDoubleOptimizedBessel {
             public static ddouble BesselK(ddouble nu, ddouble x, bool scale) {
                 nu = ddouble.Abs(nu);
 
-                Debug.Assert(nu > DirectMaxN);
+                Debug.Assert(nu >= DirectMaxN);
 
                 int n = (int)ddouble.Floor(nu);
                 ddouble alpha = nu - n;

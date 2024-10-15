@@ -7,24 +7,29 @@ namespace ComplexBessel {
         public static readonly double InterpolationThreshold = double.ScaleB(1, -25);
         public static readonly double MillerBwdBesselYEps = double.ScaleB(1, -30);
 
-        public const int MaxN = 16;
+        public const int RecurrenceMaxN = 256;
+        public const int DirectMaxN = 16;
 
         public static void CheckNu(MultiPrecision<N> nu) {
-            if (!(MultiPrecision<N>.Abs(nu) <= MaxN)) {
+            if (!(MultiPrecision<N>.Abs(nu) <= RecurrenceMaxN)) {
                 throw new ArgumentOutOfRangeException(
                     nameof(nu),
-                    $"In the calculation of the Bessel function, nu with an absolute value greater than {MaxN} is not supported."
+                    $"In the calculation of the Bessel function, nu with an absolute value greater than {RecurrenceMaxN} is not supported."
                 );
             }
         }
 
         public static void CheckN(int n) {
-            if (n < -MaxN || n > MaxN) {
+            if (n < -RecurrenceMaxN || n > RecurrenceMaxN) {
                 throw new ArgumentOutOfRangeException(
                     nameof(n),
-                    $"In the calculation of the Bessel function, n with an absolute value greater than {MaxN} is not supported."
+                    $"In the calculation of the Bessel function, n with an absolute value greater than {RecurrenceMaxN} is not supported."
                 );
             }
+        }
+
+        public static bool UseRecurrence(MultiPrecision<N> nu) {
+            return MultiPrecision<N>.Abs(nu) > DirectMaxN;
         }
 
         public static bool NearlyInteger(MultiPrecision<N> nu, out int n) {

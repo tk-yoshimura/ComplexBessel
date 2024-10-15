@@ -23,6 +23,10 @@ namespace DDoubleOptimizedBessel {
                 return (SinCosPICache.CosPI(nu), SinCosPICache.SinPI(nu)) * BesselJ(nu, -z);
             }
 
+            if (UseRecurrence(nu)) {
+                return Recurrence.BesselJ(nu, z);
+            }
+
             if (z.Magnitude >= HankelThreshold) {
                 return Limit.BesselJ(nu, z);
             }
@@ -51,6 +55,10 @@ namespace DDoubleOptimizedBessel {
             if (ddouble.IsNegative(z.R)) {
                 return (SinCosPICache.CosPI(nu), -SinCosPICache.SinPI(nu)) * BesselY(nu, -z)
                         + (0d, 2d * SinCosPICache.CosPI(nu)) * BesselJ(nu, -z);
+            }
+
+            if (UseRecurrence(nu)) {
+                return Recurrence.BesselY(nu, z);
             }
 
             if (z.Magnitude >= HankelThreshold) {
@@ -103,6 +111,10 @@ namespace DDoubleOptimizedBessel {
                 return (SinCosPICache.CosPI(nu), SinCosPICache.SinPI(nu)) * BesselI(nu, -z);
             }
 
+            if (UseRecurrence(nu)) {
+                return Recurrence.BesselI(nu, z);
+            }
+
             if (z.Magnitude >= HankelThreshold) {
                 return Limit.BesselI(nu, z);
             }
@@ -130,6 +142,10 @@ namespace DDoubleOptimizedBessel {
             if (ddouble.IsNegative(z.R)) {
                 return (SinCosPICache.CosPI(nu), -SinCosPICache.SinPI(nu)) * BesselK(nu, -z)
                         - (0d, ddouble.PI) * BesselI(nu, -z);
+            }
+
+            if (UseRecurrence(nu)) {
+                return Recurrence.BesselK(nu, z);
             }
 
             if (z.Magnitude >= HankelThreshold) {
@@ -187,7 +203,8 @@ namespace DDoubleOptimizedBessel {
     }
 
     static class ComplexBesselUtil {
-        public const int MaxN = 16;
+        public const int RecurrenceMaxN = 256;
+        public const int DirectMaxN = 16;
         public static readonly double Eps = double.ScaleB(1, -105);
         public static readonly int NearZeroExponent = -950;
         public static readonly double BesselYForcedMillerBackwardThreshold = double.ScaleB(1, -8);
@@ -203,21 +220,25 @@ namespace DDoubleOptimizedBessel {
         }
 
         public static void CheckNu(ddouble nu) {
-            if (!(ddouble.Abs(nu) <= MaxN)) {
+            if (!(ddouble.Abs(nu) <= RecurrenceMaxN)) {
                 throw new ArgumentOutOfRangeException(
                     nameof(nu),
-                    $"In the calculation of the Bessel function, nu with an absolute value greater than {MaxN} is not supported."
+                    $"In the calculation of the Bessel function, nu with an absolute value greater than {RecurrenceMaxN} is not supported."
                 );
             }
         }
 
         public static void CheckN(int n) {
-            if (n < -MaxN || n > MaxN) {
+            if (n < -RecurrenceMaxN || n > RecurrenceMaxN) {
                 throw new ArgumentOutOfRangeException(
                     nameof(n),
-                    $"In the calculation of the Bessel function, n with an absolute value greater than {MaxN} is not supported."
+                    $"In the calculation of the Bessel function, n with an absolute value greater than {RecurrenceMaxN} is not supported."
                 );
             }
+        }
+
+        public static bool UseRecurrence(ddouble nu) {
+            return ddouble.Abs(nu) > DirectMaxN;
         }
 
         public static bool NearlyInteger(ddouble nu, out int n) {
@@ -2254,6 +2275,203 @@ namespace DDoubleOptimizedBessel {
                     + t2 * (-1317888d * y0 + 13045760d * y1 - 25690112d * y2 + 20643840d * y3 - 7864320d * y4 + 1182720d * y5))))) / 56756700d;
 
                 return y;
+            }
+        }
+
+        public static class Recurrence {
+
+            public static Complex BesselJ(ddouble nu, Complex z) {
+                Debug.Assert(nu >= DirectMaxN || nu <= -DirectMaxN);
+
+                ddouble nu_abs = ddouble.Abs(nu);
+                int n = (int)ddouble.Floor(nu_abs);
+                ddouble alpha = nu_abs - n;
+
+                Complex v = 1d / z;
+
+                if (ddouble.IsPositive(nu)) {
+                    (Complex a0, Complex b0, Complex a1, Complex b1) = (1d, 0d, 0d, 1d);
+
+                    Complex r = Complex.Ldexp(nu_abs * v, 1);
+                    (a0, b0, a1, b1) = (a1, b1, r * a1 + a0, r * b1 + b0);
+
+                    Complex s = 1d;
+
+                    for (int i = 1; i <= 1024; i++) {
+                        r = Complex.Ldexp((nu_abs + i) * v, 1);
+
+                        (a0, b0, a1, b1) = (a1, b1, r * a1 - a0, r * b1 - b0);
+                        s = a1 / b1;
+
+                        int exp = int.Max(Complex.ILogB(a1), Complex.ILogB(b1));
+                        if (exp <= int.MinValue) {
+                            return Complex.NaN;
+                        }
+
+                        (a0, a1, b0, b1) = (Complex.Ldexp(a0, -exp), Complex.Ldexp(a1, -exp), Complex.Ldexp(b0, -exp), Complex.Ldexp(b1, -exp));
+
+                        if (i > 0 && (i & 3) == 0) {
+                            Complex r0 = a0 * b1, r1 = a1 * b0;
+                            if (!((r0 - r1).Magnitude > ddouble.Min(r0.Magnitude, r1.Magnitude) * 1e-30)) {
+                                break;
+                            }
+                        }
+                    }
+
+                    long exp_sum = 0;
+                    (Complex j0, Complex j1) = (s.Magnitude > 1d) ? (Complex.One, 1d / s) : (s, 1d);
+
+                    for (int k = n - 1; k >= DirectMaxN - 1; k--) {
+                        (j1, j0) = (ddouble.Ldexp(k + alpha, 1) * v * j1 - j0, j1);
+
+                        int j0_exp = Complex.ILogB(j0), j1_exp = Complex.ILogB(j1);
+                        if (int.Sign(j0_exp) * int.Sign(j1_exp) > 0) {
+                            int exp = j0_exp > 0 ? int.Max(j0_exp, j1_exp) : int.Min(j0_exp, j1_exp);
+                            exp_sum += exp;
+                            (j0, j1) = (Complex.Ldexp(j0, -exp), Complex.Ldexp(j1, -exp));
+                        }
+                    }
+
+                    Complex y = Complex.Ldexp(
+                        j0.Magnitude >= j1.Magnitude
+                        ? ComplexBessel.BesselJ(alpha + (DirectMaxN - 1), z) / j0
+                        : ComplexBessel.BesselJ(alpha + (DirectMaxN - 2), z) / j1,
+                        (int)long.Clamp(-exp_sum, int.MinValue, int.MaxValue)
+                    ) * ((s.Magnitude > 1d) ? 1d : s);
+
+                    return y;
+                }
+                else {
+                    if (NearlyInteger(nu, out int near_n)) {
+                        return (near_n & 1) == 0 ? BesselJ(-near_n, z) : -BesselJ(-near_n, z);
+                    }
+
+                    return (SinCosPICache.CosPI(nu / 2), SinCosPICache.SinPI(nu / 2)) * BesselI(nu, (z.I, z.R)).Conj;
+                }
+            }
+
+            public static Complex BesselY(ddouble nu, Complex z) {
+                Debug.Assert(nu >= DirectMaxN || nu <= -DirectMaxN);
+
+                if (NearlyInteger(nu + 0.5d, out int near_n)) {
+                    return (near_n & 1) == 0 ? BesselJ(-nu, z) : -BesselJ(-nu, z);
+                }
+
+                ddouble nu_abs = ddouble.Abs(nu);
+
+                Complex c = (SinCosPICache.CosPI(nu_abs / 2), SinCosPICache.SinPI(nu_abs / 2));
+                Complex bi = BesselI(nu_abs, (z.I, z.R));
+                Complex bk = BesselK(nu_abs, (z.I, z.R));
+
+                if (ddouble.IsPositive(nu)) {
+                    Complex y = (0d, 1d) * c * bi.Conj - 2 * ddouble.RcpPI * (c * bk).Conj;
+
+                    return y;
+                }
+                else {
+                    Complex y = (0d, 1d) * (c * bi).Conj
+                        + 2 * ddouble.RcpPI * ((0d, 1d) * c.Conj * SinCosPICache.SinPI(nu_abs) - c) * bk.Conj;
+
+                    return y;
+                }
+            }
+
+            public static Complex BesselI(ddouble nu, Complex z) {
+                Debug.Assert(nu >= DirectMaxN || nu <= -DirectMaxN);
+
+                ddouble nu_abs = ddouble.Abs(nu);
+                int n = (int)ddouble.Floor(nu_abs);
+                ddouble alpha = nu_abs - n;
+
+                Complex v = 1d / z;
+
+                (Complex a0, Complex b0, Complex a1, Complex b1) = (1d, 0d, 0d, 1d);
+                Complex s = 1d;
+
+                for (int i = 0; i <= 1024; i++) {
+                    Complex r = Complex.Ldexp((nu_abs + i) * v, 1);
+
+                    (a0, b0, a1, b1) = (a1, b1, r * a1 + a0, r * b1 + b0);
+                    s = a1 / b1;
+
+                    int exp = int.Max(Complex.ILogB(a1), Complex.ILogB(b1));
+                    if (exp <= int.MinValue) {
+                        return Complex.NaN;
+                    }
+
+                    (a0, a1, b0, b1) = (Complex.Ldexp(a0, -exp), Complex.Ldexp(a1, -exp), Complex.Ldexp(b0, -exp), Complex.Ldexp(b1, -exp));
+
+
+                    if (i > 0 && (i & 3) == 0) {
+                        Complex r0 = a0 * b1, r1 = a1 * b0;
+                        if (!((r0 - r1).Magnitude > ddouble.Min(r0.Magnitude, r1.Magnitude) * 1e-30)) {
+                            break;
+                        }
+                    }
+                }
+
+                if (!Complex.IsFinite(s)) {
+                    return 0d;
+                }
+
+                long exp_sum = 0;
+                Complex i0 = 1d, i1 = 1d / s;
+
+                for (int k = n - 1; k >= DirectMaxN; k--) {
+                    (i1, i0) = (ddouble.Ldexp(k + alpha, 1) * v * i1 + i0, i1);
+
+                    if (Complex.ILogB(i1) > 0) {
+                        int exp = Complex.ILogB(i1);
+                        exp_sum += exp;
+                        (i0, i1) = (Complex.Ldexp(i0, -exp), Complex.Ldexp(i1, -exp));
+                    }
+                }
+
+                Complex y = ComplexBessel.BesselI(alpha + (DirectMaxN - 1), z) / i1;
+
+                y = Complex.Ldexp(y, (int)long.Max(-exp_sum, int.MinValue));
+
+                if (ddouble.IsNegative(nu) && !ddouble.IsInteger(nu_abs)) {
+                    Complex bk = 2d * ddouble.RcpPI * SinCosPICache.SinPI(nu_abs) * ComplexBessel.BesselK(nu_abs, z);
+
+                    y += bk;
+                }
+
+                return y;
+            }
+
+            public static Complex BesselK(ddouble nu, Complex z) {
+                nu = ddouble.Abs(nu);
+
+                Debug.Assert(nu >= DirectMaxN);
+
+                int n = (int)ddouble.Floor(nu);
+                ddouble alpha = nu - n;
+
+                Complex k0 = ComplexBessel.BesselK(alpha + (DirectMaxN - 2), z);
+                Complex k1 = ComplexBessel.BesselK(alpha + (DirectMaxN - 1), z);
+
+                if (Complex.IsZero(k0) && Complex.IsZero(k1)) {
+                    return 0d;
+                }
+
+                long exp_sum = 0;
+
+                Complex v = 1d / z;
+
+                for (int k = DirectMaxN - 1; k < n; k++) {
+                    (k1, k0) = (ddouble.Ldexp(k + alpha, 1) * v * k1 + k0, k1);
+
+                    if (Complex.ILogB(k1) > 0) {
+                        int exp = Complex.ILogB(k1);
+                        exp_sum += exp;
+                        (k0, k1) = (Complex.Ldexp(k0, -exp), Complex.Ldexp(k1, -exp));
+                    }
+                }
+
+                k1 = Complex.Ldexp(k1, (int)long.Max(exp_sum, int.MinValue));
+
+                return k1;
             }
         }
     }
