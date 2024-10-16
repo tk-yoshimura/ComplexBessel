@@ -1,4 +1,5 @@
 ﻿using MultiPrecision;
+using MultiPrecisionComplex;
 using System.Diagnostics;
 using CMP4 = MultiPrecisionComplex.Complex<MultiPrecision.Pow2.N4>;
 using MP4 = MultiPrecision.MultiPrecision<MultiPrecision.Pow2.N4>;
@@ -13,7 +14,7 @@ namespace ComplexBessel {
             }
 
             if (z.R.Sign == Sign.Minus) {
-                return (SinCosPICache<Pow2.N4>.CosPI(nu), SinCosPICache<Pow2.N4>.SinPI(nu)) * BesselJ(nu, -z);
+                return (SinCosPICache<Pow2.N4>.CosPI(nu), SinCosPICache<Pow2.N4>.SinPI(nu)) * BesselJ(nu, (-z.R, z.I)).Conj;
             }
 
             if (BesselUtil<Pow2.N4>.UseRecurrence(nu)) {
@@ -42,7 +43,7 @@ namespace ComplexBessel {
             }
 
             if (z.R.Sign == Sign.Minus) {
-                return (SinCosPICache<Pow2.N4>.CosPI(nu), -SinCosPICache<Pow2.N4>.SinPI(nu)) * BesselY(nu, -z) + (0, 2 * SinCosPICache<Pow2.N4>.CosPI(nu)) * BesselJ(nu, -z);
+                return (SinCosPICache<Pow2.N4>.CosPI(nu), -SinCosPICache<Pow2.N4>.SinPI(nu)) * BesselY(nu, (-z.R, z.I)).Conj + (0, 2 * SinCosPICache<Pow2.N4>.CosPI(nu)) * BesselJ(nu, (-z.R, z.I)).Conj;
             }
 
             if (BesselUtil<Pow2.N4>.UseRecurrence(nu)) {
@@ -79,7 +80,7 @@ namespace ComplexBessel {
             }
 
             if (z.R.Sign == Sign.Minus) {
-                return (SinCosPICache<Pow2.N4>.CosPI(nu), SinCosPICache<Pow2.N4>.SinPI(nu)) * BesselI(nu, -z);
+                return (SinCosPICache<Pow2.N4>.CosPI(nu), SinCosPICache<Pow2.N4>.SinPI(nu)) * BesselI(nu, (-z.R, z.I)).Conj;
             }
 
             if (BesselUtil<Pow2.N4>.UseRecurrence(nu)) {
@@ -107,7 +108,7 @@ namespace ComplexBessel {
             }
 
             if (z.R.Sign == Sign.Minus) {
-                return (SinCosPICache<Pow2.N4>.CosPI(nu), -SinCosPICache<Pow2.N4>.SinPI(nu)) * BesselK(nu, -z) - (0, MP4.PI) * BesselI(nu, -z);
+                return (SinCosPICache<Pow2.N4>.CosPI(nu), -SinCosPICache<Pow2.N4>.SinPI(nu)) * BesselK(nu, (-z.R, z.I)).Conj - (0, MP4.PI) * BesselI(nu, (-z.R, z.I)).Conj;
             }
 
             if (BesselUtil<Pow2.N4>.UseRecurrence(nu)) {
@@ -131,6 +132,44 @@ namespace ComplexBessel {
                 CMP4 by = BesselY(nu, (z.I, z.R));
 
                 CMP4 y = c * ((0, -1) * c * bi - by.Conj) * MP4.PI / 2;
+
+                return y;
+            }
+        }
+
+        public static CMP4 HankelH1(MP4 nu, CMP4 z) {
+            if (MP4.IsPositive(z.I)) {
+                CMP4 c = (-SinCosPICache<Pow2.N4>.SinPI(nu / 2), -SinCosPICache<Pow2.N4>.CosPI(nu / 2));
+                CMP4 f = BesselK(nu, (z.I, z.R)).Conj;
+
+                CMP4 y = 2 * MP4.RcpPI * c * f;
+
+                return y;
+            }
+            else {
+                CMP4 c = (SinCosPICache<Pow2.N4>.SinPI(nu / 2), SinCosPICache<Pow2.N4>.CosPI(nu / 2));
+                CMP4 f = BesselK(nu, (z.I, z.R)).Conj;
+
+                CMP4 y = 2 * MP4.RcpPI * c * (MP4.IsPositive(z.R) ? -f : f);
+
+                return y;
+            }
+        }
+
+        public static CMP4 HankelH2(MP4 nu, CMP4 z) {
+            if (MP4.IsPositive(z.I)) {
+                CMP4 c = (-SinCosPICache<Pow2.N4>.SinPI(nu / 2), SinCosPICache<Pow2.N4>.CosPI(nu / 2));
+                CMP4 f = BesselK(nu, (-z.I, MP4.Abs(z.R)));
+
+                CMP4 y = 2 * MP4.RcpPI * c * (MP4.IsPositive(z.R) ? f : (-f.R, f.I));
+
+                return y;
+            }
+            else {
+                CMP4 c = (-SinCosPICache<Pow2.N4>.SinPI(nu / 2), SinCosPICache<Pow2.N4>.CosPI(nu / 2));
+                CMP4 f = BesselK(nu, (-z.I, z.R));
+
+                CMP4 y = 2 * MP4.RcpPI * c * f;
 
                 return y;
             }

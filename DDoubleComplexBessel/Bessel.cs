@@ -15,7 +15,7 @@ namespace DDoubleComplexBessel {
             }
 
             if (ddouble.IsNegative(z.R)) {
-                return (SinCosPICache.CosPI(nu), SinCosPICache.SinPI(nu)) * BesselJ(nu, -z);
+                return (SinCosPICache.CosPI(nu), SinCosPICache.SinPI(nu)) * BesselJ(nu, (-z.R, z.I)).Conj;
             }
 
             if (z.Magnitude >= hankel_threshold) {
@@ -40,8 +40,8 @@ namespace DDoubleComplexBessel {
             }
 
             if (ddouble.IsNegative(z.R)) {
-                return (SinCosPICache.CosPI(nu), -SinCosPICache.SinPI(nu)) * BesselY(nu, -z)
-                     + (0, 2 * SinCosPICache.CosPI(nu)) * BesselJ(nu, -z);
+                return (SinCosPICache.CosPI(nu), -SinCosPICache.SinPI(nu)) * BesselY(nu, (-z.R, z.I)).Conj
+                     + (0, 2 * SinCosPICache.CosPI(nu)) * BesselJ(nu, (-z.R, z.I)).Conj;
             }
 
             if (z.Magnitude >= hankel_threshold) {
@@ -74,7 +74,7 @@ namespace DDoubleComplexBessel {
             }
 
             if (ddouble.IsNegative(z.R)) {
-                return (SinCosPICache.CosPI(nu), SinCosPICache.SinPI(nu)) * BesselI(nu, -z);
+                return (SinCosPICache.CosPI(nu), SinCosPICache.SinPI(nu)) * BesselI(nu, (-z.R, z.I)).Conj;
             }
 
             if (z.Magnitude >= hankel_threshold) {
@@ -98,8 +98,8 @@ namespace DDoubleComplexBessel {
             }
 
             if (ddouble.IsNegative(z.R)) {
-                return (SinCosPICache.CosPI(nu), -SinCosPICache.SinPI(nu)) * BesselK(nu, -z)
-                     - (0, ddouble.PI) * BesselI(nu, -z);
+                return (SinCosPICache.CosPI(nu), -SinCosPICache.SinPI(nu)) * BesselK(nu, (-z.R, z.I)).Conj
+                     - (0, ddouble.PI) * BesselI(nu, (-z.R, z.I)).Conj;
             }
 
             if (z.Magnitude >= hankel_threshold) {

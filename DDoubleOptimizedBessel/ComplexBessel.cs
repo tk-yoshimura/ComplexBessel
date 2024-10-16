@@ -20,7 +20,7 @@ namespace DDoubleOptimizedBessel {
             }
 
             if (ddouble.IsNegative(z.R)) {
-                return (SinCosPICache.CosPI(nu), SinCosPICache.SinPI(nu)) * BesselJ(nu, -z);
+                return (SinCosPICache.CosPI(nu), SinCosPICache.SinPI(nu)) * BesselJ(nu, (-z.R, z.I)).Conj;
             }
 
             if (UseRecurrence(nu)) {
@@ -53,8 +53,8 @@ namespace DDoubleOptimizedBessel {
             }
 
             if (ddouble.IsNegative(z.R)) {
-                return (SinCosPICache.CosPI(nu), -SinCosPICache.SinPI(nu)) * BesselY(nu, -z)
-                        + (0d, 2d * SinCosPICache.CosPI(nu)) * BesselJ(nu, -z);
+                return (SinCosPICache.CosPI(nu), -SinCosPICache.SinPI(nu)) * BesselY(nu, (-z.R, z.I)).Conj
+                        + (0d, 2d * SinCosPICache.CosPI(nu)) * BesselJ(nu, (-z.R, z.I)).Conj;
             }
 
             if (UseRecurrence(nu)) {
@@ -108,7 +108,7 @@ namespace DDoubleOptimizedBessel {
             }
 
             if (ddouble.IsNegative(z.R)) {
-                return (SinCosPICache.CosPI(nu), SinCosPICache.SinPI(nu)) * BesselI(nu, -z);
+                return (SinCosPICache.CosPI(nu), SinCosPICache.SinPI(nu)) * BesselI(nu, (-z.R, z.I)).Conj;
             }
 
             if (UseRecurrence(nu)) {
@@ -140,8 +140,8 @@ namespace DDoubleOptimizedBessel {
             }
 
             if (ddouble.IsNegative(z.R)) {
-                return (SinCosPICache.CosPI(nu), -SinCosPICache.SinPI(nu)) * BesselK(nu, -z)
-                        - (0d, ddouble.PI) * BesselI(nu, -z);
+                return (SinCosPICache.CosPI(nu), -SinCosPICache.SinPI(nu)) * BesselK(nu, (-z.R, z.I)).Conj
+                        - (0d, ddouble.PI) * BesselI(nu, (-z.R, z.I)).Conj;
             }
 
             if (UseRecurrence(nu)) {

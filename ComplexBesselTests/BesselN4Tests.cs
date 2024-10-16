@@ -1,6 +1,7 @@
 ﻿using ComplexBessel;
 using MultiPrecision;
 using MultiPrecisionComplex;
+using System.Numerics;
 
 namespace ComplexBesselTests {
     [TestClass()]
@@ -535,6 +536,58 @@ namespace ComplexBesselTests {
                 Console.WriteLine(actual);
 
                 Assert.IsTrue((actual - expected).Magnitude / expected.Magnitude < 1e-35);
+            }
+        }
+
+        [TestMethod()]
+        public void HankelH1Nu1p25Test() {
+            Complex<Pow2.N4>[] expecteds = [
+                "18.4291878726180359187566373640030564795-295.2319473632391424158850286595650387789i",
+                "-2.06951583489253769330923282083229978534e-6-0.00003330852145922360428682097176358411639962i",
+                "-221.7919127932079921760532896678434610892-195.7290611816043696068447244240899410570i",
+                "0.00002208931271448919494119773512109508748611+0.00002501605007574010067108694777106542618294i",
+                "9.11589580995419086748940818746628621207e-30+1.326373067206692081977319837757965245760e-29i",
+                "-2.93296215824187966083232188070945134646e-30-1.582478564585916657645835643219594172333e-29i",
+                "-5.445121799660767246044545722178884756910e26+2.819730904419201029348292537052276322562e26i",
+                "5.844133392562919745278893761769145496573e26-1.856431705290732276978266742781590818347e26i"
+            ];
+
+            foreach ((Complex<Pow2.N4> z, Complex<Pow2.N4> expected) in zs_mini.Zip(expecteds)) {
+                Complex<Pow2.N4> actual = BesselN4.HankelH1(1.25, z);
+                Complex<Pow2.N4> actual_raw = BesselN4.BesselJ(1.25, z) + (0, 1) * BesselN4.BesselY(1.25, z);
+
+                Console.WriteLine(z);
+                Console.WriteLine(expected);
+                Console.WriteLine(actual);
+                Console.WriteLine(actual_raw);
+
+                //Assert.IsTrue((actual - expected).Magnitude / expected.Magnitude < 2e-30);
+            }
+        }
+
+        [TestMethod()]
+        public void HankelH2Nu1p25Test() {
+            Complex<Pow2.N4>[] expecteds = [
+                "-2.06951583489253769330923282083229978534e-6+0.00003330852145922360428682097176358411639962i",
+                "18.4291878726180359187566373640030564795+295.2319473632391424158850286595650387789i",
+                "0.00002208931271448919494119773512109508748611-0.00002501605007574010067108694777106542618294i",
+                "-221.7919127932079921760532896678434610892+195.7290611816043696068447244240899410570i",
+                "-5.445121799660767246044545722178884756910e26-2.819730904419201029348292537052276322562e26i",
+                "5.844133392562919745278893761769145496573e26+1.856431705290732276978266742781590818347e26i",
+                "9.11589580995419086748940818746628621207e-30-1.326373067206692081977319837757965245760e-29i",
+                "-2.93296215824187966083232188070945134646e-30+1.582478564585916657645835643219594172333e-29i"
+            ];
+
+            foreach ((Complex<Pow2.N4> z, Complex<Pow2.N4> expected) in zs_mini.Zip(expecteds)) {
+                Complex<Pow2.N4> actual = BesselN4.HankelH2(1.25, z);
+                Complex<Pow2.N4> actual_raw = BesselN4.BesselJ(1.25, z) - (0, 1) * BesselN4.BesselY(1.25, z);
+
+                Console.WriteLine(z);
+                Console.WriteLine(expected);
+                Console.WriteLine(actual);
+                Console.WriteLine(actual_raw);
+
+                //Assert.IsTrue((actual - expected).Magnitude / expected.Magnitude < 2e-30);
             }
         }
     }
