@@ -708,8 +708,6 @@ namespace ComplexBesselTests {
                 "5.844133392562919745278893761769145496573e26-1.856431705290732276978266742781590818347e26i"
             ];
 
-            BesselN4.HankelH1(1.25, (-64, -8));
-
             foreach ((Complex<Pow2.N4> z, Complex<Pow2.N4> expected) in zs_mini.Zip(expecteds)) {
                 Complex<Pow2.N4> actual = BesselN4.HankelH1(1.25, z);
                 Complex<Pow2.N4> actual_raw = BesselN4.BesselJ(1.25, z) + (0, 1) * BesselN4.BesselY(1.25, z);
