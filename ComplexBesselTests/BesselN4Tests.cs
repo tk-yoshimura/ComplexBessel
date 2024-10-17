@@ -250,6 +250,162 @@ namespace ComplexBesselTests {
             }
         }
 
+        [TestMethod()]
+        public void BesselJDomainExpectedTest() {
+            IEnumerable<string> filepaths = Directory.EnumerateFiles("../../../../mpmath_expected/besselj_plusi/", "*.csv");
+
+            foreach (string filepath in filepaths) {
+                string filename = filepath.Split("/").Last();
+                string[] seps = filename.Split("_");
+                MultiPrecision<Pow2.N4> nu = MultiPrecision<Pow2.N4>.Parse(seps[1][2..^4]);
+                using StreamReader sr = new(filepath);
+
+                sr.ReadLine();
+
+                while (!sr.EndOfStream) {
+                    string? line = sr.ReadLine();
+
+                    if (string.IsNullOrEmpty(line)) {
+                        break;
+                    }
+
+                    string[] items = line.Split(",");
+
+                    Complex<Pow2.N4> z = (items[0], items[1]);
+
+                    if (!Complex<Pow2.N4>.TryParse(items[2], null, out Complex<Pow2.N4>? expected)) {
+                        continue;
+                    }
+
+                    Complex<Pow2.N4> actual = BesselN4.BesselJ(nu, z);
+                    MultiPrecision<Pow2.N4> err = (expected - actual).Magnitude / expected.Magnitude;
+
+                    Console.WriteLine($"{nu}, {z}");
+                    Console.WriteLine(expected);
+                    Console.WriteLine(actual);
+
+                    Assert.IsTrue(err < 4e-34, $"\n{nu}, {z}\n{expected}\n{actual}\n{err}");
+                }
+            }
+        }
+
+        [TestMethod()]
+        public void BesselYDomainExpectedTest() {
+            IEnumerable<string> filepaths = Directory.EnumerateFiles("../../../../mpmath_expected/bessely_plusi/", "*.csv");
+
+            foreach (string filepath in filepaths) {
+                string filename = filepath.Split("/").Last();
+                string[] seps = filename.Split("_");
+                MultiPrecision<Pow2.N4> nu = MultiPrecision<Pow2.N4>.Parse(seps[1][2..^4]);
+                using StreamReader sr = new(filepath);
+
+                sr.ReadLine();
+
+                while (!sr.EndOfStream) {
+                    string? line = sr.ReadLine();
+
+                    if (string.IsNullOrEmpty(line)) {
+                        break;
+                    }
+
+                    string[] items = line.Split(",");
+
+                    Complex<Pow2.N4> z = (items[0], items[1]);
+
+                    if (!Complex<Pow2.N4>.TryParse(items[2], null, out Complex<Pow2.N4>? expected)) {
+                        continue;
+                    }
+
+                    Complex<Pow2.N4> actual = BesselN4.BesselY(nu, z);
+                    MultiPrecision<Pow2.N4> err = (expected - actual).Magnitude / expected.Magnitude;
+
+                    Console.WriteLine($"{nu}, {z}");
+                    Console.WriteLine(expected);
+                    Console.WriteLine(actual);
+
+                    Assert.IsTrue(err < 4e-34, $"\n{nu}, {z}\n{expected}\n{actual}\n{err}");
+                }
+            }
+        }
+
+        [TestMethod()]
+        public void BesselIDomainExpectedTest() {
+            IEnumerable<string> filepaths = Directory.EnumerateFiles("../../../../mpmath_expected/besseli_plusi/", "*.csv");
+
+            foreach (string filepath in filepaths) {
+                string filename = filepath.Split("/").Last();
+                string[] seps = filename.Split("_");
+                MultiPrecision<Pow2.N4> nu = MultiPrecision<Pow2.N4>.Parse(seps[1][2..^4]);
+                using StreamReader sr = new(filepath);
+
+                sr.ReadLine();
+
+                while (!sr.EndOfStream) {
+                    string? line = sr.ReadLine();
+
+                    if (string.IsNullOrEmpty(line)) {
+                        break;
+                    }
+
+                    string[] items = line.Split(",");
+
+                    Complex<Pow2.N4> z = (items[0], items[1]);
+
+                    if (!Complex<Pow2.N4>.TryParse(items[2], null, out Complex<Pow2.N4>? expected)) {
+                        continue;
+                    }
+
+                    Complex<Pow2.N4> actual = BesselN4.BesselI(nu, z);
+                    MultiPrecision<Pow2.N4> err = (expected - actual).Magnitude / expected.Magnitude;
+
+                    Console.WriteLine($"{nu}, {z}");
+                    Console.WriteLine(expected);
+                    Console.WriteLine(actual);
+
+                    Assert.IsTrue(err < 4e-34, $"\n{nu}, {z}\n{expected}\n{actual}\n{err}");
+                }
+            }
+        }
+
+        [TestMethod()]
+        public void BesselKDomainExpectedTest() {
+            IEnumerable<string> filepaths = Directory.EnumerateFiles("../../../../mpmath_expected/besselk_plusi/", "*.csv");
+
+            foreach (string filepath in filepaths) {
+                string filename = filepath.Split("/").Last();
+                string[] seps = filename.Split("_");
+                MultiPrecision<Pow2.N4> nu = MultiPrecision<Pow2.N4>.Parse(seps[1][2..^4]);
+                using StreamReader sr = new(filepath);
+
+                sr.ReadLine();
+
+                while (!sr.EndOfStream) {
+                    string? line = sr.ReadLine();
+
+                    if (string.IsNullOrEmpty(line)) {
+                        break;
+                    }
+
+                    string[] items = line.Split(",");
+
+                    Complex<Pow2.N4> z = (items[0], items[1]);
+
+                    if (!Complex<Pow2.N4>.TryParse(items[2], null, out Complex<Pow2.N4>? expected)) {
+                        continue;
+                    }
+
+                    Complex<Pow2.N4> actual = BesselN4.BesselK(nu, z);
+                    MultiPrecision<Pow2.N4> err = (expected - actual).Magnitude / expected.Magnitude;
+
+                    Console.WriteLine($"{nu}, {z}");
+                    Console.WriteLine(expected);
+                    Console.WriteLine(actual);
+
+                    Assert.IsTrue(err < 1e-34, $"\n{nu}, {z}\n{expected}\n{actual}\n{err}");
+                }
+            }
+        }
+
 
         [TestMethod()]
         public void BesselJNu1p25Test() {
@@ -551,6 +707,8 @@ namespace ComplexBesselTests {
                 "-5.445121799660767246044545722178884756910e26+2.819730904419201029348292537052276322562e26i",
                 "5.844133392562919745278893761769145496573e26-1.856431705290732276978266742781590818347e26i"
             ];
+
+            BesselN4.HankelH1(1.25, (-64, -8));
 
             foreach ((Complex<Pow2.N4> z, Complex<Pow2.N4> expected) in zs_mini.Zip(expecteds)) {
                 Complex<Pow2.N4> actual = BesselN4.HankelH1(1.25, z);

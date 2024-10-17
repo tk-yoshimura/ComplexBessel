@@ -122,6 +122,106 @@ namespace DDoubleOptimizedBesselTests {
         }
 
         [TestMethod()]
+        public void BesselJMinusRTest() {
+            for (double nu = -16; nu <= 16; nu += 0.25) {
+                Console.WriteLine(nu);
+
+                foreach (double r in new double[] { 0, -1 / 8d, -1 / 4d, -1 / 2d, -1, -2, -4, -8, -16, -32, -64 }) {
+                    foreach (double i in new double[] { 1 / 8d, 1 / 4d, 1 / 2d, 1, 2, 4, 8, 16, 32, 64 }) {
+
+                        Complex expected = BesselN4.BesselJ(nu, (r, i)).ToString();
+                        Complex actual = DDoubleOptimizedBessel.ComplexBessel.BesselJ(nu, (r, i));
+
+                        ddouble err = (expected - actual).Magnitude / expected.Magnitude;
+
+                        Console.WriteLine($"{nu}, {(r, i)}, {err:e4}");
+                        Console.WriteLine(expected);
+                        Console.WriteLine(actual);
+
+                        Assert.IsTrue(err < 4e-27, $"\n{nu}, {(r, i)}\n{expected}\n{actual}\n{err:e4}");
+                    }
+                }
+
+                Console.WriteLine(string.Empty);
+            }
+        }
+
+        [TestMethod()]
+        public void BesselYMinusRTest() {
+            for (double nu = -16; nu <= 16; nu += 0.25) {
+                Console.WriteLine(nu);
+
+                foreach (double r in new double[] { 0, -1 / 8d, -1 / 4d, -1 / 2d, -1, -2, -4, -8, -16, -32, -64 }) {
+                    foreach (double i in new double[] { 1 / 8d, 1 / 4d, 1 / 2d, 1, 2, 4, 8, 16, 32, 64 }) {
+
+                        Complex expected = BesselN4.BesselY(nu, (r, i)).ToString();
+                        Complex actual = DDoubleOptimizedBessel.ComplexBessel.BesselY(nu, (r, i));
+
+                        ddouble err = (expected - actual).Magnitude / expected.Magnitude;
+
+                        Console.WriteLine($"{nu}, {(r, i)}, {err:e4}");
+                        Console.WriteLine(expected);
+                        Console.WriteLine(actual);
+
+                        Assert.IsTrue(err < 2e-27, $"\n{nu}, {(r, i)}\n{expected}\n{actual}\n{err:e4}");
+                    }
+                }
+
+                Console.WriteLine(string.Empty);
+            }
+        }
+
+        [TestMethod()]
+        public void BesselIMinusRTest() {
+            for (double nu = -16; nu <= 16; nu += 0.25) {
+                Console.WriteLine(nu);
+
+                foreach (double r in new double[] { 0, -1 / 8d, -1 / 4d, -1 / 2d, -1, -2, -4, -8, -16, -32, -64 }) {
+                    foreach (double i in new double[] { 1 / 8d, 1 / 4d, 1 / 2d, 1, 2, 4, 8, 16, 32, 64 }) {
+
+                        Complex expected = BesselN4.BesselI(nu, (r, i)).ToString();
+                        Complex actual = DDoubleOptimizedBessel.ComplexBessel.BesselI(nu, (r, i));
+
+                        ddouble err = (expected - actual).Magnitude / expected.Magnitude;
+
+                        Console.WriteLine($"{nu}, {(r, i)}, {err:e4}");
+                        Console.WriteLine(expected);
+                        Console.WriteLine(actual);
+
+                        Assert.IsTrue(err < 4e-27, $"\n{nu}, {(r, i)}\n{expected}\n{actual}\n{err:e4}");
+                    }
+                }
+
+                Console.WriteLine(string.Empty);
+            }
+        }
+
+        [TestMethod()]
+        public void BesselKMinusRTest() {
+            for (double nu = 0; nu <= 16; nu += 0.25) {
+                Console.WriteLine(nu);
+
+                foreach (double r in new double[] { 0, -1 / 8d, -1 / 4d, -1 / 2d, -1, -2, -4, -8, -16, -32, -64 }) {
+                    foreach (double i in new double[] { 1 / 8d, 1 / 4d, 1 / 2d, 1, 2, 4, 8, 16, 32, 64 }) {
+
+                        Complex expected = BesselN4.BesselK(nu, (r, i)).ToString();
+                        Complex actual = DDoubleOptimizedBessel.ComplexBessel.BesselK(nu, (r, i));
+
+                        ddouble err = (expected - actual).Magnitude / expected.Magnitude;
+
+                        Console.WriteLine($"{nu}, {(r, i)}, {err:e4}");
+                        Console.WriteLine(expected);
+                        Console.WriteLine(actual);
+
+                        Assert.IsTrue(err < 2e-27, $"\n{nu}, {(r, i)}\n{expected}\n{actual}\n{err:e4}");
+                    }
+                }
+
+                Console.WriteLine(string.Empty);
+            }
+        }
+
+        [TestMethod()]
         public void BesselJRecurrenceTest() {
             double[] vs = [0, 1 / 8d, 1 / 4d, 1 / 2d, 1, 2, 4, 8, 16, 32, 64, 128, 256];
 

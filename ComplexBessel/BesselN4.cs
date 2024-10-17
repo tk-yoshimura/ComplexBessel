@@ -147,23 +147,33 @@ namespace ComplexBessel {
                 return y;
             }
             else {
-                CMP4 c = (SinCosPICache<Pow2.N4>.SinPI(nu / 2), SinCosPICache<Pow2.N4>.CosPI(nu / 2));
-                CMP4 f = BesselK(nu, (z.I, z.R)).Conj;
+                if (MP4.IsPositive(z.R)) {
+                    CMP4 c = (-SinCosPICache<Pow2.N4>.SinPI(nu / 2), -SinCosPICache<Pow2.N4>.CosPI(nu / 2));
+                    CMP4 f = BesselK(nu, (z.I, z.R)).Conj;
 
-                CMP4 y = 2 * MP4.RcpPI * c * (MP4.IsPositive(z.R) ? -f : f);
+                    CMP4 y = 2 * MP4.RcpPI * c * f;
 
-                return y;
+                    return y;
+                }
+                else {
+                    return BesselJ(nu, z) + (0, 1) * BesselY(nu, z);
+                }
             }
         }
 
         public static CMP4 HankelH2(MP4 nu, CMP4 z) {
             if (MP4.IsPositive(z.I)) {
-                CMP4 c = (-SinCosPICache<Pow2.N4>.SinPI(nu / 2), SinCosPICache<Pow2.N4>.CosPI(nu / 2));
-                CMP4 f = BesselK(nu, (-z.I, MP4.Abs(z.R)));
+                if (MP4.IsPositive(z.R)) {
+                    CMP4 c = (-SinCosPICache<Pow2.N4>.SinPI(nu / 2), SinCosPICache<Pow2.N4>.CosPI(nu / 2));
+                    CMP4 f = BesselK(nu, (-z.I, z.R));
 
-                CMP4 y = 2 * MP4.RcpPI * c * (MP4.IsPositive(z.R) ? f : (-f.R, f.I));
+                    CMP4 y = 2 * MP4.RcpPI * c * f;
 
-                return y;
+                    return y;
+                }
+                else {
+                    return BesselJ(nu, z) - (0, 1) * BesselY(nu, z);
+                }
             }
             else {
                 CMP4 c = (-SinCosPICache<Pow2.N4>.SinPI(nu / 2), SinCosPICache<Pow2.N4>.CosPI(nu / 2));
