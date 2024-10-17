@@ -1,6 +1,7 @@
 ﻿using ComplexBessel;
 using DoubleDouble;
 using DoubleDoubleComplex;
+using MultiPrecision;
 
 namespace DDoubleOptimizedBesselTests {
     [TestClass()]
@@ -427,6 +428,82 @@ namespace DDoubleOptimizedBesselTests {
         }
 
         [TestMethod()]
+        public void HankelH1Test() {
+            for (double nu = -16; nu <= 16; nu += 0.25) {
+                Console.WriteLine(nu);
+
+                double[] xs = [ 
+                    0, 1 / 8, 1 / 4, 1 / 2, 1, 2, 4, 8, 16, 32, 64,
+                    -1 / 8, -1 / 4, -1 / 2, -1, -2, -4, -8, -16, -32, -64 
+                ];
+
+                foreach (double r in xs) {
+                    foreach (double i in xs) {
+                        if (r == 0 && i <= 0) {
+                            continue;
+                        }
+
+                        Complex expected = BesselN4.HankelH1(nu, (r, i)).ToString();
+                        Complex actual = DDoubleOptimizedBessel.ComplexBessel.HankelH1(nu, (r, i));
+
+                        ddouble err = (expected - actual).Magnitude / expected.Magnitude;
+
+                        Console.WriteLine($"{nu}, {(r, i)}, {err:e4}");
+                        Console.WriteLine(expected);
+                        Console.WriteLine(actual);
+
+                        if (double.Abs(nu) != 1.5 || (r, i) != (0, -1)) {
+                            Assert.IsTrue(err < 2e-27, $"\n{nu}, {(r, i)}\n{expected}\n{actual}\n{err}");
+                        }
+                        else {
+                            Assert.IsTrue(actual.Magnitude < 1e-30, $"\n{nu}, {(r, i)}\n{expected}\n{actual}\n{err}");
+                        }
+                    }
+                }
+
+                Console.WriteLine(string.Empty);
+            }
+        }
+
+        [TestMethod()]
+        public void HankelH2Test() {
+            for (double nu = -16; nu <= 16; nu += 0.25) {
+                Console.WriteLine(nu);
+
+                double[] xs = [ 
+                    0, 1 / 8, 1 / 4, 1 / 2, 1, 2, 4, 8, 16, 32, 64,
+                    -1 / 8, -1 / 4, -1 / 2, -1, -2, -4, -8, -16, -32, -64 
+                ];
+
+                foreach (double r in xs) {
+                    foreach (double i in xs) {
+                        if (r == 0 && i <= 0) {
+                            continue;
+                        }
+
+                        Complex expected = BesselN4.HankelH2(nu, (r, i)).ToString();
+                        Complex actual = DDoubleOptimizedBessel.ComplexBessel.HankelH2(nu, (r, i));
+
+                        ddouble err = (expected - actual).Magnitude / expected.Magnitude;
+
+                        Console.WriteLine($"{nu}, {(r, i)}, {err:e4}");
+                        Console.WriteLine(expected);
+                        Console.WriteLine(actual);
+
+                        if (double.Abs(nu) != 1.5 || (r, i) != (0, 1)) {
+                            Assert.IsTrue(err < 2e-27, $"\n{nu}, {(r, i)}\n{expected}\n{actual}\n{err}");
+                        }
+                        else {
+                            Assert.IsTrue(actual.Magnitude < 1e-30, $"\n{nu}, {(r, i)}\n{expected}\n{actual}\n{err}");
+                        }
+                    }
+                }
+
+                Console.WriteLine(string.Empty);
+            }
+        }
+
+        [TestMethod()]
         public void BesselJNu1p25Test() {
             Complex[] expecteds = [
                 "9.2145929015511005131094720273851178236-147.6159570273588415961403709192966375974i",
@@ -734,11 +811,6 @@ namespace DDoubleOptimizedBesselTests {
                 Console.WriteLine(expected);
                 Console.WriteLine(actual);
 
-                // TODO: limit small
-                if (expected.Magnitude < 1e-3) {
-                    continue;
-                }
-
                 Assert.IsTrue((actual - expected).Magnitude / expected.Magnitude < 2e-30);
             }
         }
@@ -762,11 +834,6 @@ namespace DDoubleOptimizedBesselTests {
                 Console.WriteLine(z);
                 Console.WriteLine(expected);
                 Console.WriteLine(actual);
-
-                // TODO: limit small
-                if (expected.Magnitude < 1e-3) {
-                    continue;
-                }
 
                 Assert.IsTrue((actual - expected).Magnitude / expected.Magnitude < 2e-30);
             }

@@ -190,15 +190,31 @@ namespace DDoubleOptimizedBessel {
         }
 
         public static Complex HankelH1(ddouble nu, Complex z) {
-            Complex y = BesselJ(nu, z) + Complex.ImaginaryOne * BesselY(nu, z);
+            if (ddouble.IsNegative(z.R) && ddouble.IsNegative(z.I)) {
+                return BesselJ(nu, z) + (0, 1) * BesselY(nu, z);
+            }
+            else {
+                Complex c = (-SinCosPICache.SinPI(nu / 2), -SinCosPICache.CosPI(nu / 2));
+                Complex f = BesselK(nu, (z.I, z.R)).Conj;
 
-            return y;
+                Complex y = 2 * ddouble.RcpPI * c * f;
+
+                return y;
+            }
         }
 
         public static Complex HankelH2(ddouble nu, Complex z) {
-            Complex y = BesselJ(nu, z) - Complex.ImaginaryOne * BesselY(nu, z);
+            if (ddouble.IsNegative(z.R) && ddouble.IsPositive(z.I)) {
+                return BesselJ(nu, z) - (0, 1) * BesselY(nu, z);
+            }
+            else {
+                Complex c = (-SinCosPICache.SinPI(nu / 2), SinCosPICache.CosPI(nu / 2));
+                Complex f = BesselK(nu, (-z.I, z.R));
 
-            return y;
+                Complex y = 2 * ddouble.RcpPI * c * f;
+
+                return y;
+            }
         }
     }
 
