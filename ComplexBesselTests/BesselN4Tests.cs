@@ -719,7 +719,7 @@ namespace ComplexBesselTests {
                 Console.WriteLine(actual);
                 Console.WriteLine(actual_raw);
 
-                //Assert.IsTrue((actual - expected).Magnitude / expected.Magnitude < 2e-30);
+                Assert.IsTrue((actual - expected).Magnitude / expected.Magnitude < 2e-34);
             }
         }
 
@@ -745,7 +745,91 @@ namespace ComplexBesselTests {
                 Console.WriteLine(actual);
                 Console.WriteLine(actual_raw);
 
-                //Assert.IsTrue((actual - expected).Magnitude / expected.Magnitude < 2e-30);
+                Assert.IsTrue((actual - expected).Magnitude / expected.Magnitude < 2e-34);
+            }
+        }
+
+        [TestMethod()]
+        public void HankelH1ExpectedTest() {
+            IEnumerable<string> filepaths = Directory.EnumerateFiles("../../../../mpmath_expected/hankel1/", "*.csv");
+
+            foreach (string filepath in filepaths) {
+                string filename = filepath.Split("/").Last();
+                string[] seps = filename.Split("_");
+                MultiPrecision<Pow2.N4> nu = MultiPrecision<Pow2.N4>.Parse(seps[1][2..^4]);
+                using StreamReader sr = new(filepath);
+
+                sr.ReadLine();
+
+                while (!sr.EndOfStream) {
+                    string? line = sr.ReadLine();
+
+                    if (string.IsNullOrEmpty(line)) {
+                        break;
+                    }
+
+                    string[] items = line.Split(",");
+
+                    Complex<Pow2.N4> z = (items[0], items[1]);
+
+                    if (!Complex<Pow2.N4>.TryParse(items[2], null, out Complex<Pow2.N4>? expected)) {
+                        continue;
+                    }
+
+                    Complex<Pow2.N4> actual = BesselN4.HankelH1(nu, z);
+                    MultiPrecision<Pow2.N4> err = (expected - actual).Magnitude / expected.Magnitude;
+
+                    if (MultiPrecision<Pow2.N4>.Abs(nu) != 1.5 || z != (0, -1)) {
+                        Assert.IsTrue(err < 1e-34, $"\n{nu}, {z}\n{expected}\n{actual}\n{err}");
+                    }
+                    else {
+                        Assert.IsTrue(actual.Magnitude < 1e-38);
+                    }
+                }
+            }
+        }
+
+        [TestMethod()]
+        public void HankelH2ExpectedTest() {
+            IEnumerable<string> filepaths = Directory.EnumerateFiles("../../../../mpmath_expected/hankel2/", "*.csv");
+
+            foreach (string filepath in filepaths) {
+                string filename = filepath.Split("/").Last();
+                string[] seps = filename.Split("_");
+                MultiPrecision<Pow2.N4> nu = MultiPrecision<Pow2.N4>.Parse(seps[1][2..^4]);
+                using StreamReader sr = new(filepath);
+
+                sr.ReadLine();
+
+                while (!sr.EndOfStream) {
+                    string? line = sr.ReadLine();
+
+                    if (string.IsNullOrEmpty(line)) {
+                        break;
+                    }
+
+                    string[] items = line.Split(",");
+
+                    Complex<Pow2.N4> z = (items[0], items[1]);
+
+                    if (!Complex<Pow2.N4>.TryParse(items[2], null, out Complex<Pow2.N4>? expected)) {
+                        continue;
+                    }
+
+                    Complex<Pow2.N4> actual = BesselN4.HankelH2(nu, z);
+                    MultiPrecision<Pow2.N4> err = (expected - actual).Magnitude / expected.Magnitude;
+
+                    Console.WriteLine($"{nu}, {z}, {err:e10}");
+                    Console.WriteLine(expected);
+                    Console.WriteLine(actual);
+
+                    if (MultiPrecision<Pow2.N4>.Abs(nu) != 1.5 || z != (0, 1)) {
+                        Assert.IsTrue(err < 1e-34, $"\n{nu}, {z}\n{expected}\n{actual}\n{err}");
+                    }
+                    else {
+                        Assert.IsTrue(actual.Magnitude < 1e-38);
+                    }
+                }
             }
         }
     }
