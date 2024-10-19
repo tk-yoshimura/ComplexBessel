@@ -163,15 +163,11 @@ namespace DDoubleOptimizedBessel {
                     ? PowerSeries.BesselI(nu, z)
                     : MillerBackward.BesselI(nu, z);
 
-                Complex by = (
-                    (z.I <= PowerSeriesThreshold(nu, z.R) - BesselJYPowerseriesBias)
-                    ? (
-                        (NearlyInteger(nu, out int n) || ddouble.Abs(n - nu) >= BesselYForcedMillerBackwardThreshold)
-                         ? PowerSeries.BesselY(nu, (z.I, z.R))
-                         : MillerBackward.BesselY(nu, (z.I, z.R))
-                    )
-                    : MillerBackward.BesselY(nu, (z.I, z.R))
-                );
+                Complex by = 
+                    ((z.I <= PowerSeriesThreshold(nu, z.R) - BesselJYPowerseriesBias) &&
+                     (NearlyInteger(nu, out int n) || ddouble.Abs(n - nu) >= BesselYForcedMillerBackwardThreshold))
+                    ? PowerSeries.BesselY(nu, (z.I, z.R))
+                    : MillerBackward.BesselY(nu, (z.I, z.R));
 
                 Complex y = c * (-Complex.ImaginaryOne * c * bi - by.Conj) * ddouble.PI / 2d;
 
