@@ -12,7 +12,7 @@ namespace ComplexBesselTests {
 
         [TestMethod()]
         public void BesselKTest() {
-            for (double nu = double.ScaleB(1, -16); nu <= 0.5; nu *= 2) {
+            for (double nu = 0; nu <= 0.5; nu = nu < double.ScaleB(1, -16) ? double.ScaleB(1, -16) : nu * 2) {
                 Console.WriteLine(nu);
 
                 foreach (Complex<Pow2.N4> z in zs_mini) {
