@@ -69,7 +69,7 @@ namespace ComplexBesselTests {
                     Complex<Pow2.N4> c = (-MultiPrecision<Pow2.N4>.SinPI(nu / 2), MultiPrecision<Pow2.N4>.CosPI(nu / 2));
                     Complex<Pow2.N4> f = BesselN4.BesselK(nu, (-i, r));
 
-                    Complex<Pow2.N4> z1 = 2 * MultiPrecision<Pow2.N4>.RcpPI * c * f;                    
+                    Complex<Pow2.N4> z1 = 2 * MultiPrecision<Pow2.N4>.RcpPI * c * f;
                     Complex<Pow2.N4> z2 = BesselN4.BesselJ(nu, (r, i)) - (0, 1) * BesselN4.BesselY(nu, (r, i));
 
                     Console.WriteLine($"{r},{i}");
@@ -84,7 +84,7 @@ namespace ComplexBesselTests {
                     Complex<Pow2.N4> c = (-MultiPrecision<Pow2.N4>.SinPI(nu / 2), MultiPrecision<Pow2.N4>.CosPI(nu / 2));
                     Complex<Pow2.N4> f = BesselN4.BesselK(nu, (-i, r));
 
-                    Complex<Pow2.N4> z1 = 2 * MultiPrecision<Pow2.N4>.RcpPI * c * f;                    
+                    Complex<Pow2.N4> z1 = 2 * MultiPrecision<Pow2.N4>.RcpPI * c * f;
                     Complex<Pow2.N4> z2 = BesselN4.BesselJ(nu, (r, i)) - (0, 1) * BesselN4.BesselY(nu, (r, i));
 
                     Console.WriteLine($"{r},{i}");

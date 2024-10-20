@@ -1,6 +1,4 @@
 ﻿using MultiPrecision;
-using MultiPrecisionComplex;
-using System.Diagnostics;
 using CMP4 = MultiPrecisionComplex.Complex<MultiPrecision.Pow2.N4>;
 using MP4 = MultiPrecision.MultiPrecision<MultiPrecision.Pow2.N4>;
 
@@ -54,14 +52,17 @@ namespace ComplexBessel {
                 return Limit<Pow2.N4>.BesselY(nu, z);
             }
             else if (z.R <= PowerSeriesThreshold(nu, z.I)) {
-                Debug.Assert(MP4.Round(nu) == nu || (MP4.Round(nu) - nu).Exponent >= -4);
-
-                return PowerSeries<Pow2.N4>.BesselY(nu, z);
+                if (MP4.Round(nu) == nu || (MP4.Round(nu) - nu).Exponent >= -4) {
+                    return PowerSeries<Pow2.N4>.BesselY(nu, z);
+                }
+                else if (z.I <= 4) {
+                    return MillerBackward<Pow2.N4>.BesselY(nu, z);
+                }
             }
             else if (z.I <= 8) {
                 return MillerBackward<Pow2.N4>.BesselY(nu, z);
             }
-            else {
+            {
                 CMP4 c = (SinCosPICache<Pow2.N4>.CosPI(nu / 2), SinCosPICache<Pow2.N4>.SinPI(nu / 2));
                 CMP4 bi = BesselI(nu, (z.I, z.R));
                 CMP4 bk = BesselK(nu, (z.I, z.R));
@@ -118,10 +119,13 @@ namespace ComplexBessel {
             if (z.Magnitude >= 44.5) {
                 return Limit<Pow2.N4>.BesselK(nu, z);
             }
-            else if (z.Magnitude <= 4) {
-                Debug.Assert(MP4.Round(nu) == nu || (MP4.Round(nu) - nu).Exponent >= -4);
-
-                return PowerSeries<Pow2.N4>.BesselK(nu, z);
+            else if (z.Magnitude <= 2) {
+                if (MP4.Round(nu) == nu || (MP4.Round(nu) - nu).Exponent >= -4) {
+                    return PowerSeries<Pow2.N4>.BesselK(nu, z);
+                }
+                else {
+                    return AmosPowerSeries<Pow2.N4>.BesselK(nu, z);
+                }
             }
             else if (z.R >= MP4.Min(2, z.I / 2)) {
                 return YoshidaPade<Pow2.N4>.BesselK(nu, z);

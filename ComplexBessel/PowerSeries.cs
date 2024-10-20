@@ -1,5 +1,4 @@
-﻿using DDoubleOptimizedBessel;
-using MultiPrecision;
+﻿using MultiPrecision;
 using MultiPrecisionComplex;
 using System.Collections.ObjectModel;
 using System.Diagnostics;

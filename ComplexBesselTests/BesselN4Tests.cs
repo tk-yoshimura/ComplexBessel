@@ -1,7 +1,6 @@
 ﻿using ComplexBessel;
 using MultiPrecision;
 using MultiPrecisionComplex;
-using System.Numerics;
 
 namespace ComplexBesselTests {
     [TestClass()]

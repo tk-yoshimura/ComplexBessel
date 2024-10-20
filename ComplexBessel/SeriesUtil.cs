@@ -2,7 +2,7 @@
 using MultiPrecisionComplex;
 using System.Runtime.CompilerServices;
 
-namespace DDoubleOptimizedBessel {
+namespace ComplexBessel {
     internal static class SeriesUtil<N> where N : struct, IConstant {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Complex<N> Add(Complex<N> c, Complex<N> s, Complex<N> a, out bool convergence) {

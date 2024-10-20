@@ -1,5 +1,4 @@
-﻿using DDoubleOptimizedBessel;
-using MultiPrecision;
+﻿using MultiPrecision;
 using MultiPrecisionComplex;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -12,24 +11,38 @@ namespace ComplexBessel {
             }
         }
 
-        public static (MultiPrecision<N> g1, MultiPrecision<N> g2) Gamma12(MultiPrecision<N> nu) {
-            Debug.Assert(MultiPrecision<N>.Abs(nu) <= 0.5);
+        public static Complex<N> BesselK(MultiPrecision<N> nu, Complex<N> z) {
+            Debug.Assert(nu >= 0d);
 
-            MultiPrecision<N> nu2 = nu * nu;
-            MultiPrecision<N> gm = 1 / MultiPrecision<N>.Gamma(1d - nu), gp = 1 / MultiPrecision<N>.Gamma(1d + nu);
+            int n = (int)MultiPrecision<N>.Round(nu);
+            MultiPrecision<N> alpha = nu - n;
 
-            MultiPrecision<N> g1 = G1Coef[^1];
+            Complex<N> k0 = BesselKNearZeroNu(alpha, z, terms: 256);
 
-            for (int i = G1Coef.Count - 2; i >= 0; i--) {
-                g1 = g1 * nu2 + G1Coef[i];
+            if (n == 0) {
+                return k0;
             }
 
-            MultiPrecision<N> g2 = (gm + gp) / 2d;
+            Complex<N> i0 = PowerSeries<N>.BesselI(alpha, z), i1 = PowerSeries<N>.BesselI(alpha + 1d, z);
 
-            return (g1, g2);
+            Complex<N> k1 = (1d - i1 * k0 * z) / (i0 * z);
+
+            if (n == 1) {
+                return k1;
+            }
+
+            Complex<N> v = 1d / z;
+
+            for (int k = 1; k < n; k++) {
+                (k1, k0) = (MultiPrecision<N>.Ldexp(k + alpha, 1) * v * k1 + k0, k1);
+            }
+
+            return k1;
         }
 
-        public static Complex<N> BesselK(MultiPrecision<N> nu, Complex<N> z, int terms = 256) {
+        private static Complex<N> BesselKNearZeroNu(MultiPrecision<N> nu, Complex<N> z, int terms) {
+            nu = MultiPrecision<N>.Abs(nu);
+
             MultiPrecision<N> nu2 = nu * nu;
             Complex<N> t = Complex<N>.Log(2d / z), mu = nu * t;
             (MultiPrecision<N> g1, MultiPrecision<N> g2) = Gamma12(nu);
@@ -54,6 +67,23 @@ namespace ComplexBessel {
             }
 
             return c;
+        }
+
+        public static (MultiPrecision<N> g1, MultiPrecision<N> g2) Gamma12(MultiPrecision<N> nu) {
+            Debug.Assert(MultiPrecision<N>.Abs(nu) <= 0.5);
+
+            MultiPrecision<N> nu2 = nu * nu;
+            MultiPrecision<N> gm = 1 / MultiPrecision<N>.Gamma(1d - nu), gp = 1 / MultiPrecision<N>.Gamma(1d + nu);
+
+            MultiPrecision<N> g1 = G1Coef[^1];
+
+            for (int i = G1Coef.Count - 2; i >= 0; i--) {
+                g1 = g1 * nu2 + G1Coef[i];
+            }
+
+            MultiPrecision<N> g2 = (gm + gp) / 2d;
+
+            return (g1, g2);
         }
 
         public static Complex<N> Sinhc(Complex<N> z) {
@@ -97,6 +127,10 @@ namespace ComplexBessel {
             "-2.628332980940195449089037611873639354223849417809111652267926385916722614179582440787964678431660449651352500188065282964792549217295325197698848536208486505394898539009632431570607888253158027873769757245471728764599538164976160524675201959681776613504034e-46",
             "2.327942418699470598604262055622291845668777409599255125240400433638967025295552425276269398882546889470773693023981873682522062565178361846267400933215501937149904811602073623699082757858900554381906944313355017555520781351661607751192069402149596236432726e-49",
             "4.92829558677098993050445868221253259415784576444327346809237866575215465369662027544622926483970029612403921571720579895084380069422801734149338338822743773474929919539086766113895412352197996609178289917711787827432933446991537113691729384431077575139724e-51",
+            "1.218722189147516555250452605074758145010905510364978311543064488592732439030032263906486884699626601577932475035705536224908228271587833020028816389257017508143467809347733311476875969656963311351699263830824687459426586560307853896712033015176963633687033e-54",
+            "-6.920504054328689253528422229066270044433461725517353617204756902769598824387623204899968551022476658713512728628039386735845563664216935638052249563887465797630116865667798220348314564609916326857569530353009466355742935857417566098303969697434488622950928e-56",
+            "-8.563098056275654327981712454743156560024687641478218168740812949284807808844057850319953924915569313844567801039936923467487938590462054315926069135371025979152707002351091084148896475191920735136998691240899591526309985600589371355305322987339763041000345e-59",
+            "7.154294577081615218197279833713681554340516878501301081947236832186853306966745312773151839648914218926265814843896408289597856764083990431624461030994257662989977168051871409331299594694883385126154626462221194700468491133255877717888257797817958000610146e-61"
         ]);
     }
 }
