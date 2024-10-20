@@ -2,6 +2,7 @@
 using DDoubleComplexBessel;
 using DoubleDouble;
 using DoubleDoubleComplex;
+using MultiPrecision;
 
 namespace DDoubleComplexBesselTests {
     [TestClass()]
@@ -407,6 +408,37 @@ namespace DDoubleComplexBesselTests {
                 Console.WriteLine(actual);
 
                 Assert.IsTrue((actual - expected).Magnitude / expected.Magnitude < 2e-30);
+            }
+        }
+
+        [TestMethod()]
+        public void AmosBesselKTest() {
+            for (double nu = 0; nu <= 0.25; nu = nu < double.ScaleB(1, -16) ? double.ScaleB(1, -16) : nu * 2) {
+                Console.WriteLine(nu);
+
+                for (double r = 0; r <= 2; r += 1d / 64) {
+                    for (double i = 0; i <= 2; i += 1d / 64) {
+                        if (r == 0 && i == 0) {
+                            continue;
+                        }
+                        if (r * r + i * i > 4) {
+                            continue;
+                        }                        
+
+                        Complex expected = AmosPowerSeries<Pow2.N4>.BesselK(nu, (r, i)).ToString();
+                        Complex actual = AmosPowerSeries.BesselK(nu, (r, i));
+
+                        ddouble err = (expected - actual).Magnitude / expected.Magnitude;
+
+                        Console.WriteLine($"{nu}, {(r, i)}, {err:e4}");
+                        Console.WriteLine(expected);
+                        Console.WriteLine(actual);
+
+                        Assert.IsTrue(err < 2e-30, $"\n{nu}, {(r, i)}\n{expected}\n{actual}\n{err:e4}");
+                    }
+                }
+
+                Console.WriteLine(string.Empty);
             }
         }
     }
