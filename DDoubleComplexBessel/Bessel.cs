@@ -5,7 +5,7 @@ using System.Diagnostics;
 namespace DDoubleComplexBessel {
     public static class Bessel {
         private const double hankel_threshold = 38.875, miller_backward_threshold = 6;
-        private const double besselk_pade_threshold = 1, besselk_nz_threshold = 4, besseljy_powerseries_bias = 2;
+        private const double besselk_pade_threshold = 1, besselk_nz_threshold = 2, besseljy_powerseries_bias = 2;
 
         public static Complex BesselJ(ddouble nu, Complex z) {
             BesselUtil.CheckNu(nu);
@@ -48,14 +48,17 @@ namespace DDoubleComplexBessel {
                 return Limit.BesselY(nu, z);
             }
             else if (z.R <= PowerSeriesThreshold(nu, z.I) - besseljy_powerseries_bias) {
-                Debug.Assert(ddouble.Round(nu) == nu || ddouble.ILogB(ddouble.Round(nu) - nu) >= -4);
-
-                return PowerSeries.BesselY(nu, z);
+                if (ddouble.Round(nu) == nu || ddouble.ILogB(ddouble.Round(nu) - nu) >= -3) {
+                    return PowerSeries.BesselY(nu, z);
+                }
+                else if (z.I <= miller_backward_threshold / 2) {
+                    return MillerBackward.BesselY(nu, z);
+                }
             }
             else if (z.I <= miller_backward_threshold) {
                 return MillerBackward.BesselY(nu, z);
             }
-            else {
+            {
                 Complex c = (SinCosPICache.CosPI(nu / 2), SinCosPICache.SinPI(nu / 2));
                 Complex bi = BesselI(nu, (z.I, z.R));
                 Complex bk = BesselK(nu, (z.I, z.R));
@@ -106,9 +109,12 @@ namespace DDoubleComplexBessel {
                 return Limit.BesselK(nu, z);
             }
             else if (z.Magnitude <= besselk_nz_threshold) {
-                Debug.Assert(ddouble.Round(nu) == nu || ddouble.ILogB(ddouble.Round(nu) - nu) >= -4);
-
-                return PowerSeries.BesselK(nu, z);
+                if (ddouble.Round(nu) == nu || ddouble.ILogB(ddouble.Round(nu) - nu) >= -3) {
+                    return PowerSeries.BesselK(nu, z);
+                }
+                else {
+                    return AmosPowerSeries.BesselK(nu, z);
+                }
             }
             else if (z.R >= besselk_pade_threshold) {
                 return YoshidaPade.BesselK(nu, z);

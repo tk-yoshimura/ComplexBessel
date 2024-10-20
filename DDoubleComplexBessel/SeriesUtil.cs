@@ -1,5 +1,4 @@
 ﻿using DoubleDoubleComplex;
-using MultiPrecision;
 using System.Runtime.CompilerServices;
 
 namespace DDoubleComplexBessel {

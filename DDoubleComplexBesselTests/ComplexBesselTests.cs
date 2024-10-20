@@ -441,5 +441,24 @@ namespace DDoubleComplexBesselTests {
                 Console.WriteLine(string.Empty);
             }
         }
+
+        [TestMethod()]
+        public void Gamma12Test() {
+            for (double x = 1 / 32d; x <= 0.5; x += 1 / 32d) {
+                ddouble expected_g1 = ((1 / MultiPrecision<Pow2.N8>.Gamma(1 - x) - 1 / MultiPrecision<Pow2.N8>.Gamma(1 + x)) / (2 * x)).ToString();
+                ddouble expected_g2 = ((1 / MultiPrecision<Pow2.N8>.Gamma(1 - x) + 1 / MultiPrecision<Pow2.N8>.Gamma(1 + x)) / 2).ToString();
+
+                (ddouble actual_g1, ddouble actual_g2) = AmosPowerSeries.Gamma12(x);
+
+                Console.WriteLine(x);
+                Console.WriteLine(expected_g1);
+                Console.WriteLine(actual_g1);
+                Console.WriteLine(expected_g2);
+                Console.WriteLine(actual_g2);
+
+                Assert.IsTrue(ddouble.Abs(expected_g1 - actual_g1) / ddouble.Abs(expected_g1) < 1e-30);
+                Assert.IsTrue(ddouble.Abs(expected_g2 - actual_g2) / ddouble.Abs(expected_g2) < 1e-30);
+            }
+        }
     }
 }

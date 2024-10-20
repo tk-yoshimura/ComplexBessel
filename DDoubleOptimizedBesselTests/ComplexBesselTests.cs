@@ -1,7 +1,6 @@
 ﻿using ComplexBessel;
 using DoubleDouble;
 using DoubleDoubleComplex;
-using MultiPrecision;
 
 namespace DDoubleOptimizedBesselTests {
     [TestClass()]
@@ -432,9 +431,9 @@ namespace DDoubleOptimizedBesselTests {
             for (double nu = -16; nu <= 16; nu += 0.25) {
                 Console.WriteLine(nu);
 
-                double[] xs = [ 
+                double[] xs = [
                     0, 1 / 8, 1 / 4, 1 / 2, 1, 2, 4, 8, 16, 32, 64,
-                    -1 / 8, -1 / 4, -1 / 2, -1, -2, -4, -8, -16, -32, -64 
+                    -1 / 8, -1 / 4, -1 / 2, -1, -2, -4, -8, -16, -32, -64
                 ];
 
                 foreach (double r in xs) {
@@ -470,9 +469,9 @@ namespace DDoubleOptimizedBesselTests {
             for (double nu = -16; nu <= 16; nu += 0.25) {
                 Console.WriteLine(nu);
 
-                double[] xs = [ 
+                double[] xs = [
                     0, 1 / 8, 1 / 4, 1 / 2, 1, 2, 4, 8, 16, 32, 64,
-                    -1 / 8, -1 / 4, -1 / 2, -1, -2, -4, -8, -16, -32, -64 
+                    -1 / 8, -1 / 4, -1 / 2, -1, -2, -4, -8, -16, -32, -64
                 ];
 
                 foreach (double r in xs) {

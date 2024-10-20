@@ -1,6 +1,5 @@
 ﻿using DoubleDouble;
 using DoubleDoubleComplex;
-using MultiPrecision;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
