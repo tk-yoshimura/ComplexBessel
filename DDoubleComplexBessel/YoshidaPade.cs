@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 namespace DDoubleComplexBessel {
 
     public static class YoshidaPade {
-        const int m = 36;
+        const int m = 40;
 
         private static readonly ReadOnlyCollection<ReadOnlyCollection<ddouble>> ess_coef_table;
         private static readonly Dictionary<ddouble, ReadOnlyCollection<(ddouble c, ddouble s)>> cds_coef_table = [];

@@ -3,19 +3,19 @@ using System.Numerics;
 
 namespace ComplexBessel {
     public static class YoshidaCoef<N> where N : struct, IConstant {
-        struct Plus16 : IConstant {
-            public readonly int Value => checked(default(N).Value + 16);
+        struct Plus32 : IConstant {
+            public readonly int Value => checked(default(N).Value + 32);
         }
 
         public static (MultiPrecision<N>[] cs, MultiPrecision<N>[] ds) Table(MultiPrecision<N> nu, int m) {
-            Limit<Plus16>.HankelExpansion hankel = new(nu.Convert<Plus16>());
+            Limit<Plus32>.HankelExpansion hankel = new(nu.Convert<Plus32>());
 
             MultiPrecision<N>[] cs = new MultiPrecision<N>[m + 1], ds = new MultiPrecision<N>[m + 1];
 
             for (int j = 0; j <= m; j++) {
                 ds[j] = ShiftedLegendre.Table(m, m - j) / ((m - j + 1) * hankel.ACoef(m - j + 1)).Convert<N>();
 
-                MultiPrecision<Plus16> sum = 0;
+                MultiPrecision<Plus32> sum = 0;
 
                 for (int p = m - j; p <= m; p++) {
                     sum += ShiftedLegendre.Table(m, p) * hankel.ACoef(p - m + j) / ((p + 1) * hankel.ACoef(p + 1));
@@ -62,15 +62,15 @@ namespace ComplexBessel {
                 dss[i] = new MultiPrecision<N>[i + 1];
 
                 for (int j = 0; j <= i; j++) {
-                    MultiPrecision<Plus16> b = 0;
+                    MultiPrecision<Plus32> b = 0;
 
                     for (int l = 0; l <= j; l++) {
                         for (int k = j - l; k <= i - l; k++) {
-                            b += (MultiPrecision<Plus16>)(ShiftedLegendre.Table(m, m - k) * ps[i - k][l] * qs[k][j - l] * fs[m - k]) / (fs[i - k] * fs[m + 1]);
+                            b += (MultiPrecision<Plus32>)(ShiftedLegendre.Table(m, m - k) * ps[i - k][l] * qs[k][j - l] * fs[m - k]) / (fs[i - k] * fs[m + 1]);
                         }
                     }
 
-                    dss[i][j] = MultiPrecision<Plus16>.Ldexp(b, 2 * j - 3 * i).Convert<N>();
+                    dss[i][j] = MultiPrecision<Plus32>.Ldexp(b, 2 * j - 3 * i).Convert<N>();
                 }
             }
 
