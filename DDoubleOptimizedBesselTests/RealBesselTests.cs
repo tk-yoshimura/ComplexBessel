@@ -98,13 +98,64 @@ namespace DDoubleOptimizedBesselTests {
         }
 
         [TestMethod()]
-        public void AmosBesselKTest() {
+        public void BesselYNearIntTest() {
+            for (int n = -16; n <= 16; n++) {
+                for (double alpha = 0; alpha <= 0.25; alpha = alpha < double.ScaleB(1, -16) ? double.ScaleB(1, -16) : alpha * 2) {
+                    Console.WriteLine(n + alpha);
+
+                    for (double x = 1d / 4; x <= 8; x += 1d / 4) {
+                        ddouble expected = BesselN4.BesselY(n + alpha, x).R.ToString();
+                        ddouble actual = DDoubleOptimizedBessel.RealBessel.BesselY(n + alpha, x);
+
+                        ddouble err = ddouble.Abs((expected - actual) / expected);
+
+                        Console.WriteLine($"{alpha}, {x}, {err:e4}");
+                        Console.WriteLine(expected);
+                        Console.WriteLine(actual);
+
+                        if (ddouble.Abs(expected) < 1e-2) {
+                            continue;
+                        }
+
+                        Assert.IsTrue(err < 4e-27, $"\n{n + alpha}, {x}\n{expected}\n{actual}\n{err:e4}");
+                    }
+
+                    if (alpha == 0d) {
+                        continue;
+                    }
+
+                    Console.WriteLine(n - alpha);
+
+                    for (double x = 1d / 4; x <= 8; x += 1d / 4) {
+                        ddouble expected = BesselN4.BesselY(n - alpha, x).R.ToString();
+                        ddouble actual = DDoubleOptimizedBessel.RealBessel.BesselY(n - alpha, x);
+
+                        ddouble err = ddouble.Abs((expected - actual) / expected);
+
+                        Console.WriteLine($"{alpha}, {x}, {err:e4}");
+                        Console.WriteLine(expected);
+                        Console.WriteLine(actual);
+
+                        if (ddouble.Abs(expected) < 1e-2) {
+                            continue;
+                        }
+
+                        Assert.IsTrue(err < 4e-27, $"\n{n - alpha}, {x}\n{expected}\n{actual}\n{err:e4}");
+                    }
+
+                    Console.WriteLine(string.Empty);
+                }
+            }
+        }
+
+        [TestMethod()]
+        public void BesselKNearIntTest() {
             for (int n = 0; n <= 16; n++) {
                 for (double alpha = 0; alpha <= 0.25; alpha = alpha < double.ScaleB(1, -16) ? double.ScaleB(1, -16) : alpha * 2) {
                     Console.WriteLine(n + alpha);
 
-                    for (double x = 1d / 16; x <= 2; x += 1d / 16) {
-                        ddouble expected = AmosPowerSeries<Pow2.N4>.BesselK(n + alpha, x).ToString();
+                    for (double x = 1d / 16; x <= 4; x += 1d / 16) {
+                        ddouble expected = AmosPowerSeries<Pow2.N4>.BesselK(n + alpha, x).R.ToString();
                         ddouble actual = DDoubleOptimizedBessel.RealBessel.BesselK(n + alpha, x);
 
                         ddouble err = ddouble.Abs((expected - actual) / expected);
@@ -116,14 +167,14 @@ namespace DDoubleOptimizedBesselTests {
                         Assert.IsTrue(err < 8e-30, $"\n{n + alpha}, {x}\n{expected}\n{actual}\n{err:e4}");
                     }
 
-                    if (n <= 0) {
+                    if (n <= 0 || alpha == 0d) {
                         continue;
                     }
 
                     Console.WriteLine(n - alpha);
 
-                    for (double x = 1d / 16; x <= 2; x += 1d / 16) {
-                        ddouble expected = AmosPowerSeries<Pow2.N4>.BesselK(n - alpha, x).ToString();
+                    for (double x = 1d / 16; x <= 4; x += 1d / 16) {
+                        ddouble expected = AmosPowerSeries<Pow2.N4>.BesselK(n - alpha, x).R.ToString();
                         ddouble actual = DDoubleOptimizedBessel.RealBessel.BesselK(n - alpha, x);
 
                         ddouble err = ddouble.Abs((expected - actual) / expected);
