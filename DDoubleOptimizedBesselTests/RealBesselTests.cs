@@ -1,5 +1,6 @@
 ﻿using ComplexBessel;
 using DoubleDouble;
+using MultiPrecision;
 
 namespace DDoubleOptimizedBesselTests {
     [TestClass()]
@@ -96,6 +97,48 @@ namespace DDoubleOptimizedBesselTests {
             }
         }
 
+        [TestMethod()]
+        public void AmosBesselKTest() {
+            for (int n = 0; n <= 16; n++) {
+                for (double alpha = 0; alpha <= 0.25; alpha = alpha < double.ScaleB(1, -16) ? double.ScaleB(1, -16) : alpha * 2) {
+                    Console.WriteLine(n + alpha);
+
+                    for (double x = 1d / 16; x <= 2; x += 1d / 16) {
+                        ddouble expected = AmosPowerSeries<Pow2.N4>.BesselK(n + alpha, x).ToString();
+                        ddouble actual = DDoubleOptimizedBessel.RealBessel.BesselK(n + alpha, x);
+
+                        ddouble err = ddouble.Abs((expected - actual) / expected);
+
+                        Console.WriteLine($"{alpha}, {x}, {err:e4}");
+                        Console.WriteLine(expected);
+                        Console.WriteLine(actual);
+
+                        Assert.IsTrue(err < 8e-30, $"\n{n + alpha}, {x}\n{expected}\n{actual}\n{err:e4}");
+                    }
+
+                    if (n <= 0) {
+                        continue;
+                    }
+
+                    Console.WriteLine(n - alpha);
+
+                    for (double x = 1d / 16; x <= 2; x += 1d / 16) {
+                        ddouble expected = AmosPowerSeries<Pow2.N4>.BesselK(n - alpha, x).ToString();
+                        ddouble actual = DDoubleOptimizedBessel.RealBessel.BesselK(n - alpha, x);
+
+                        ddouble err = ddouble.Abs((expected - actual) / expected);
+
+                        Console.WriteLine($"{alpha}, {x}, {err:e4}");
+                        Console.WriteLine(expected);
+                        Console.WriteLine(actual);
+
+                        Assert.IsTrue(err < 8e-30, $"\n{n - alpha}, {x}\n{expected}\n{actual}\n{err:e4}");
+                    }
+
+                    Console.WriteLine(string.Empty);
+                }
+            }
+        }
 
         [TestMethod]
         public void BesselYInterpolateTest() {
@@ -648,8 +691,8 @@ namespace DDoubleOptimizedBesselTests {
                         Console.WriteLine(y_dec);
                         Console.WriteLine(y_inc);
 
-                        Assert.IsTrue(ddouble.Abs((y_dec - y) / y) < 8e-26);
-                        Assert.IsTrue(ddouble.Abs((y_inc - y) / y) < 8e-26);
+                        Assert.IsTrue(ddouble.Abs((y_dec - y) / y) < 8e-28);
+                        Assert.IsTrue(ddouble.Abs((y_inc - y) / y) < 8e-28);
                     }
                 }
             }
@@ -1031,8 +1074,8 @@ namespace DDoubleOptimizedBesselTests {
                         Console.WriteLine(y_dec);
                         Console.WriteLine(y_inc);
 
-                        Assert.IsTrue(ddouble.Abs((y_dec - y) / y) < 8e-28);
-                        Assert.IsTrue(ddouble.Abs((y_inc - y) / y) < 8e-28);
+                        Assert.IsTrue(ddouble.Abs((y_dec - y) / y) < 8e-30);
+                        Assert.IsTrue(ddouble.Abs((y_inc - y) / y) < 8e-30);
                     }
                 }
             }
@@ -1052,7 +1095,7 @@ namespace DDoubleOptimizedBesselTests {
                     Console.WriteLine(expected);
                     Console.WriteLine(actual);
 
-                    Assert.IsTrue(ddouble.Abs((expected - actual) / expected) < 8e-28);
+                    Assert.IsTrue(ddouble.Abs((expected - actual) / expected) < 8e-30);
                 }
             }
         }

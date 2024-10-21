@@ -122,6 +122,100 @@ namespace DDoubleOptimizedBesselTests {
         }
 
         [TestMethod()]
+        public void BesselYNearIntTest() {
+            for (int n = -16; n <= 16; n++) {
+                for (double alpha = 0; alpha <= 0.25; alpha = alpha < double.ScaleB(1, -8) ? double.ScaleB(1, -8) : alpha * 2) {
+                    Console.WriteLine(n + alpha);
+
+                    for (double r = 1d / 4; r <= 8; r += 1d / 4) {
+                        for (double i = 1d / 4; i <= 8; i += 1d / 4) {
+                            Complex expected = BesselN4.BesselY(n + alpha, (r, i)).ToString();
+                            Complex actual = DDoubleOptimizedBessel.ComplexBessel.BesselY(n + alpha, (r, i));
+
+                            ddouble err = (expected - actual).Magnitude / expected.Magnitude;
+
+                            Console.WriteLine($"{n + alpha}, {(r, i)}, {err:e4}");
+                            Console.WriteLine(expected);
+                            Console.WriteLine(actual);
+
+                            Assert.IsTrue(err < 4e-27, $"\n{n + alpha}, {(r, i)}\n{expected}\n{actual}\n{err:e4}");
+                        }
+                    }
+
+                    if (alpha == 0d) {
+                        continue;
+                    }
+
+                    Console.WriteLine(n - alpha);
+
+                    for (double r = 1d / 4; r <= 8; r += 1d / 4) {
+                        for (double i = 1d / 4; i <= 8; i += 1d / 4) {
+                            Complex expected = BesselN4.BesselY(n - alpha, (r, i)).ToString();
+                            Complex actual = DDoubleOptimizedBessel.ComplexBessel.BesselY(n - alpha, (r, i));
+
+                            ddouble err = (expected - actual).Magnitude / expected.Magnitude;
+
+                            Console.WriteLine($"{n - alpha}, {(r, i)}, {err:e4}");
+                            Console.WriteLine(expected);
+                            Console.WriteLine(actual);
+
+                            Assert.IsTrue(err < 4e-27, $"\n{n - alpha}, {(r, i)}\n{expected}\n{actual}\n{err:e4}");
+                        }
+                    }
+
+                    Console.WriteLine(string.Empty);
+                }
+            }
+        }
+
+        [TestMethod()]
+        public void BesselKNearIntTest() {
+            for (int n = 0; n <= 16; n++) {
+                for (double alpha = 0; alpha <= 0.25; alpha = alpha < double.ScaleB(1, -8) ? double.ScaleB(1, -8) : alpha * 2) {
+                    Console.WriteLine(n + alpha);
+
+                    for (double r = 1d / 8; r <= 4; r += 1d / 8) {
+                        for (double i = 1d / 8; i <= 4; i += 1d / 8) {
+                            Complex expected = BesselN4.BesselK(n + alpha, (r, i)).ToString();
+                            Complex actual = DDoubleOptimizedBessel.ComplexBessel.BesselK(n + alpha, (r, i));
+
+                            ddouble err = (expected - actual).Magnitude / expected.Magnitude;
+
+                            Console.WriteLine($"{n + alpha}, {(r, i)}, {err:e4}");
+                            Console.WriteLine(expected);
+                            Console.WriteLine(actual);
+
+                            Assert.IsTrue(err < 4e-27, $"\n{n + alpha}, {(r, i)}\n{expected}\n{actual}\n{err:e4}");
+                        }
+                    }
+
+                    if (n <= 0 || alpha == 0d) {
+                        continue;
+                    }
+
+                    Console.WriteLine(n - alpha);
+
+                    for (double r = 1d / 8; r <= 4; r += 1d / 8) {
+                        for (double i = 1d / 8; i <= 4; i += 1d / 8) {
+                            Complex expected = BesselN4.BesselK(n - alpha, (r, i)).ToString();
+                            Complex actual = DDoubleOptimizedBessel.ComplexBessel.BesselK(n - alpha, (r, i));
+
+                            ddouble err = (expected - actual).Magnitude / expected.Magnitude;
+
+                            Console.WriteLine($"{n - alpha}, {(r, i)}, {err:e4}");
+                            Console.WriteLine(expected);
+                            Console.WriteLine(actual);
+
+                            Assert.IsTrue(err < 4e-27, $"\n{n - alpha}, {(r, i)}\n{expected}\n{actual}\n{err:e4}");
+                        }
+                    }
+
+                    Console.WriteLine(string.Empty);
+                }
+            }
+        }
+
+        [TestMethod()]
         public void BesselJMinusRTest() {
             for (double nu = -16; nu <= 16; nu += 0.25) {
                 Console.WriteLine(nu);
@@ -1389,8 +1483,8 @@ namespace DDoubleOptimizedBesselTests {
                         Console.WriteLine(y_dec);
                         Console.WriteLine(y_inc);
 
-                        Assert.IsTrue(ddouble.Abs((y_dec.R - y.R) / y.R) < 8e-25);
-                        Assert.IsTrue(ddouble.Abs((y_inc.R - y.R) / y.R) < 8e-25);
+                        Assert.IsTrue(ddouble.Abs((y_dec.R - y.R) / y.R) < 8e-28);
+                        Assert.IsTrue(ddouble.Abs((y_inc.R - y.R) / y.R) < 8e-28);
                     }
 
                     for (ddouble x = 1d / 32; x <= 8; x += 1d / 32) {
@@ -1403,8 +1497,8 @@ namespace DDoubleOptimizedBesselTests {
                         Console.WriteLine(y_dec);
                         Console.WriteLine(y_inc);
 
-                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-26);
-                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-26);
+                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-28);
+                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-28);
                     }
 
                     for (ddouble x = 1d / 32; x <= 8; x += 1d / 32) {
@@ -1417,8 +1511,8 @@ namespace DDoubleOptimizedBesselTests {
                         Console.WriteLine(y_dec);
                         Console.WriteLine(y_inc);
 
-                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-27);
-                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-27);
+                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-28);
+                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-28);
                     }
 
                     for (ddouble x = 1d / 32; x <= 8; x += 1d / 32) {
@@ -1431,8 +1525,8 @@ namespace DDoubleOptimizedBesselTests {
                         Console.WriteLine(y_dec);
                         Console.WriteLine(y_inc);
 
-                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-26);
-                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-26);
+                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-28);
+                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-28);
                     }
 
                     for (ddouble x = 1d / 32; x <= 8; x += 1d / 32) {
@@ -1445,8 +1539,8 @@ namespace DDoubleOptimizedBesselTests {
                         Console.WriteLine(y_dec);
                         Console.WriteLine(y_inc);
 
-                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-25);
-                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-25);
+                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-28);
+                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-28);
                     }
                 }
             }
@@ -1466,7 +1560,7 @@ namespace DDoubleOptimizedBesselTests {
                     Console.WriteLine(expected);
                     Console.WriteLine(actual);
 
-                    Assert.IsTrue(ddouble.Abs((actual.R - expected.R) / expected.R) < 8e-27);
+                    Assert.IsTrue(ddouble.Abs((actual.R - expected.R) / expected.R) < 8e-28);
                 }
             }
         }
@@ -1828,8 +1922,8 @@ namespace DDoubleOptimizedBesselTests {
                         Console.WriteLine(y_dec);
                         Console.WriteLine(y_inc);
 
-                        Assert.IsTrue(ddouble.Abs((y_dec.R - y.R) / y.R) < 8e-27);
-                        Assert.IsTrue(ddouble.Abs((y_inc.R - y.R) / y.R) < 8e-27);
+                        Assert.IsTrue(ddouble.Abs((y_dec.R - y.R) / y.R) < 8e-30);
+                        Assert.IsTrue(ddouble.Abs((y_inc.R - y.R) / y.R) < 8e-30);
                     }
 
                     for (ddouble x = 1d / 32; x <= 8; x += 1d / 32) {
@@ -1842,8 +1936,8 @@ namespace DDoubleOptimizedBesselTests {
                         Console.WriteLine(y_dec);
                         Console.WriteLine(y_inc);
 
-                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-26);
-                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-26);
+                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-30);
+                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-30);
                     }
 
                     for (ddouble x = 1d / 32; x <= 8; x += 1d / 32) {
@@ -1856,8 +1950,8 @@ namespace DDoubleOptimizedBesselTests {
                         Console.WriteLine(y_dec);
                         Console.WriteLine(y_inc);
 
-                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-25);
-                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-25);
+                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-30);
+                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-30);
                     }
 
                     for (ddouble x = 1d / 32; x <= 8; x += 1d / 32) {
@@ -1870,8 +1964,8 @@ namespace DDoubleOptimizedBesselTests {
                         Console.WriteLine(y_dec);
                         Console.WriteLine(y_inc);
 
-                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-26);
-                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-26);
+                        Assert.IsTrue((y_dec - y).Magnitude / y.Magnitude < 8e-30);
+                        Assert.IsTrue((y_inc - y).Magnitude / y.Magnitude < 8e-30);
                     }
 
                     for (ddouble x = 1d / 4; x <= 8; x += 1d / 4) {
@@ -1884,8 +1978,8 @@ namespace DDoubleOptimizedBesselTests {
                         Console.WriteLine(y_dec);
                         Console.WriteLine(y_inc);
 
-                        Assert.IsTrue(ddouble.Abs((y_dec.R - y.R) / y.R) < 8e-27);
-                        Assert.IsTrue(ddouble.Abs((y_inc.R - y.R) / y.R) < 8e-27);
+                        Assert.IsTrue(ddouble.Abs((y_dec.R - y.R) / y.R) < 8e-30);
+                        Assert.IsTrue(ddouble.Abs((y_inc.R - y.R) / y.R) < 8e-30);
                     }
                 }
             }
@@ -1905,7 +1999,7 @@ namespace DDoubleOptimizedBesselTests {
                     Console.WriteLine(expected);
                     Console.WriteLine(actual);
 
-                    Assert.IsTrue(ddouble.Abs((actual.R - expected.R) / expected.R) < 8e-27);
+                    Assert.IsTrue(ddouble.Abs((actual.R - expected.R) / expected.R) < 8e-30);
                 }
             }
         }

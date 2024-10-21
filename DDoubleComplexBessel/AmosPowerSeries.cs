@@ -12,58 +12,117 @@ namespace DDoubleComplexBessel {
             int n = (int)ddouble.Round(nu);
             ddouble alpha = nu - n;
 
-            Complex k0 = BesselKNearZeroNu(alpha, z, terms: 256);
-
             if (n == 0) {
+                Complex k0 = BesselKNearZeroNu(alpha, z, terms: 256);
+
                 return k0;
             }
+            else if (n == 1) {
+                Complex k1 = BesselKNearOneNu(alpha, z, terms: 256);
 
-            Complex i0 = PowerSeries.BesselI(alpha, z), i1 = PowerSeries.BesselI(alpha + 1d, z);
-
-            Complex k1 = (1d - i1 * k0 * z) / (i0 * z);
-
-            if (n == 1) {
                 return k1;
             }
+            else {
+                Complex kn = BesselKNearIntNu(n, alpha, z, terms: 256);
 
-            Complex v = 1d / z;
-
-            for (int k = 1; k < n; k++) {
-                (k1, k0) = (ddouble.Ldexp(k + alpha, 1) * v * k1 + k0, k1);
+                return kn;
             }
-
-            return k1;
         }
 
-        private static Complex BesselKNearZeroNu(ddouble nu, Complex z, int terms) {
-            nu = ddouble.Abs(nu);
+        private static Complex BesselKNearZeroNu(ddouble alpha, Complex z, int terms) {
+            ddouble alpha2 = alpha * alpha;
+            Complex s = 1d / z, t = Complex.Log(2d * s), mu = alpha * t;
+            (ddouble g1, ddouble g2) = Gamma12(alpha);
 
-            ddouble nu2 = nu * nu;
-            Complex t = Complex.Log(2d / z), mu = nu * t;
-            (ddouble g1, ddouble g2) = Gamma12(nu);
-
-            Complex f = (g1 * Complex.Cosh(mu) + g2 * t * Sinhc(mu)) / ddouble.Sinc(nu);
-            Complex r = Complex.Pow(z / 2d, nu);
-            Complex p = ddouble.Gamma(1d + nu) / (r * 2d), q = ddouble.Gamma(1d - nu) * r * 0.5d;
+            Complex f = (g1 * Complex.Cosh(mu) + g2 * t * Sinhc(mu)) / ddouble.Sinc(alpha);
+            Complex r = Complex.Pow(z / 2d, alpha);
+            Complex p = ddouble.Gamma(1d + alpha) / (r * 2d), q = ddouble.Gamma(1d - alpha) * r * 0.5d;
 
             Complex c = f, v = Complex.Ldexp(z * z, -2), u = v;
 
             for (int k = 1; k <= terms; k++) {
-                f = (k * f + p + q) / (k * k - nu2);
+                f = (k * f + p + q) / (k * k - alpha2);
                 c = SeriesUtil.Add(c, u, f, out bool convergence);
 
-                if (convergence) {
+                if (convergence && Complex.ILogB(f) >= -4) {
                     break;
                 }
 
-                p /= k - nu;
-                q /= k + nu;
+                p /= k - alpha;
+                q /= k + alpha;
                 u *= v / (k + 1);
 
-                IterationLogger.Log("AmosPowerSeries", k);
+                IterationLogger.Log("AmosPowerSeries Nu0", k);
             }
 
             return c;
+        }
+
+        private static Complex BesselKNearOneNu(ddouble alpha, Complex z, int terms) {
+            ddouble alpha2 = alpha * alpha;
+            Complex s = 1d / z, t = Complex.Log(2d * s), mu = alpha * t;
+            (ddouble g1, ddouble g2) = Gamma12(alpha);
+
+            Complex f = (g1 * Complex.Cosh(mu) + g2 * t * Sinhc(mu)) / ddouble.Sinc(alpha);
+            Complex r = Complex.Pow(z / 2d, alpha);
+            Complex p = ddouble.Gamma(1d + alpha) / (r * 2d), q = ddouble.Gamma(1d - alpha) * r * 0.5d;
+
+            Complex c = p, v = Complex.Ldexp(z * z, -2), u = v;
+
+            for (int k = 1; k <= terms; k++) {
+                f = (k * f + p + q) / (k * k - alpha2);
+                p /= k - alpha;
+                c = SeriesUtil.Add(c, u, p, -k * f, out bool convergence);
+
+                if (convergence && Complex.ILogB(f) >= -4) {
+                    break;
+                }
+
+                q /= k + alpha;
+                u *= v / (k + 1);
+
+                IterationLogger.Log("AmosPowerSeries Nu1", k);
+            }
+
+            c *= 2 * s;
+
+            return c;
+        }
+
+        private static Complex BesselKNearIntNu(int n, ddouble alpha, Complex z, int terms) {
+            ddouble alpha2 = alpha * alpha;
+            Complex s = 1d / z, t = Complex.Log(2d * s), mu = alpha * t;
+            (ddouble g1, ddouble g2) = Gamma12(alpha);
+
+            Complex f = (g1 * Complex.Cosh(mu) + g2 * t * Sinhc(mu)) / ddouble.Sinc(alpha);
+            Complex r = Complex.Pow(z / 2d, alpha);
+            Complex p = ddouble.Gamma(1d + alpha) / (r * 2d), q = ddouble.Gamma(1d - alpha) * r * 0.5d;
+
+            Complex c0 = f, c1 = p, v = Complex.Ldexp(z * z, -2), u = v;
+
+            for (int k = 1; k <= terms; k++) {
+                f = (k * f + p + q) / (k * k - alpha2);
+                p /= k - alpha;
+                c0 = SeriesUtil.Add(c0, u, f, out bool convergence0);
+                c1 = SeriesUtil.Add(c1, u, p, -k * f, out bool convergence1);
+
+                if (convergence0 && convergence1 && Complex.ILogB(f) >= -4) {
+                    break;
+                }
+
+                q /= k + alpha;
+                u *= v / (k + 1);
+
+                IterationLogger.Log("AmosPowerSeries NuN", k);
+            }
+
+            c1 *= 2 * s;
+
+            for (int k = 1; k < n; k++) {
+                (c1, c0) = (ddouble.Ldexp(k + alpha, 1) * s * c1 + c0, c1);
+            }
+
+            return c1;
         }
 
         public static (ddouble g1, ddouble g2) Gamma12(ddouble nu) {

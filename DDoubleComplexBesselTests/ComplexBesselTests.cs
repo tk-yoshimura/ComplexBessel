@@ -423,7 +423,7 @@ namespace DDoubleComplexBesselTests {
                         }
                         if (r * r + i * i > 4) {
                             continue;
-                        }                        
+                        }
 
                         Complex expected = AmosPowerSeries<Pow2.N4>.BesselK(nu, (r, i)).ToString();
                         Complex actual = AmosPowerSeries.BesselK(nu, (r, i));
@@ -435,6 +435,118 @@ namespace DDoubleComplexBesselTests {
                         Console.WriteLine(actual);
 
                         Assert.IsTrue(err < 2e-30, $"\n{nu}, {(r, i)}\n{expected}\n{actual}\n{err:e4}");
+                    }
+                }
+
+                Console.WriteLine(string.Empty);
+            }
+
+            for (double nu = 0; nu <= 0.25; nu = nu < double.ScaleB(1, -8) ? double.ScaleB(1, -8) : nu * 2) {
+                Console.WriteLine(nu);
+
+                for (double r = 0; r <= 2; r += 1d / 64) {
+                    for (double i = 0; i <= 2; i += 1d / 64) {
+                        if (r == 0 && i == 0) {
+                            continue;
+                        }
+                        if (r * r + i * i > 4) {
+                            continue;
+                        }
+
+                        Complex expected = AmosPowerSeries<Pow2.N4>.BesselK(1 - nu, (r, i)).ToString();
+                        Complex actual = AmosPowerSeries.BesselK(1 - nu, (r, i));
+
+                        ddouble err = (expected - actual).Magnitude / expected.Magnitude;
+
+                        Console.WriteLine($"{1 - nu}, {(r, i)}, {err:e4}");
+                        Console.WriteLine(expected);
+                        Console.WriteLine(actual);
+
+                        Assert.IsTrue(err < 2e-30, $"\n{1 - nu}, {(r, i)}\n{expected}\n{actual}\n{err:e4}");
+                    }
+                }
+
+                Console.WriteLine(string.Empty);
+            }
+
+            for (double nu = 0; nu <= 0.25; nu = nu < double.ScaleB(1, -8) ? double.ScaleB(1, -8) : nu * 2) {
+                Console.WriteLine(nu);
+
+                for (double r = 0; r <= 2; r += 1d / 64) {
+                    for (double i = 0; i <= 2; i += 1d / 64) {
+                        if (r == 0 && i == 0) {
+                            continue;
+                        }
+                        if (r * r + i * i > 4) {
+                            continue;
+                        }
+
+                        Complex expected = AmosPowerSeries<Pow2.N4>.BesselK(1 + nu, (r, i)).ToString();
+                        Complex actual = AmosPowerSeries.BesselK(1 + nu, (r, i));
+
+                        ddouble err = (expected - actual).Magnitude / expected.Magnitude;
+
+                        Console.WriteLine($"{1 + nu}, {(r, i)}, {err:e4}");
+                        Console.WriteLine(expected);
+                        Console.WriteLine(actual);
+
+                        Assert.IsTrue(err < 2e-30, $"\n{1 + nu}, {(r, i)}\n{expected}\n{actual}\n{err:e4}");
+                    }
+                }
+
+                Console.WriteLine(string.Empty);
+            }
+
+            for (double nu = 0; nu <= 0.25; nu = nu < double.ScaleB(1, -8) ? double.ScaleB(1, -8) : nu * 2) {
+                Console.WriteLine(nu);
+
+                for (double r = 0; r <= 2; r += 1d / 64) {
+                    for (double i = 0; i <= 2; i += 1d / 64) {
+                        if (r == 0 && i == 0) {
+                            continue;
+                        }
+                        if (r * r + i * i > 4) {
+                            continue;
+                        }
+
+                        Complex expected = AmosPowerSeries<Pow2.N4>.BesselK(2 - nu, (r, i)).ToString();
+                        Complex actual = AmosPowerSeries.BesselK(2 - nu, (r, i));
+
+                        ddouble err = (expected - actual).Magnitude / expected.Magnitude;
+
+                        Console.WriteLine($"{2 - nu}, {(r, i)}, {err:e4}");
+                        Console.WriteLine(expected);
+                        Console.WriteLine(actual);
+
+                        Assert.IsTrue(err < 2e-30, $"\n{2 - nu}, {(r, i)}\n{expected}\n{actual}\n{err:e4}");
+                    }
+                }
+
+                Console.WriteLine(string.Empty);
+            }
+
+            for (double nu = 0; nu <= 0.25; nu = nu < double.ScaleB(1, -8) ? double.ScaleB(1, -8) : nu * 2) {
+                Console.WriteLine(nu);
+
+                for (double r = 0; r <= 2; r += 1d / 64) {
+                    for (double i = 0; i <= 2; i += 1d / 64) {
+                        if (r == 0 && i == 0) {
+                            continue;
+                        }
+                        if (r * r + i * i > 4) {
+                            continue;
+                        }
+
+                        Complex expected = AmosPowerSeries<Pow2.N4>.BesselK(2 + nu, (r, i)).ToString();
+                        Complex actual = AmosPowerSeries.BesselK(2 + nu, (r, i));
+
+                        ddouble err = (expected - actual).Magnitude / expected.Magnitude;
+
+                        Console.WriteLine($"{2 + nu}, {(r, i)}, {err:e4}");
+                        Console.WriteLine(expected);
+                        Console.WriteLine(actual);
+
+                        Assert.IsTrue(err < 2e-30, $"\n{2 + nu}, {(r, i)}\n{expected}\n{actual}\n{err:e4}");
                     }
                 }
 

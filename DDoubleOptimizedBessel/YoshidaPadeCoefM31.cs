@@ -2,41 +2,41 @@
 
 namespace DDoubleOptimizedBessel {
     public static class YoshidaPadeCoefM31 {
-        public static ddouble[][] Ess = new ddouble[][]{
-            new ddouble[1]{
+        public static ddouble[][] Ess = [
+            [
                 (+1, 0, 0x8000000000000000uL, 0x0000000000000000uL),
-            },
-            new ddouble[2]{
+            ],
+            [
                 (+1, 7, 0xF7F0000000000000uL, 0x0000000000000000uL),
                 (+1, -2, 0x8000000000000000uL, 0x0000000000000000uL),
-            },
-            new ddouble[3]{
+            ],
+            [
                 (+1, 14, 0xDD6A6C0000000000uL, 0x0000000000000000uL),
                 (+1, 6, 0x81504325C53EF368uL, 0xEB04325C53EF368EuL),
                 (+1, -6, 0xFBCDA3AC10C9714FuL, 0xBCDA3AC10C9714FBuL),
-            },
-            new ddouble[4]{
+            ],
+            [
                 (+1, 20, 0xF25D87C280000000uL, 0x0000000000000000uL),
                 (+1, 12, 0xF040AF76E837F4CFuL, 0x09CAD76E837F4CF0uL),
                 (+1, 3, 0x844AEDD06FE99E13uL, 0x95AEDD06FE99E139uL),
                 (+1, -9, 0xA245F202CC3D8D4AuL, 0x245F202CC3D8D4A2uL),
-            },
-            new ddouble[5]{
+            ],
+            [
                 (+1, 26, 0xB65370AA1DC00000uL, 0x0000000000000000uL),
                 (+1, 19, 0x886BD4EC023A907DuL, 0x91D78CDCE29355F3uL),
                 (+1, 9, 0xFEE56D5A746AE2D0uL, 0x08B9B2F109EF42B2uL),
                 (+1, -1, 0xB0E0D22B02ADE42AuL, 0x03BF08A77D4F12E5uL),
                 (+1, -13, 0x9A05A49EDBE3A47AuL, 0x709FB6673C0EE3DBuL),
-            },
-            new ddouble[6]{
+            ],
+            [
                 (+1, 31, 0xC865B33C83FD6000uL, 0x0000000000000000uL),
                 (+1, 24, 0xD467C74B33DE0296uL, 0xD36DECF72318918FuL),
                 (+1, 16, 0x95AC6BC1CD11FF01uL, 0x11247D79900A3E2BuL),
                 (+1, 6, 0xB03879F761021EA4uL, 0xA75B515C07745B1AuL),
                 (+1, -5, 0xADBBB6E0A19BFD70uL, 0x753942A64DD13225uL),
                 (+1, -18, 0xE570925BDF64C394uL, 0xD9348989E4F11AEEuL),
-            },
-            new ddouble[7]{
+            ],
+            [
                 (+1, 36, 0xA6FB8CF186ADDD60uL, 0x0000000000000000uL),
                 (+1, 29, 0xF0FE0D3A3534AFB6uL, 0x5BFD4BA7D1956FDDuL),
                 (+1, 21, 0xF04FEFFF0045199AuL, 0xF9445BD7DAAF3B24uL),
@@ -44,8 +44,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, 2, 0xB288AD479826E492uL, 0x9B8292B46DA63C5FuL),
                 (+1, -9, 0x859C93F89F114DC3uL, 0xD79DDBBE026FFA9CuL),
                 (+1, -22, 0x8B8AD3C61914DCC0uL, 0x5431EADA9A35D180uL),
-            },
-            new ddouble[8]{
+            ],
+            [
                 (+1, 40, 0xD81E15A5F4B7EF23uL, 0xE800000000000000uL),
                 (+1, 34, 0xCEC7390B3CA189FEuL, 0x6C228D29C8EB45EAuL),
                 (+1, 27, 0x8C2FDD287D50CA3FuL, 0x81925DB9BC34BF25uL),
@@ -54,8 +54,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -2, 0x8D47C1A3DB58ACDCuL, 0x493B7B4C18A75987uL),
                 (+1, -14, 0xA776CCBE9DA22CB5uL, 0x26CFADFF51927748uL),
                 (+1, -27, 0x8E63DD51FA3F1580uL, 0x55E9CB134EFD7282uL),
-            },
-            new ddouble[9]{
+            ],
+            [
                 (+1, 44, 0xDCC7E0A04D90AA8BuL, 0x89F0000000000000uL),
                 (+1, 39, 0x89726A301D7C221FuL, 0x06B807364594E809uL),
                 (+1, 31, 0xF6ABC98850172D1BuL, 0x27C45B4D09172B61uL),
@@ -65,8 +65,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -7, 0xB5C98E933FC2F225uL, 0xDA11B7A5B64DBC49uL),
                 (+1, -19, 0xAFBD931E19238A18uL, 0xEA0926EB64174A17uL),
                 (+1, -33, 0xF889129865AA9E8CuL, 0x38DDE4C9440E299EuL),
-            },
-            new ddouble[10]{
+            ],
+            [
                 (+1, 48, 0xB3FCE26BC77F229CuL, 0xBB49500000000000uL),
                 (+1, 43, 0x8FDC4940C88D5318uL, 0xBBF23D5C6E396CE5uL),
                 (+1, 36, 0xA7A03AEBDFCB7D2AuL, 0x03C9BF7BCC136E52uL),
@@ -77,8 +77,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -12, 0xC36BF27C82D7CC0EuL, 0x52D4C6316105B2A9uL),
                 (+1, -24, 0x9D738514BA36826DuL, 0xF11A05534024A194uL),
                 (+1, -38, 0xBC31027DEE2ACE70uL, 0x7F56E6204CD0C813uL),
-            },
-            new ddouble[11]{
+            ],
+            [
                 (+1, 51, 0xEBE09392A82A7362uL, 0x240AAA4000000000uL),
                 (+1, 46, 0xEFAEB1E12DA14396uL, 0x6432D7C6235BD9DCuL),
                 (+1, 40, 0xB2CF24D8F01E3DB2uL, 0xAC0AD1B80FBFC983uL),
@@ -90,8 +90,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -17, 0xB2FA37A3FA90A9ABuL, 0x299D20573F2EAB4BuL),
                 (+1, -30, 0xF45EB801EDE70773uL, 0x89F68193947CEC0AuL),
                 (+1, -44, 0xF9F99CE8F6CDA12FuL, 0xFF1F61FA9A3345A7uL),
-            },
-            new ddouble[12]{
+            ],
+            [
                 (+1, 54, 0xF9889CB9B4D817CEuL, 0x2E85F65F40000000uL),
                 (+1, 50, 0xA00878AFA9CC5DD3uL, 0x49BB1E557C844A48uL),
                 (+1, 44, 0x974E5244A57BBD43uL, 0xDB3DAEEA14CDF22BuL),
@@ -104,8 +104,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -22, 0x8DB0DFD15182CD06uL, 0x472E21E59FC8436CuL),
                 (+1, -35, 0xA6109C73E914BDFAuL, 0x794851C46B6EEEDFuL),
                 (+1, -49, 0x92D6A75C173DB667uL, 0x61F235F93FB9DDBAuL),
-            },
-            new ddouble[13]{
+            ],
+            [
                 (+1, 57, 0xD5838F919F885448uL, 0x314988A7F7000000uL),
                 (+1, 53, 0xABFC8DC67A674C56uL, 0x9445ADB0634A4E35uL),
                 (+1, 47, 0xCC80DE47998E606DuL, 0xF8C2ED2AF97BA63FuL),
@@ -119,8 +119,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -28, 0xC4121A4BEE93A4CAuL, 0xBCE63D5AE38D4F51uL),
                 (+1, -41, 0xC751B0AF3C09E401uL, 0x0EB2735AC51046F2uL),
                 (+1, -55, 0x998E7CD214F53DE9uL, 0x9A4BEED274D672BFuL),
-            },
-            new ddouble[14]{
+            ],
+            [
                 (+1, 60, 0x93C2B28F07C59BE9uL, 0x3F79FBBEDC2E0000uL),
                 (+1, 56, 0x94FFC22C1E3DDC12uL, 0x8EB31122221A26DEuL),
                 (+1, 50, 0xDD91AEDB9BA60E82uL, 0xA68E8739F75641C7uL),
@@ -135,8 +135,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -34, 0xEF2245F8AD96D8CFuL, 0x949CF238D61BA0F0uL),
                 (+1, -47, 0xD4A2A904C72A90B7uL, 0x0A69A1CD9A03AF2BuL),
                 (+1, -61, 0x8FA26CE0DD40C48BuL, 0xBD39A2BCFB12A278uL),
-            },
-            new ddouble[15]{
+            ],
+            [
                 (+1, 62, 0xA5194227F6F1C09CuL, 0xE82DEF3868AEF000uL),
                 (+1, 58, 0xD006890607B68DB2uL, 0xA2B3052445DDEE81uL),
                 (+1, 53, 0xC0AA90C956F64B38uL, 0xF94E57F9B2F0ED48uL),
@@ -152,8 +152,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -39, 0x815C01C9C137BE1CuL, 0x2F491372BE164BD4uL),
                 (+1, -53, 0xCA9C6FF20C447A97uL, 0xC04B37AF4E304177uL),
                 (+1, -68, 0xF13495FFF56A8683uL, 0xAABBD7D122449C67uL),
-            },
-            new ddouble[16]{
+            ],
+            [
                 (+1, 64, 0x94617400BA3CD3C1uL, 0xC50901ADC8D5C428uL),
                 (+1, 60, 0xE977FEDC995B9A67uL, 0xF75A3456CF8669C7uL),
                 (+1, 56, 0x86527142CBA895A3uL, 0xC859F4C50131345AuL),
@@ -170,8 +170,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -46, 0xF981CD82A5B935B3uL, 0xE3051F9941B342AFuL),
                 (+1, -59, 0xAD0EC15BB4A0EC1BuL, 0xAAE6F4022635C060uL),
                 (+1, -74, 0xB63E7CB603618D74uL, 0x8C606A2C3C06540AuL),
-            },
-            new ddouble[17]{
+            ],
+            [
                 (+1, 65, 0xD5605E1152A9D47BuL, 0xF82F56E18B12F49AuL),
                 (+1, 62, 0xD1BAA01E7259B668uL, 0x4ECA414F8E06F01BuL),
                 (+1, 58, 0x95B23CA4B0424ABCuL, 0x4E9AF209CA4C7BA6uL),
@@ -189,8 +189,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -52, 0xD73ECB0E16F7EC44uL, 0xE2355E4EBF4E5FD6uL),
                 (+1, -65, 0x84D37678870FFF46uL, 0xD219EB8A4CBC01ABuL),
                 (+1, -81, 0xF82983B10A0D01FBuL, 0x4CC4A65CEA3F15D7uL),
-            },
-            new ddouble[18]{
+            ],
+            [
                 (+1, 66, 0xF3B4640F2479A735uL, 0xFBC5A2259C17605FuL),
                 (+1, 64, 0x95DCD2EA63BA3DBFuL, 0x4F8B07F67A86DEF1uL),
                 (+1, 60, 0x84A646F376321DBDuL, 0x90DFB40761B616F1uL),
@@ -209,8 +209,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -58, 0xA67E472D81526497uL, 0xFDBD3527F827BD1EuL),
                 (+1, -72, 0xB77A6BFF68986F68uL, 0x1D5973D4E67D1192uL),
                 (+1, -87, 0x9853192E7817B2A6uL, 0x09258E0DD1E92D7DuL),
-            },
-            new ddouble[19]{
+            ],
+            [
                 (+1, 67, 0xDB03F5CCE3096FD6uL, 0x8C5C7F53CD694FE4uL),
                 (+1, 65, 0xA8F074DF7CE4B697uL, 0x7686D04E83F4A0C1uL),
                 (+1, 61, 0xB98B387B00FB76F7uL, 0xD6C82BCF445EDDE3uL),
@@ -230,8 +230,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -65, 0xE73AF20BA9C05969uL, 0x9DF4B0B8FCC0A273uL),
                 (+1, -79, 0xE429FF521D4BA13FuL, 0x77E59F0B71F2088EuL),
                 (+1, -94, 0xA87F519560D04223uL, 0xC0CB5C07B3BBC598uL),
-            },
-            new ddouble[20]{
+            ],
+            [
                 (+1, 68, 0x99128B36C8CD0E49uL, 0x072E59E2035E1E8CuL),
                 (+1, 66, 0x949E57DAE224A0B4uL, 0x3C803B03345A4305uL),
                 (+1, 62, 0xCAD5157A1C9D12B5uL, 0xF227610F95194BEEuL),
@@ -252,8 +252,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -71, 0x902D9698BF7DC618uL, 0x2948C537090BA9E5uL),
                 (+1, -86, 0xFF4824E4AB0317D9uL, 0x041462AAAFD8661BuL),
                 (+1, -101, 0xA7B0EDFA5419FAC7uL, 0xB74C394B089D79EFuL),
-            },
-            new ddouble[21]{
+            ],
+            [
                 (+1, 68, 0xA401A75C11EFAB39uL, 0x9B38562D039B8241uL),
                 (+1, 66, 0xC95040CFC6CB8804uL, 0xB4AC8D984B98B205uL),
                 (+1, 63, 0xAB1F3FF651CC575FuL, 0x70B8E0A0FBE2D648uL),
@@ -275,8 +275,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -78, 0xA14C3CFED062A994uL, 0xBB9E52669566D1D8uL),
                 (+1, -92, 0x8047F02CA7B7DC88uL, 0xA23BD2ACA8CC9EE4uL),
                 (+1, -108, 0x95C08850AA5C42C7uL, 0xC899CCC39A263AE1uL),
-            },
-            new ddouble[22]{
+            ],
+            [
                 (+1, 68, 0x844C09F63919F5FDuL, 0x424E1D074E439EF6uL),
                 (+1, 66, 0xCE6CD805609519C5uL, 0xFD08B099254BCABBuL),
                 (+1, 63, 0xDB51C18A5CA9D831uL, 0x459665A908370DE1uL),
@@ -299,8 +299,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -85, 0xA18BD4474C6A16ADuL, 0x49D5FBB867F6FB8BuL),
                 (+1, -100, 0xE6F6F6E02649F3B2uL, 0xDF805FD3497B556CuL),
                 (+1, -116, 0xEF0F5CCD65DF53F7uL, 0x870DE718E825CF31uL),
-            },
-            new ddouble[23]{
+            ],
+            [
                 (+1, 67, 0x9D284EFDBECE4F43uL, 0x2E3AADEC1DA6302AuL),
                 (+1, 66, 0x9CE2EAC42BB10364uL, 0x3381BB5F39C5E19CuL),
                 (+1, 63, 0xD14A84543339E605uL, 0x33A07F63B417B094uL),
@@ -324,8 +324,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -92, 0x905917D03C94D4A5uL, 0x395CAFFC2A7C2322uL),
                 (+1, -107, 0xB977B76C6375146CuL, 0x1EABD2CC951651E8uL),
                 (+1, -123, 0xA99F0D0E9D6D1346uL, 0x9E43C330E44A81FBuL),
-            },
-            new ddouble[24]{
+            ],
+            [
                 (+1, 66, 0x85B03B8A0F83C7AFuL, 0xFB32A204D1C493EBuL),
                 (+1, 65, 0xAC2342DA4CE375CBuL, 0x1ED7D50B9B7D0D58uL),
                 (+1, 63, 0x910441FC712744DFuL, 0xCFA61BAC9E17513FuL),
@@ -350,8 +350,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -100, 0xE4FAF0F7401BBB01uL, 0xA4DE3B32BE292A9EuL),
                 (+1, -114, 0x84139E94BF48ACA0uL, 0x5EBFD77E93E29C11uL),
                 (+1, -131, 0xD46536317736374DuL, 0x4BBD79FA7039ADE3uL),
-            },
-            new ddouble[25]{
+            ],
+            [
                 (+1, 64, 0x9D375A823865D673uL, 0xE3A4F56F17DB3A78uL),
                 (+1, 64, 0x83D3C8CA804DC448uL, 0xDD2D79983A6FA864uL),
                 (+1, 62, 0x8D562CD2A811596CuL, 0x9E9DCB900233A830uL),
@@ -377,8 +377,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -107, 0xA010505440AA990DuL, 0x2F1C6C79A1468A41uL),
                 (+1, -122, 0xA57F6D8C35CCB824uL, 0x72564484F95E611FuL),
                 (+1, -139, 0xE85D3919ABFE0C5DuL, 0x50AC482E6DA5F090uL),
-            },
-            new ddouble[26]{
+            ],
+            [
                 (+1, 61, 0xF4220AB37302692CuL, 0x2E3CB04456D385F3uL),
                 (+1, 62, 0x86EEEEC17D7D175BuL, 0xF6630EF2C62EBFA0uL),
                 (+1, 60, 0xB9F249E9B526EC25uL, 0xAEEA230626437DECuL),
@@ -405,8 +405,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -115, 0xC3452BC8E1958F12uL, 0x21543022546C1803uL),
                 (+1, -130, 0xB47C28D208AF9BEAuL, 0x9B215130CFFADC12uL),
                 (+1, -147, 0xDB27F52E4F37D39CuL, 0x750C1F6E146AEC97uL),
-            },
-            new ddouble[27]{
+            ],
+            [
                 (+1, 58, 0xEB6DDACD66F5BA2BuL, 0xC419D748D29DAE32uL),
                 (+1, 59, 0xAE3D41B502488DD0uL, 0x9C4C63F4940A9D06uL),
                 (+1, 58, 0x9C6008A566624702uL, 0x336A29CB2481E007uL),
@@ -434,8 +434,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -123, 0xCCFE9132DAF035F0uL, 0x7F914E7B6429CAB5uL),
                 (+1, -138, 0xA8C7E99C1FAD8D7EuL, 0x70BF432C35344672uL),
                 (+1, -155, 0xAEF5DA9F61D6591AuL, 0x71AAF12CC541AB50uL),
-            },
-            new ddouble[28]{
+            ],
+            [
                 (+1, 55, 0x817DB7DC6FE27461uL, 0xDE0AE49EE74384D9uL),
                 (+1, 56, 0x8311DF47D7465630uL, 0x1114A2FDB87DB9CCuL),
                 (+1, 55, 0x9C10512230114681uL, 0x6537C8D4092CA202uL),
@@ -464,8 +464,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -131, 0xB5817DDFA5B29B8BuL, 0xE4437E7AE7E192A7uL),
                 (+1, -146, 0x848973D3F92B51B2uL, 0x2857EDC1E7F886D9uL),
                 (+1, -164, 0xE66686165D0532F7uL, 0xA1463EA669F372FBuL),
-            },
-            new ddouble[29]{
+            ],
+            [
                 (+1, 50, 0x8F570CBBDFF40C75uL, 0x6EE095CDD1C868E2uL),
                 (+1, 51, 0xCCA0A4FD8C0FF6CEuL, 0x252CD0A6B480D792uL),
                 (+1, 51, 0xA60BE0367ECCC2B3uL, 0xBF79A095730FE746uL),
@@ -495,8 +495,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -139, 0x837C1BFDFE339049uL, 0x1CF28CE7ED2E06D0uL),
                 (+1, -155, 0xA9737950F9DB1A31uL, 0x1472748C5931C89AuL),
                 (+1, -173, 0xF0BEB7FE4A357F71uL, 0x81DAA3AEEE2F7D5EuL),
-            },
-            new ddouble[30]{
+            ],
+            [
                 (+1, 44, 0x826FBCE74C6166D8uL, 0x4D1DC39A4F983D63uL),
                 (+1, 46, 0x8A007650CAE0AEADuL, 0x96EA5B8CC99B7E8AuL),
                 (+1, 46, 0x9F5B2A69074CE242uL, 0x0C266CABBB62FB44uL),
@@ -527,8 +527,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -148, 0x943BC4C12878B6ABuL, 0x1BEEEBB54FE54ECFuL),
                 (+1, -164, 0xA7D1086A256A9E78uL, 0xAC1D7229595668ADuL),
                 (+1, -182, 0xBB84744FAC8F7253uL, 0x37F7ABA1B2C5F6AEuL),
-            },
-            new ddouble[31]{
+            ],
+            [
                 (+1, 36, 0x8545ACD9B07E4B09uL, 0x512BDFCD504AAB31uL),
                 (+1, 38, 0xE622D1C076B7437BuL, 0xC954828B4C2BE8DAuL),
                 (+1, 39, 0xCCE3E8837BE7F3EEuL, 0xA992F220917BE1DEuL),
@@ -560,8 +560,8 @@ namespace DDoubleOptimizedBessel {
                 (+1, -158, 0xEC3CD7E0EA4A2706uL, 0xC7D4BA28D0FA61EFuL),
                 (+1, -174, 0xEADD5EE6CA9A71A9uL, 0xF40402FEE337E49BuL),
                 (+1, -192, 0xC1F517983A80B873uL, 0x09CAE858A439E2B5uL),
-            },
-            new ddouble[32]{
+            ],
+            [
                 (+1, 24, 0xDA091339D4BFEE07uL, 0x229A0236EC1DD7CCuL),
                 (+1, 28, 0xCE79D99B2D3E26A5uL, 0x7636B573F0716D64uL),
                 (+1, 30, 0xAFE5223B0CA09064uL, 0xC578A1A84004E481uL),
@@ -594,10 +594,10 @@ namespace DDoubleOptimizedBessel {
                 (+1, -168, 0xCEEBF0A79A87B6E8uL, 0x8C9787483D5E7E04uL),
                 (+1, -184, 0xB81AE37067EFF494uL, 0x79D890C13B8A4DF8uL),
                 (+1, -203, 0xC836CE087E745B4DuL, 0x75769D42BA0A3458uL),
-            },
-        };
+            ],
+        ];
 
-        public static (ddouble c, ddouble d)[] Nu0 = new (ddouble c, ddouble d)[]{
+        public static (ddouble c, ddouble d)[] Nu0 = [
             ((+1, 0, 0x8000000000000000uL, 0x0000000000000000uL), (+1, 0, 0x8000000000000000uL, 0x0000000000000000uL)),
             ((+1, 7, 0xF7F0000000000000uL, 0x0000000000000000uL), (+1, 7, 0xF810000000000000uL, 0x0000000000000000uL)),
             ((+1, 14, 0xDD6A6C0000000000uL, 0x0000000000000000uL), (+1, 14, 0xDDA84C0000000000uL, 0x0000000000000000uL)),
@@ -630,9 +630,9 @@ namespace DDoubleOptimizedBessel {
             ((+1, 44, 0x826FBCE74C6166D8uL, 0x4D1DC39A4F983D63uL), (+1, 45, 0xA8FF6B263822B9CEuL, 0x9D7467567627655FuL)),
             ((+1, 36, 0x8545ACD9B07E4B09uL, 0x512BDFCD504AAB31uL), (+1, 38, 0x88905695D5716504uL, 0x0D755617528C70F2uL)),
             ((+1, 24, 0xDA091339D4BFEE07uL, 0x229A0236EC1DD7CCuL), (+1, 28, 0x9E971A3A63395C88uL, 0xD5D295867061074BuL)),
-        };
+        ];
 
-        public static (ddouble c, ddouble d)[] Nu1 = new (ddouble c, ddouble d)[]{
+        public static (ddouble c, ddouble d)[] Nu1 = [
             ((+1, 0, 0x8000000000000000uL, 0x0000000000000000uL), (+1, 0, 0x8000000000000000uL, 0x0000000000000000uL)),
             ((+1, 7, 0xF830000000000000uL, 0x0000000000000000uL), (+1, 7, 0xF7D0000000000000uL, 0x0000000000000000uL)),
             ((+1, 14, 0xDDEBCC0000000000uL, 0x0000000000000000uL), (+1, 14, 0xDD322C0000000000uL, 0x0000000000000000uL)),
@@ -665,6 +665,6 @@ namespace DDoubleOptimizedBessel {
             ((+1, 47, 0xD827CC083707545CuL, 0x599FD01886B5191AuL), (+1, 44, 0xF916F18589E31306uL, 0xBD1E8240BE675876uL)),
             ((+1, 41, 0x8AE8433AF1363A3CuL, 0xD4D56E0C1C3DA67DuL), (+1, 37, 0xA9143A705D989572uL, 0xBB54523541A1B069uL)),
             ((+1, 32, 0xA11175F7960406E1uL, 0xFA852139D9FD253DuL), (+1, 26, 0xDA2A9DFC57BC9FCDuL, 0xD8F0EE3433A7573DuL)),
-        };
+        ];
     }
 }
