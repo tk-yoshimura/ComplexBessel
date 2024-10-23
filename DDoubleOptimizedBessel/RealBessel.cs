@@ -1839,13 +1839,13 @@ namespace DDoubleOptimizedBessel {
             private static readonly Dictionary<ddouble, ReadOnlyCollection<(ddouble c, ddouble s)>> cds_coef_table = [];
 
             static YoshidaPade() {
-                cds_coef_table.Add(0, Array.AsReadOnly(YoshidaPadeCoefM31.Nu0.Reverse().ToArray()));
-                cds_coef_table.Add(1, Array.AsReadOnly(YoshidaPadeCoefM31.Nu1.Reverse().ToArray()));
+                cds_coef_table.Add(0, Array.AsReadOnly(YoshidaPadeCoefM32.Nu0.Reverse().ToArray()));
+                cds_coef_table.Add(1, Array.AsReadOnly(YoshidaPadeCoefM32.Nu1.Reverse().ToArray()));
 
                 List<ReadOnlyCollection<ddouble>> es = [];
 
-                for (int i = 0; i < YoshidaPadeCoefM31.Ess.Length; i++) {
-                    es.Add(Array.AsReadOnly(YoshidaPadeCoefM31.Ess[i].ToArray()));
+                for (int i = 0; i < YoshidaPadeCoefM32.Ess.Length; i++) {
+                    es.Add(Array.AsReadOnly(YoshidaPadeCoefM32.Ess[i].ToArray()));
                 }
 
                 ess_coef_table = Array.AsReadOnly(es.ToArray());
