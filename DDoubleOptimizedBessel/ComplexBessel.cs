@@ -293,7 +293,7 @@ namespace DDoubleOptimizedBessel {
                 Debug.Assert(ddouble.IsPositive(z.I));
 
                 if (ddouble.IsNegative(nu) && NearlyInteger(nu, out int n)) {
-                    Complex y = BesselJ(-nu, z);
+                    Complex y = BesselJKernel(-nu, z, terms: 42);
 
                     return (n & 1) == 0 ? y : -y;
                 }
@@ -314,9 +314,16 @@ namespace DDoubleOptimizedBessel {
                     return y;
                 }
                 else {
-                    Complex y = BesselYKernel(nu, z, terms: 44);
+                    if (ddouble.IsNegative(nu) && NearlyInteger(nu + 0.5d, out int n_p5)) {
+                        Complex y = BesselJKernel(-nu, z, terms: 42);
 
-                    return y;
+                        return (n_p5 & 1) == 0 ? y : -y;
+                    }
+                    else {
+                        Complex y = BesselYKernel(nu, z, terms: 44);
+
+                        return y;
+                    }
                 }
             }
 
@@ -325,7 +332,7 @@ namespace DDoubleOptimizedBessel {
                 Debug.Assert(ddouble.IsPositive(z.I));
 
                 if (ddouble.IsNegative(nu) && NearlyInteger(nu, out _)) {
-                    Complex y = BesselI(-nu, z);
+                    Complex y = BesselIKernel(-nu, z, terms: 42);
 
                     return y;
                 }
@@ -1331,9 +1338,16 @@ namespace DDoubleOptimizedBessel {
                     return y;
                 }
                 else {
-                    Complex y = BesselYKernel(nu, z, m);
+                    if (ddouble.IsNegative(nu) && NearlyInteger(nu + 0.5d, out int n_p5)) {
+                        Complex y = BesselJKernel(-nu, z, m);
 
-                    return y;
+                        return (n_p5 & 1) == 0 ? y : -y;
+                    }
+                    else {
+                        Complex y = BesselYKernel(nu, z, m);
+
+                        return y;
+                    }
                 }
             }
 
@@ -2433,8 +2447,10 @@ namespace DDoubleOptimizedBessel {
             public static Complex BesselY(ddouble nu, Complex z) {
                 Debug.Assert(nu >= DirectMaxN || nu <= -DirectMaxN);
 
-                if (NearlyInteger(nu + 0.5d, out int near_n)) {
-                    return (near_n & 1) == 0 ? BesselJ(-nu, z) : -BesselJ(-nu, z);
+                if (ddouble.IsNegative(nu) && NearlyInteger(nu + 0.5d, out int n_p5)) {
+                    Complex y = Recurrence.BesselJ(-nu, z);
+
+                    return (n_p5 & 1) == 0 ? y : -y;
                 }
 
                 ddouble nu_abs = ddouble.Abs(nu);

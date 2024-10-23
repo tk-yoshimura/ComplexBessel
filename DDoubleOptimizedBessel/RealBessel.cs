@@ -187,7 +187,7 @@ namespace DDoubleOptimizedBessel {
                 Debug.Assert(ddouble.IsPositive(x));
 
                 if (ddouble.IsNegative(nu) && NearlyInteger(nu, out int n)) {
-                    ddouble y = BesselJ(-nu, x);
+                    ddouble y = BesselJKernel(-nu, x, terms: 27);
 
                     return (n & 1) == 0 ? y : -y;
                 }
@@ -207,9 +207,16 @@ namespace DDoubleOptimizedBessel {
                     return y;
                 }
                 else {
-                    ddouble y = BesselYKernel(nu, x, terms: 25);
+                    if (ddouble.IsNegative(nu) && NearlyInteger(nu + 0.5d, out int n_p5)) {
+                        ddouble y = BesselJKernel(-nu, x, terms: 27);
 
-                    return y;
+                        return (n_p5 & 1) == 0 ? y : -y;
+                    }
+                    else {
+                        ddouble y = BesselYKernel(nu, x, terms: 25);
+
+                        return y;
+                    }
                 }
             }
 
@@ -217,7 +224,7 @@ namespace DDoubleOptimizedBessel {
                 Debug.Assert(ddouble.IsPositive(x));
 
                 if (ddouble.IsNegative(nu) && NearlyInteger(nu, out _)) {
-                    ddouble y = BesselI(-nu, x);
+                    ddouble y = BesselIKernel(-nu, x, terms: 40);
 
                     if (scale) {
                         y *= ddouble.Exp(-x);
@@ -1242,18 +1249,25 @@ namespace DDoubleOptimizedBessel {
                     return y;
                 }
                 else {
-                    ddouble y = BesselYKernel(nu, x, m);
+                    if (ddouble.IsNegative(nu) && NearlyInteger(nu + 0.5d, out int n_p5)) {
+                        ddouble y = BesselJKernel(-nu, x, m);
 
-                    if (!ddouble.IsFinite(y)) {
-                        if (n >= 0) {
-                            y = ddouble.NegativeInfinity;
-                        }
-                        else {
-                            y = ((-n) & 1) == 1 ? ddouble.PositiveInfinity : ddouble.NegativeInfinity;
-                        }
+                        return (n_p5 & 1) == 0 ? y : -y;
                     }
+                    else {
+                        ddouble y = BesselYKernel(nu, x, m);
 
-                    return y;
+                        if (!ddouble.IsFinite(y)) {
+                            if (n >= 0) {
+                                y = ddouble.NegativeInfinity;
+                            }
+                            else {
+                                y = ((-n) & 1) == 1 ? ddouble.PositiveInfinity : ddouble.NegativeInfinity;
+                            }
+                        }
+
+                        return y;
+                    }
                 }
             }
 
@@ -2208,8 +2222,10 @@ namespace DDoubleOptimizedBessel {
                     return y1;
                 }
                 else {
-                    if (NearlyInteger(nu + 0.5d, out int near_n)) {
-                        return (near_n & 1) == 0 ? BesselJ(-nu, x) : -BesselJ(-nu, x);
+                    if (NearlyInteger(nu + 0.5d, out int n_p5)) {
+                        ddouble y = BesselJ(-nu, x);
+
+                        return (n_p5 & 1) == 0 ? y : -y;
                     }
 
                     ddouble y0 = RealBessel.BesselY(-(alpha + (DirectMaxN - 2)), x);
