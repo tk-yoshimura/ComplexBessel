@@ -43,7 +43,8 @@ namespace ComplexBessel {
                 }
 
                 long exp_sum = 0;
-                (Complex<Pow2.N4> j0, Complex<Pow2.N4> j1) = (s.Magnitude > 1d) ? (Complex<Pow2.N4>.One, 1d / s) : (s, 1d);
+                bool s_overone = s.Magnitude > 1d;
+                (Complex<Pow2.N4> j0, Complex<Pow2.N4> j1) = s_overone ? (Complex<Pow2.N4>.One, 1d / s) : (s, 1d);
 
                 for (int k = n - 1; k >= BesselUtil<Pow2.N4>.DirectMaxN - 1; k--) {
                     (j1, j0) = (MultiPrecision<Pow2.N4>.Ldexp(k + alpha, 1) * v * j1 - j0, j1);
@@ -61,7 +62,7 @@ namespace ComplexBessel {
                     ? BesselN4.BesselJ(alpha + (BesselUtil<Pow2.N4>.DirectMaxN - 1), z) / j0
                     : BesselN4.BesselJ(alpha + (BesselUtil<Pow2.N4>.DirectMaxN - 2), z) / j1,
                     long.Clamp(-exp_sum, int.MinValue, int.MaxValue)
-                ) * ((s.Magnitude > 1d) ? 1d : s);
+                ) * (s_overone ? 1d : s);
 
                 return y;
             }
@@ -139,21 +140,26 @@ namespace ComplexBessel {
             }
 
             long exp_sum = 0;
-            Complex<Pow2.N4> i0 = 1d, i1 = 1d / s;
+            bool s_overone = s.Magnitude > 1d;
+            (Complex<Pow2.N4> i0, Complex<Pow2.N4> i1) = s_overone ? (Complex<Pow2.N4>.One, 1d / s) : (s, 1d);
 
-            for (int k = n - 1; k >= BesselUtil<Pow2.N4>.DirectMaxN; k--) {
+            for (int k = n - 1; k >= BesselUtil<Pow2.N4>.DirectMaxN - 1; k--) {
                 (i1, i0) = (MultiPrecision<Pow2.N4>.Ldexp(k + alpha, 1) * v * i1 + i0, i1);
 
-                if (i1.Exponent > 0) {
-                    long exp = i1.Exponent;
+                long j0_exp = i0.Exponent, j1_exp = i1.Exponent;
+                if (long.Sign(j0_exp) * long.Sign(j1_exp) > 0) {
+                    long exp = j0_exp > 0 ? long.Max(j0_exp, j1_exp) : long.Min(j0_exp, j1_exp);
                     exp_sum += exp;
                     (i0, i1) = (Complex<Pow2.N4>.Ldexp(i0, -exp), Complex<Pow2.N4>.Ldexp(i1, -exp));
                 }
             }
 
-            Complex<Pow2.N4> y = BesselN4.BesselI(alpha + (BesselUtil<Pow2.N4>.DirectMaxN - 1), z) / i1;
-
-            y = Complex<Pow2.N4>.Ldexp(y, long.Max(-exp_sum, int.MinValue));
+            Complex<Pow2.N4> y = Complex<Pow2.N4>.Ldexp(
+                i0.Magnitude >= i1.Magnitude
+                ? BesselN4.BesselI(alpha + (BesselUtil<Pow2.N4>.DirectMaxN - 1), z) / i0
+                : BesselN4.BesselI(alpha + (BesselUtil<Pow2.N4>.DirectMaxN - 2), z) / i1,
+                long.Clamp(-exp_sum, int.MinValue, int.MaxValue)
+            ) * (s_overone ? 1d : s);
 
             if (MultiPrecision<Pow2.N4>.IsNegative(nu) && !MultiPrecision<Pow2.N4>.IsInteger(nu_abs)) {
                 Complex<Pow2.N4> bk = 2d * MultiPrecision<Pow2.N4>.RcpPI * SinCosPICache<Pow2.N4>.SinPI(nu_abs) * BesselN4.BesselK(nu_abs, z);

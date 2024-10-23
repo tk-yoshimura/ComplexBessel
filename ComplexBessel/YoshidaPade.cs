@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 namespace ComplexBessel {
 
     public static class YoshidaPade<N> where N : struct, IConstant {
-        const int m = 48;
+        const int m = 56;
 
         private static readonly ReadOnlyCollection<ReadOnlyCollection<MultiPrecision<N>>> ess_coef_table;
         private static readonly Dictionary<MultiPrecision<N>, ReadOnlyCollection<(MultiPrecision<N> c, MultiPrecision<N> s)>> cds_coef_table = [];

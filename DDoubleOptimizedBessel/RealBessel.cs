@@ -2152,7 +2152,8 @@ namespace DDoubleOptimizedBessel {
                     }
 
                     long exp_sum = 0;
-                    (ddouble j0, ddouble j1) = (ddouble.Abs(s) > 1d) ? ((ddouble)1d, 1d / s) : (s, 1d);
+                    bool s_overone = ddouble.Abs(s) > 1d;
+                    (ddouble j0, ddouble j1) = s_overone ? ((ddouble)1d, 1d / s) : (s, 1d);
 
                     for (int k = n - 1; k >= DirectMaxN - 1; k--) {
                         (j1, j0) = (ddouble.Ldexp(k + alpha, 1) * v * j1 - j0, j1);
@@ -2170,7 +2171,7 @@ namespace DDoubleOptimizedBessel {
                         ? ddouble.BesselJ(alpha + (DirectMaxN - 1), x) / j0
                         : ddouble.BesselJ(alpha + (DirectMaxN - 2), x) / j1,
                         (int)long.Clamp(-exp_sum, int.MinValue, int.MaxValue)
-                    ) * ((ddouble.Abs(s) > 1d) ? 1d : s);
+                    ) * (s_overone ? 1d : s);
 
                     return y;
                 }
