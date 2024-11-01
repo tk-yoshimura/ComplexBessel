@@ -21,7 +21,7 @@ namespace DDoubleComplexBessel {
 
             Complex cos = Complex.Cos(omega), sin = Complex.Sin(omega);
 
-            Complex y = Complex.Sqrt(2d / (ddouble.PI * z)) * (cos * c_even - sin * c_odd);
+            Complex y = Complex.Sqrt(2d / (ddouble.Pi * z)) * (cos * c_even - sin * c_odd);
 
             return y;
         }
@@ -41,7 +41,7 @@ namespace DDoubleComplexBessel {
 
             Complex cos = Complex.Cos(omega), sin = Complex.Sin(omega);
 
-            Complex y = Complex.Sqrt(2d / (ddouble.PI * z)) * (sin * c_even + cos * c_odd);
+            Complex y = Complex.Sqrt(2d / (ddouble.Pi * z)) * (sin * c_even + cos * c_odd);
 
             return y;
         }
@@ -57,9 +57,9 @@ namespace DDoubleComplexBessel {
 
             Complex ci = hankel.BesselICoef(z), ck = hankel.BesselKCoef(z);
 
-            Complex y = Complex.Sqrt(1d / (2d * ddouble.PI * z)) * (
+            Complex y = Complex.Sqrt(1d / (2d * ddouble.Pi * z)) * (
                 Complex.Exp(z) * ci -
-                (SinCosPICache.SinPI(nu), -SinCosPICache.CosPI(nu)) * Complex.Exp(-z) * ck
+                (SinCosPiCache.SinPi(nu), -SinCosPiCache.CosPi(nu)) * Complex.Exp(-z) * ck
             );
 
             return y;
@@ -77,7 +77,7 @@ namespace DDoubleComplexBessel {
 
             Complex c = hankel.BesselKCoef(z);
 
-            Complex y = Complex.Sqrt(ddouble.PI / (2d * z)) * Complex.Exp(-z) * c;
+            Complex y = Complex.Sqrt(ddouble.Pi / (2d * z)) * Complex.Exp(-z) * c;
 
             return y;
         }
@@ -102,7 +102,7 @@ namespace DDoubleComplexBessel {
             }
 
             public Complex Omega(Complex z) {
-                Complex omega = z - ddouble.Ldexp(2 * Nu + 1, -2) * ddouble.PI;
+                Complex omega = z - ddouble.Ldexp(2 * Nu + 1, -2) * ddouble.Pi;
 
                 return omega;
             }

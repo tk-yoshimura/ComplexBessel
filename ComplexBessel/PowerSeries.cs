@@ -125,7 +125,7 @@ namespace ComplexBessel {
 
             YCoefTable r = y_coef_table;
 
-            MultiPrecision<N> cos = SinCosPICache<N>.CosPI(nu), sin = SinCosPICache<N>.SinPI(nu);
+            MultiPrecision<N> cos = SinCosPiCache<N>.CosPi(nu), sin = SinCosPiCache<N>.SinPi(nu);
             Complex<N> p = Complex<N>.IsZero(cos) ? 0d : Complex<N>.Pow(z, Complex<N>.Ldexp(nu, 1)) * cos, s = Complex<N>.Ldexp(Complex<N>.Pow(Complex<N>.Ldexp(z, 1), nu), 2);
 
             Complex<N> z2 = z * z, z4 = z2 * z2;
@@ -186,7 +186,7 @@ namespace ComplexBessel {
 
             Complex<N> z2 = z * z, z4 = z2 * z2;
 
-            Complex<N> c = 0d, u = Complex<N>.Ldexp(MultiPrecision<N>.RcpPI, 1);
+            Complex<N> c = 0d, u = Complex<N>.Ldexp(MultiPrecision<N>.RcpPi, 1);
 
             for (int k = 0; k <= terms; k++) {
                 Complex<N> s = u * r[k], t = h - MultiPrecision<N>.HarmonicNumber(2 * k);
@@ -221,7 +221,7 @@ namespace ComplexBessel {
 
             Complex<N> z2 = z * z, z4 = z2 * z2;
 
-            Complex<N> c = -2d / (z * MultiPrecision<N>.PI), u = z / Complex<N>.Ldexp(MultiPrecision<N>.PI, 1);
+            Complex<N> c = -2d / (z * MultiPrecision<N>.Pi), u = z / Complex<N>.Ldexp(MultiPrecision<N>.Pi, 1);
 
             for (int k = 0; k <= terms; k++) {
                 Complex<N> s = u * r[k], t = h - MultiPrecision<N>.HarmonicNumber(2 * k) - MultiPrecision<N>.HarmonicNumber(2 * k + 1);
@@ -280,7 +280,7 @@ namespace ComplexBessel {
                 u *= z4;
             }
 
-            Complex<N> y = c * MultiPrecision<N>.RcpPI * Complex<N>.Pow(Complex<N>.Ldexp(z, -1), n);
+            Complex<N> y = c * MultiPrecision<N>.RcpPi * Complex<N>.Pow(Complex<N>.Ldexp(z, -1), n);
 
             return y;
         }
@@ -332,7 +332,7 @@ namespace ComplexBessel {
 
             Complex<N> z2 = z * z;
 
-            Complex<N> c = 0d, u = MultiPrecision<N>.PI / Complex<N>.Ldexp(MultiPrecision<N>.SinPI(nu), 1);
+            Complex<N> c = 0d, u = MultiPrecision<N>.Pi / Complex<N>.Ldexp(MultiPrecision<N>.SinPi(nu), 1);
 
             for (int k = 0; k <= terms; k++) {
                 c = SeriesUtil<N>.Add(c, u * r[k], tn * gn[k], -tp * gp[k], out bool convergence);

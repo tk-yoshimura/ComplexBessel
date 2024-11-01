@@ -318,9 +318,9 @@ namespace DDoubleComplexBessel {
             lambda += f0 * phi[0];
             lambda *= s;
 
-            ddouble rcot = 1d / ddouble.TanPI(alpha), rgamma = ddouble.Gamma(1d + alpha), rsqgamma = rgamma * rgamma;
-            Complex r = Complex.Ldexp(ddouble.RcpPI * sqs, 1);
-            Complex p = sqs * rsqgamma * ddouble.RcpPI;
+            ddouble rcot = 1d / ddouble.TanPi(alpha), rgamma = ddouble.Gamma(1d + alpha), rsqgamma = rgamma * rgamma;
+            Complex r = Complex.Ldexp(ddouble.RcpPi * sqs, 1);
+            Complex p = sqs * rsqgamma * ddouble.RcpPi;
 
             Complex xi0 = -Complex.Ldexp(v, 1) * p;
 
@@ -407,7 +407,7 @@ namespace DDoubleComplexBessel {
 
             lambda = Complex.Ldexp(lambda, 1) + f0;
 
-            Complex y0 = Complex.Ldexp((se + f0 * (Complex.Log(Complex.Ldexp(z, -1)) + ddouble.EulerGamma)) / (ddouble.PI * lambda), 1);
+            Complex y0 = Complex.Ldexp((se + f0 * (Complex.Log(Complex.Ldexp(z, -1)) + ddouble.EulerGamma)) / (ddouble.Pi * lambda), 1);
 
             return y0;
         }
@@ -442,7 +442,7 @@ namespace DDoubleComplexBessel {
 
             lambda = Complex.Ldexp(lambda, 1) + f0;
 
-            Complex y1 = Complex.Ldexp((sx - v * f0 + (Complex.Log(Complex.Ldexp(z, -1)) + ddouble.EulerGamma - 1d) * f1) / (lambda * ddouble.PI), 1);
+            Complex y1 = Complex.Ldexp((sx - v * f0 + (Complex.Log(Complex.Ldexp(z, -1)) + ddouble.EulerGamma - 1d) * f1) / (lambda * ddouble.Pi), 1);
 
             return y1;
         }
@@ -486,7 +486,7 @@ namespace DDoubleComplexBessel {
                 (y1, y0) = (2 * k * v * y1 - y0, y1);
             }
 
-            Complex yn = Complex.Ldexp(y1 / (lambda * ddouble.PI), 1);
+            Complex yn = Complex.Ldexp(y1 / (lambda * ddouble.Pi), 1);
 
             return yn;
         }

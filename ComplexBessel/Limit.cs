@@ -21,7 +21,7 @@ namespace ComplexBessel {
 
             Complex<N> cos = Complex<N>.Cos(omega), sin = Complex<N>.Sin(omega);
 
-            Complex<N> y = Complex<N>.Sqrt(2d / (MultiPrecision<N>.PI * z)) * (cos * c_even - sin * c_odd);
+            Complex<N> y = Complex<N>.Sqrt(2d / (MultiPrecision<N>.Pi * z)) * (cos * c_even - sin * c_odd);
 
             return y;
         }
@@ -42,7 +42,7 @@ namespace ComplexBessel {
 
             Complex<N> cos = Complex<N>.Cos(omega), sin = Complex<N>.Sin(omega);
 
-            Complex<N> y = Complex<N>.Sqrt(2d / (MultiPrecision<N>.PI * z)) * (sin * c_even + cos * c_odd);
+            Complex<N> y = Complex<N>.Sqrt(2d / (MultiPrecision<N>.Pi * z)) * (sin * c_even + cos * c_odd);
 
             return y;
         }
@@ -58,9 +58,9 @@ namespace ComplexBessel {
 
             Complex<N> ci = hankel.BesselICoef(z), ck = hankel.BesselKCoef(z);
 
-            Complex<N> y = Complex<N>.Sqrt(1d / (2d * MultiPrecision<N>.PI * z)) * (
+            Complex<N> y = Complex<N>.Sqrt(1d / (2d * MultiPrecision<N>.Pi * z)) * (
                 Complex<N>.Exp(z) * ci -
-                (SinCosPICache<N>.SinPI(nu), -SinCosPICache<N>.CosPI(nu)) * Complex<N>.Exp(-z) * ck
+                (SinCosPiCache<N>.SinPi(nu), -SinCosPiCache<N>.CosPi(nu)) * Complex<N>.Exp(-z) * ck
             );
 
             return y;
@@ -78,7 +78,7 @@ namespace ComplexBessel {
 
             Complex<N> c = hankel.BesselKCoef(z);
 
-            Complex<N> y = Complex<N>.Sqrt(MultiPrecision<N>.PI / (2d * z)) * Complex<N>.Exp(-z) * c;
+            Complex<N> y = Complex<N>.Sqrt(MultiPrecision<N>.Pi / (2d * z)) * Complex<N>.Exp(-z) * c;
 
             return y;
         }
@@ -103,7 +103,7 @@ namespace ComplexBessel {
             }
 
             public Complex<N> Omega(Complex<N> z) {
-                Complex<N> omega = z - MultiPrecision<N>.Ldexp(2 * Nu + 1, -2) * MultiPrecision<N>.PI;
+                Complex<N> omega = z - MultiPrecision<N>.Ldexp(2 * Nu + 1, -2) * MultiPrecision<N>.Pi;
 
                 return omega;
             }

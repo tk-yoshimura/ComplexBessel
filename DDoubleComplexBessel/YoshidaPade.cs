@@ -67,7 +67,7 @@ namespace DDoubleComplexBessel {
                 sd = sd * t + d;
             }
 
-            Complex y = Complex.Sqrt(Complex.Ldexp(t * ddouble.PI, -1)) * sc / sd;
+            Complex y = Complex.Sqrt(Complex.Ldexp(t * ddouble.Pi, -1)) * sc / sd;
 
             y *= Complex.Exp(-z);
 

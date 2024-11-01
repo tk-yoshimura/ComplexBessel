@@ -127,7 +127,7 @@ namespace DDoubleComplexBessel {
 
             YCoefTable r = y_coef_table;
 
-            ddouble cos = SinCosPICache.CosPI(nu), sin = SinCosPICache.SinPI(nu);
+            ddouble cos = SinCosPiCache.CosPi(nu), sin = SinCosPiCache.SinPi(nu);
             Complex p = Complex.IsZero(cos) ? 0d : Complex.Pow(z, Complex.Ldexp(nu, 1)) * cos, s = Complex.Ldexp(Complex.Pow(Complex.Ldexp(z, 1), nu), 2);
 
             Complex z2 = z * z, z4 = z2 * z2;
@@ -190,7 +190,7 @@ namespace DDoubleComplexBessel {
 
             Complex z2 = z * z, z4 = z2 * z2;
 
-            Complex c = 0d, u = Complex.Ldexp(ddouble.RcpPI, 1);
+            Complex c = 0d, u = Complex.Ldexp(ddouble.RcpPi, 1);
 
             for (int k = 0; k <= terms; k++) {
                 Complex s = u * r[k], t = h - ddouble.HarmonicNumber(2 * k);
@@ -227,7 +227,7 @@ namespace DDoubleComplexBessel {
 
             Complex z2 = z * z, z4 = z2 * z2;
 
-            Complex c = -2d / (z * ddouble.PI), u = z / Complex.Ldexp(ddouble.PI, 1);
+            Complex c = -2d / (z * ddouble.Pi), u = z / Complex.Ldexp(ddouble.Pi, 1);
 
             for (int k = 0; k <= terms; k++) {
                 Complex s = u * r[k], t = h - ddouble.HarmonicNumber(2 * k) - ddouble.HarmonicNumber(2 * k + 1);
@@ -290,7 +290,7 @@ namespace DDoubleComplexBessel {
                 IterationLogger.Log("BesselYN Series", k);
             }
 
-            Complex y = c * ddouble.RcpPI * Complex.Pow(Complex.Ldexp(z, -1), n);
+            Complex y = c * ddouble.RcpPi * Complex.Pow(Complex.Ldexp(z, -1), n);
 
             return y;
         }
@@ -344,7 +344,7 @@ namespace DDoubleComplexBessel {
 
             Complex z2 = z * z;
 
-            Complex c = 0d, u = ddouble.PI / Complex.Ldexp(ddouble.SinPI(nu), 1);
+            Complex c = 0d, u = ddouble.Pi / Complex.Ldexp(ddouble.SinPi(nu), 1);
 
             for (int k = 0; k <= terms; k++) {
                 c = SeriesUtil.Add(c, u * r[k], tn * gn[k], -tp * gp[k], out bool convergence);

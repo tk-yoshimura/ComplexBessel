@@ -145,22 +145,22 @@ namespace DDoubleOptimizedBessel {
             return ddouble.ILogB(nu - n) < EpsExponent;
         }
 
-        public static class SinCosPICache {
+        public static class SinCosPiCache {
             private static readonly Dictionary<ddouble, ddouble> cospi_table = [];
             private static readonly Dictionary<ddouble, ddouble> sinpi_table = [];
 
-            public static ddouble CosPI(ddouble theta) {
+            public static ddouble CosPi(ddouble theta) {
                 if (!cospi_table.TryGetValue(theta, out ddouble cospi)) {
-                    cospi = ddouble.CosPI(theta);
+                    cospi = ddouble.CosPi(theta);
                     cospi_table[theta] = cospi;
                 }
 
                 return cospi;
             }
 
-            public static ddouble SinPI(ddouble theta) {
+            public static ddouble SinPi(ddouble theta) {
                 if (!sinpi_table.TryGetValue(theta, out ddouble sinpi)) {
-                    sinpi = ddouble.SinPI(theta);
+                    sinpi = ddouble.SinPi(theta);
                     sinpi_table[theta] = sinpi;
                 }
 
@@ -319,7 +319,7 @@ namespace DDoubleOptimizedBessel {
 
                 YCoefTable r = y_coef_table;
 
-                ddouble cos = SinCosPICache.CosPI(nu), sin = SinCosPICache.SinPI(nu);
+                ddouble cos = SinCosPiCache.CosPi(nu), sin = SinCosPiCache.SinPi(nu);
                 ddouble p = ddouble.IsZero(cos) ? 0d : ddouble.Pow(x, ddouble.Ldexp(nu, 1)) * cos;
                 ddouble s = ddouble.Ldexp(ddouble.Pow(ddouble.Ldexp(x, 1), nu), 2);
                 ddouble x2 = x * x, x4 = x2 * x2;
@@ -398,7 +398,7 @@ namespace DDoubleOptimizedBessel {
                     return ddouble.NegativeInfinity;
                 }
 
-                ddouble c = 0d, u = ddouble.Ldexp(ddouble.RcpPI, 1);
+                ddouble c = 0d, u = ddouble.Ldexp(ddouble.RcpPi, 1);
 
                 for (int k = 0; k <= terms; k++) {
                     ddouble s = u * r[k], t = h - ddouble.HarmonicNumber(2 * k);
@@ -436,7 +436,7 @@ namespace DDoubleOptimizedBessel {
                     return ddouble.NegativeInfinity;
                 }
 
-                ddouble c = -2d / (x * ddouble.PI), u = x / ddouble.Ldexp(ddouble.PI, 1);
+                ddouble c = -2d / (x * ddouble.Pi), u = x / ddouble.Ldexp(ddouble.Pi, 1);
 
                 for (int k = 0; k <= terms; k++) {
                     ddouble s = u * r[k], t = h - ddouble.HarmonicNumber(2 * k) - ddouble.HarmonicNumber(2 * k + 1);
@@ -503,7 +503,7 @@ namespace DDoubleOptimizedBessel {
                     u *= x4;
                 }
 
-                ddouble y = c * ddouble.RcpPI * ddouble.Pow(ddouble.Ldexp(x, -1), n);
+                ddouble y = c * ddouble.RcpPi * ddouble.Pow(ddouble.Ldexp(x, -1), n);
 
                 return y;
             }
@@ -569,7 +569,7 @@ namespace DDoubleOptimizedBessel {
                     return ddouble.PositiveInfinity;
                 }
 
-                ddouble c = 0d, u = ddouble.PI / ddouble.Ldexp(ddouble.SinPI(nu), 1);
+                ddouble c = 0d, u = ddouble.Pi / ddouble.Ldexp(ddouble.SinPi(nu), 1);
 
                 for (int k = 0; k <= terms; k++) {
                     c = SeriesUtil.Add(c, u * r[k], tn * gn[k], -tp * gp[k], out bool convergence);
@@ -1026,7 +1026,7 @@ namespace DDoubleOptimizedBessel {
 
                 ddouble cos = ddouble.Cos(omega), sin = ddouble.Sin(omega);
 
-                ddouble y = ddouble.Sqrt(2d / (ddouble.PI * x)) * (cos * c_even - sin * c_odd);
+                ddouble y = ddouble.Sqrt(2d / (ddouble.Pi * x)) * (cos * c_even - sin * c_odd);
 
                 return y;
             }
@@ -1049,7 +1049,7 @@ namespace DDoubleOptimizedBessel {
 
                 ddouble cos = ddouble.Cos(omega), sin = ddouble.Sin(omega);
 
-                ddouble y = ddouble.Sqrt(2d / (ddouble.PI * x)) * (sin * c_even + cos * c_odd);
+                ddouble y = ddouble.Sqrt(2d / (ddouble.Pi * x)) * (sin * c_even + cos * c_odd);
 
                 return y;
             }
@@ -1064,7 +1064,7 @@ namespace DDoubleOptimizedBessel {
 
                 ddouble c = hankel.BesselICoef(x);
 
-                ddouble y = ddouble.Sqrt(1d / (2d * ddouble.PI * x)) * c;
+                ddouble y = ddouble.Sqrt(1d / (2d * ddouble.Pi * x)) * c;
 
                 if (ddouble.IsPositiveInfinity(x) || ddouble.IsZero(y)) {
                     return scale ? ddouble.PlusZero : ddouble.PositiveInfinity;
@@ -1088,7 +1088,7 @@ namespace DDoubleOptimizedBessel {
 
                 ddouble c = hankel.BesselKCoef(x);
 
-                ddouble y = ddouble.Sqrt(ddouble.PI / (2d * x)) * c;
+                ddouble y = ddouble.Sqrt(ddouble.Pi / (2d * x)) * c;
 
                 if (ddouble.IsPositiveInfinity(x) || ddouble.IsZero(y)) {
                     return ddouble.PlusZero;
@@ -1121,7 +1121,7 @@ namespace DDoubleOptimizedBessel {
                 }
 
                 public ddouble Omega(ddouble x) {
-                    ddouble omega = x - ddouble.Ldexp(2d * Nu + 1d, -2) * ddouble.PI;
+                    ddouble omega = x - ddouble.Ldexp(2d * Nu + 1d, -2) * ddouble.Pi;
 
                     return omega;
                 }
@@ -1478,9 +1478,9 @@ namespace DDoubleOptimizedBessel {
                 lambda += f0 * phi[0];
                 lambda *= s;
 
-                ddouble rcot = 1d / ddouble.TanPI(alpha), rgamma = ddouble.Gamma(1d + alpha), rsqgamma = rgamma * rgamma;
-                ddouble r = ddouble.Ldexp(ddouble.RcpPI * sqs, 1);
-                ddouble p = sqs * rsqgamma * ddouble.RcpPI;
+                ddouble rcot = 1d / ddouble.TanPi(alpha), rgamma = ddouble.Gamma(1d + alpha), rsqgamma = rgamma * rgamma;
+                ddouble r = ddouble.Ldexp(ddouble.RcpPi * sqs, 1);
+                ddouble p = sqs * rsqgamma * ddouble.RcpPi;
 
                 ddouble xi0 = -ddouble.Ldexp(v, 1) * p;
 
@@ -1567,7 +1567,7 @@ namespace DDoubleOptimizedBessel {
 
                 lambda = ddouble.Ldexp(lambda, 1) + f0;
 
-                ddouble y0 = ddouble.Ldexp((se + f0 * (ddouble.Log(ddouble.Ldexp(x, -1)) + ddouble.EulerGamma)) / (ddouble.PI * lambda), 1);
+                ddouble y0 = ddouble.Ldexp((se + f0 * (ddouble.Log(ddouble.Ldexp(x, -1)) + ddouble.EulerGamma)) / (ddouble.Pi * lambda), 1);
 
                 return y0;
             }
@@ -1602,7 +1602,7 @@ namespace DDoubleOptimizedBessel {
 
                 lambda = ddouble.Ldexp(lambda, 1) + f0;
 
-                ddouble y1 = ddouble.Ldexp((sx - v * f0 + (ddouble.Log(ddouble.Ldexp(x, -1)) + ddouble.EulerGamma - 1d) * f1) / (lambda * ddouble.PI), 1);
+                ddouble y1 = ddouble.Ldexp((sx - v * f0 + (ddouble.Log(ddouble.Ldexp(x, -1)) + ddouble.EulerGamma - 1d) * f1) / (lambda * ddouble.Pi), 1);
 
                 return y1;
             }
@@ -1647,7 +1647,7 @@ namespace DDoubleOptimizedBessel {
                     (y1, y0) = (2 * k * v * y1 - y0, y1);
                 }
 
-                ddouble yn = ddouble.Ldexp(y1 / (lambda * ddouble.PI), 1);
+                ddouble yn = ddouble.Ldexp(y1 / (lambda * ddouble.Pi), 1);
 
                 return yn;
             }
@@ -1892,7 +1892,7 @@ namespace DDoubleOptimizedBessel {
                     sd = sd * t + d;
                 }
 
-                ddouble y = ddouble.Sqrt(ddouble.Ldexp(t * ddouble.PI, -1)) * sc / sd;
+                ddouble y = ddouble.Sqrt(ddouble.Ldexp(t * ddouble.Pi, -1)) * sc / sd;
 
                 if (!scale) {
                     y *= ddouble.Exp(-x);
@@ -2307,7 +2307,7 @@ namespace DDoubleOptimizedBessel {
                 y = ddouble.Ldexp(y, (int)long.Max(-exp_sum, int.MinValue));
 
                 if (ddouble.IsNegative(nu) && !ddouble.IsInteger(nu_abs)) {
-                    ddouble bk = 2d * ddouble.RcpPI * SinCosPICache.SinPI(nu_abs) * BesselK(nu_abs, x, scale: false);
+                    ddouble bk = 2d * ddouble.RcpPi * SinCosPiCache.SinPi(nu_abs) * BesselK(nu_abs, x, scale: false);
 
                     y += scale ? (bk * ddouble.Exp(-x)) : bk;
                 }

@@ -1,22 +1,22 @@
 ﻿using DoubleDouble;
 
 namespace DDoubleComplexBessel {
-    static class SinCosPICache {
+    static class SinCosPiCache {
         private static readonly Dictionary<ddouble, ddouble> cospi_table = [];
         private static readonly Dictionary<ddouble, ddouble> sinpi_table = [];
 
-        public static ddouble CosPI(ddouble theta) {
+        public static ddouble CosPi(ddouble theta) {
             if (!cospi_table.TryGetValue(theta, out ddouble cospi)) {
-                cospi = ddouble.CosPI(theta);
+                cospi = ddouble.CosPi(theta);
                 cospi_table[theta] = cospi;
             }
 
             return cospi;
         }
 
-        public static ddouble SinPI(ddouble theta) {
+        public static ddouble SinPi(ddouble theta) {
             if (!sinpi_table.TryGetValue(theta, out ddouble sinpi)) {
-                sinpi = ddouble.SinPI(theta);
+                sinpi = ddouble.SinPi(theta);
                 sinpi_table[theta] = sinpi;
             }
 

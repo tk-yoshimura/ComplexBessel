@@ -7,9 +7,9 @@ namespace DDoubleBesselYEpsMillerBackwardTests {
         public static (ddouble eta0, ddouble xi1) BesselYEta0Xi1(ddouble alpha, ddouble x) {
             ddouble s = ddouble.Pow(ddouble.Ldexp(1 / x, 1), alpha), sqs = s * s;
 
-            ddouble rcot = 1d / ddouble.TanPI(alpha), rgamma = ddouble.Gamma(1d + alpha), rsqgamma = rgamma * rgamma;
-            ddouble r = ddouble.Ldexp(ddouble.RcpPI * sqs, 1);
-            ddouble p = sqs * rsqgamma * ddouble.RcpPI;
+            ddouble rcot = 1d / ddouble.TanPi(alpha), rgamma = ddouble.Gamma(1d + alpha), rsqgamma = rgamma * rgamma;
+            ddouble r = ddouble.Ldexp(ddouble.RcpPi * sqs, 1);
+            ddouble p = sqs * rsqgamma * ddouble.RcpPi;
 
             ddouble eta0 = rcot - p / alpha;
             ddouble xi1 = rcot + p * (alpha * (alpha + 1d) + 1d) / (alpha * (alpha - 1d));

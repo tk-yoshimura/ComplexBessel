@@ -71,7 +71,7 @@ namespace ComplexBessel {
                     return (near_n & 1) == 0 ? BesselJ(-near_n, z) : -BesselJ(-near_n, z);
                 }
 
-                return (SinCosPICache<Pow2.N4>.CosPI(nu / 2), SinCosPICache<Pow2.N4>.SinPI(nu / 2)) * BesselI(nu, (z.I, z.R)).Conj;
+                return (SinCosPiCache<Pow2.N4>.CosPi(nu / 2), SinCosPiCache<Pow2.N4>.SinPi(nu / 2)) * BesselI(nu, (z.I, z.R)).Conj;
             }
         }
 
@@ -84,18 +84,18 @@ namespace ComplexBessel {
 
             MultiPrecision<Pow2.N4> nu_abs = MultiPrecision<Pow2.N4>.Abs(nu);
 
-            Complex<Pow2.N4> c = (SinCosPICache<Pow2.N4>.CosPI(nu_abs / 2), SinCosPICache<Pow2.N4>.SinPI(nu_abs / 2));
+            Complex<Pow2.N4> c = (SinCosPiCache<Pow2.N4>.CosPi(nu_abs / 2), SinCosPiCache<Pow2.N4>.SinPi(nu_abs / 2));
             Complex<Pow2.N4> bi = BesselI(nu_abs, (z.I, z.R));
             Complex<Pow2.N4> bk = BesselK(nu_abs, (z.I, z.R));
 
             if (MultiPrecision<Pow2.N4>.IsPositive(nu)) {
-                Complex<Pow2.N4> y = (0, 1) * c * bi.Conj - 2 * MultiPrecision<Pow2.N4>.RcpPI * (c * bk).Conj;
+                Complex<Pow2.N4> y = (0, 1) * c * bi.Conj - 2 * MultiPrecision<Pow2.N4>.RcpPi * (c * bk).Conj;
 
                 return y;
             }
             else {
                 Complex<Pow2.N4> y = (0, 1) * (c * bi).Conj
-                    + 2 * MultiPrecision<Pow2.N4>.RcpPI * ((0, 1) * c.Conj * SinCosPICache<Pow2.N4>.SinPI(nu_abs) - c) * bk.Conj;
+                    + 2 * MultiPrecision<Pow2.N4>.RcpPi * ((0, 1) * c.Conj * SinCosPiCache<Pow2.N4>.SinPi(nu_abs) - c) * bk.Conj;
 
                 return y;
             }
@@ -162,7 +162,7 @@ namespace ComplexBessel {
             ) * (s_overone ? 1d : s);
 
             if (MultiPrecision<Pow2.N4>.IsNegative(nu) && !MultiPrecision<Pow2.N4>.IsInteger(nu_abs)) {
-                Complex<Pow2.N4> bk = 2d * MultiPrecision<Pow2.N4>.RcpPI * SinCosPICache<Pow2.N4>.SinPI(nu_abs) * BesselN4.BesselK(nu_abs, z);
+                Complex<Pow2.N4> bk = 2d * MultiPrecision<Pow2.N4>.RcpPi * SinCosPiCache<Pow2.N4>.SinPi(nu_abs) * BesselN4.BesselK(nu_abs, z);
 
                 y += bk;
             }

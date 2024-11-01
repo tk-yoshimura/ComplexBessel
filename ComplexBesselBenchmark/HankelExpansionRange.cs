@@ -20,7 +20,7 @@ namespace ComplexBesselBenchmark {
                     bool is_convergence = true;
 
                     for (double theta = 0; theta <= 0.5; theta += 1d / 64) {
-                        Complex<Pow2.N4> z = (norm * MultiPrecision<Pow2.N4>.CosPI(theta), norm * MultiPrecision<Pow2.N4>.SinPI(theta));
+                        Complex<Pow2.N4> z = (norm * MultiPrecision<Pow2.N4>.CosPi(theta), norm * MultiPrecision<Pow2.N4>.SinPi(theta));
 
                         Complex<Pow2.N4> z4 = Limit<Pow2.N4>.BesselJ(nu, z);
 
@@ -56,7 +56,7 @@ namespace ComplexBesselBenchmark {
                     bool is_convergence = true;
 
                     for (double theta = 0; theta <= 0.5; theta += 1d / 64) {
-                        Complex<Pow2.N4> z = (norm * MultiPrecision<Pow2.N4>.CosPI(theta), norm * MultiPrecision<Pow2.N4>.SinPI(theta));
+                        Complex<Pow2.N4> z = (norm * MultiPrecision<Pow2.N4>.CosPi(theta), norm * MultiPrecision<Pow2.N4>.SinPi(theta));
 
                         Complex<Pow2.N4> z4 = Limit<Pow2.N4>.BesselY(nu, z);
 
@@ -92,7 +92,7 @@ namespace ComplexBesselBenchmark {
                     bool is_convergence = true;
 
                     for (double theta = 0; theta <= 0.5; theta += 1d / 64) {
-                        Complex<Pow2.N4> z = (norm * MultiPrecision<Pow2.N4>.CosPI(theta), norm * MultiPrecision<Pow2.N4>.SinPI(theta));
+                        Complex<Pow2.N4> z = (norm * MultiPrecision<Pow2.N4>.CosPi(theta), norm * MultiPrecision<Pow2.N4>.SinPi(theta));
 
                         Complex<Pow2.N4> z4 = Limit<Pow2.N4>.BesselI(nu, z);
 
@@ -128,7 +128,7 @@ namespace ComplexBesselBenchmark {
                     bool is_convergence = true;
 
                     for (double theta = 0; theta <= 0.5; theta += 1d / 64) {
-                        Complex<Pow2.N4> z = (norm * MultiPrecision<Pow2.N4>.CosPI(theta), norm * MultiPrecision<Pow2.N4>.SinPI(theta));
+                        Complex<Pow2.N4> z = (norm * MultiPrecision<Pow2.N4>.CosPi(theta), norm * MultiPrecision<Pow2.N4>.SinPi(theta));
 
                         Complex<Pow2.N4> z4 = Limit<Pow2.N4>.BesselK(nu, z);
 

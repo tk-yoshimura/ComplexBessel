@@ -14,7 +14,7 @@ namespace DDoubleComplexBessel {
             }
 
             if (ddouble.IsNegative(z.R)) {
-                return (SinCosPICache.CosPI(nu), SinCosPICache.SinPI(nu)) * BesselJ(nu, (-z.R, z.I)).Conj;
+                return (SinCosPiCache.CosPi(nu), SinCosPiCache.SinPi(nu)) * BesselJ(nu, (-z.R, z.I)).Conj;
             }
 
             if (z.Magnitude >= hankel_threshold) {
@@ -27,7 +27,7 @@ namespace DDoubleComplexBessel {
                 return MillerBackward.BesselJ(nu, z);
             }
             else {
-                return (SinCosPICache.CosPI(nu / 2), SinCosPICache.SinPI(nu / 2)) * BesselI(nu, (z.I, z.R)).Conj;
+                return (SinCosPiCache.CosPi(nu / 2), SinCosPiCache.SinPi(nu / 2)) * BesselI(nu, (z.I, z.R)).Conj;
             }
         }
 
@@ -39,8 +39,8 @@ namespace DDoubleComplexBessel {
             }
 
             if (ddouble.IsNegative(z.R)) {
-                return (SinCosPICache.CosPI(nu), -SinCosPICache.SinPI(nu)) * BesselY(nu, (-z.R, z.I)).Conj
-                     + (0, 2 * SinCosPICache.CosPI(nu)) * BesselJ(nu, (-z.R, z.I)).Conj;
+                return (SinCosPiCache.CosPi(nu), -SinCosPiCache.SinPi(nu)) * BesselY(nu, (-z.R, z.I)).Conj
+                     + (0, 2 * SinCosPiCache.CosPi(nu)) * BesselJ(nu, (-z.R, z.I)).Conj;
             }
 
             if (z.Magnitude >= hankel_threshold) {
@@ -58,11 +58,11 @@ namespace DDoubleComplexBessel {
                 return MillerBackward.BesselY(nu, z);
             }
             {
-                Complex c = (SinCosPICache.CosPI(nu / 2), SinCosPICache.SinPI(nu / 2));
+                Complex c = (SinCosPiCache.CosPi(nu / 2), SinCosPiCache.SinPi(nu / 2));
                 Complex bi = BesselI(nu, (z.I, z.R));
                 Complex bk = BesselK(nu, (z.I, z.R));
 
-                Complex y = Complex.ImaginaryOne * c * bi.Conj - 2 * ddouble.RcpPI * (c * bk).Conj;
+                Complex y = Complex.ImaginaryOne * c * bi.Conj - 2 * ddouble.RcpPi * (c * bk).Conj;
 
                 return y;
             }
@@ -76,7 +76,7 @@ namespace DDoubleComplexBessel {
             }
 
             if (ddouble.IsNegative(z.R)) {
-                return (SinCosPICache.CosPI(nu), SinCosPICache.SinPI(nu)) * BesselI(nu, (-z.R, z.I)).Conj;
+                return (SinCosPiCache.CosPi(nu), SinCosPiCache.SinPi(nu)) * BesselI(nu, (-z.R, z.I)).Conj;
             }
 
             if (z.Magnitude >= hankel_threshold) {
@@ -100,8 +100,8 @@ namespace DDoubleComplexBessel {
             }
 
             if (ddouble.IsNegative(z.R)) {
-                return (SinCosPICache.CosPI(nu), -SinCosPICache.SinPI(nu)) * BesselK(nu, (-z.R, z.I)).Conj
-                     - (0, ddouble.PI) * BesselI(nu, (-z.R, z.I)).Conj;
+                return (SinCosPiCache.CosPi(nu), -SinCosPiCache.SinPi(nu)) * BesselK(nu, (-z.R, z.I)).Conj
+                     - (0, ddouble.Pi) * BesselI(nu, (-z.R, z.I)).Conj;
             }
 
             if (z.Magnitude >= hankel_threshold) {
@@ -119,11 +119,11 @@ namespace DDoubleComplexBessel {
                 return YoshidaPade.BesselK(nu, z);
             }
             else {
-                Complex c = (SinCosPICache.CosPI(nu / 2), -SinCosPICache.SinPI(nu / 2));
+                Complex c = (SinCosPiCache.CosPi(nu / 2), -SinCosPiCache.SinPi(nu / 2));
                 Complex bi = BesselI(nu, z);
                 Complex by = BesselY(nu, (z.I, z.R));
 
-                Complex y = c * (-Complex.ImaginaryOne * c * bi - by.Conj) * ddouble.PI / 2;
+                Complex y = c * (-Complex.ImaginaryOne * c * bi - by.Conj) * ddouble.Pi / 2;
 
                 return y;
             }

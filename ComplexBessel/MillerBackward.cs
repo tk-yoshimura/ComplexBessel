@@ -315,10 +315,10 @@ namespace ComplexBessel {
             lambda += f0 * phi[0];
             lambda *= s;
 
-            MultiPrecision<DoubleN> rcot = 1d / MultiPrecision<DoubleN>.TanPI(alpha.Convert<DoubleN>());
+            MultiPrecision<DoubleN> rcot = 1d / MultiPrecision<DoubleN>.TanPi(alpha.Convert<DoubleN>());
             MultiPrecision<DoubleN> rgamma = MultiPrecision<DoubleN>.Gamma(1d + alpha.Convert<DoubleN>()), rsqgamma = rgamma * rgamma;
-            Complex<N> r = Complex<DoubleN>.Ldexp(MultiPrecision<DoubleN>.RcpPI * sqs.Convert<DoubleN>(), 1).Convert<N>();
-            Complex<DoubleN> p = sqs.Convert<DoubleN>() * rsqgamma * MultiPrecision<DoubleN>.RcpPI;
+            Complex<N> r = Complex<DoubleN>.Ldexp(MultiPrecision<DoubleN>.RcpPi * sqs.Convert<DoubleN>(), 1).Convert<N>();
+            Complex<DoubleN> p = sqs.Convert<DoubleN>() * rsqgamma * MultiPrecision<DoubleN>.RcpPi;
 
             Complex<N> xi0 = -Complex<N>.Ldexp(v, 1) * p.Convert<N>();
 
@@ -382,7 +382,7 @@ namespace ComplexBessel {
 
             lambda = Complex<N>.Ldexp(lambda, 1) + f0;
 
-            Complex<N> y0 = Complex<N>.Ldexp((se + f0 * (Complex<N>.Log(Complex<N>.Ldexp(z, -1)) + MultiPrecision<N>.EulerGamma)) / (MultiPrecision<N>.PI * lambda), 1);
+            Complex<N> y0 = Complex<N>.Ldexp((se + f0 * (Complex<N>.Log(Complex<N>.Ldexp(z, -1)) + MultiPrecision<N>.EulerGamma)) / (MultiPrecision<N>.Pi * lambda), 1);
 
             return y0;
         }
@@ -417,7 +417,7 @@ namespace ComplexBessel {
 
             lambda = Complex<N>.Ldexp(lambda, 1) + f0;
 
-            Complex<N> y1 = Complex<N>.Ldexp((sx - v * f0 + (Complex<N>.Log(Complex<N>.Ldexp(z, -1)) + MultiPrecision<N>.EulerGamma - 1d) * f1) / (lambda * MultiPrecision<N>.PI), 1);
+            Complex<N> y1 = Complex<N>.Ldexp((sx - v * f0 + (Complex<N>.Log(Complex<N>.Ldexp(z, -1)) + MultiPrecision<N>.EulerGamma - 1d) * f1) / (lambda * MultiPrecision<N>.Pi), 1);
 
             return y1;
         }
@@ -461,7 +461,7 @@ namespace ComplexBessel {
                 (y1, y0) = (2 * k * v * y1 - y0, y1);
             }
 
-            Complex<N> yn = Complex<N>.Ldexp(y1 / (lambda * MultiPrecision<N>.PI), 1);
+            Complex<N> yn = Complex<N>.Ldexp(y1 / (lambda * MultiPrecision<N>.Pi), 1);
 
             return yn;
         }

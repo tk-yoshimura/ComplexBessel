@@ -20,7 +20,7 @@ namespace DDoubleComplexBesselBenchmark {
                     bool is_convergence = true;
 
                     for (double theta = 0; theta <= 0.5; theta += 1d / 64) {
-                        Complex z = (norm * ddouble.CosPI(theta), norm * ddouble.SinPI(theta));
+                        Complex z = (norm * ddouble.CosPi(theta), norm * ddouble.SinPi(theta));
 
                         Complex z4 = Limit.BesselJ(nu, z);
 
@@ -56,7 +56,7 @@ namespace DDoubleComplexBesselBenchmark {
                     bool is_convergence = true;
 
                     for (double theta = 0; theta <= 0.5; theta += 1d / 64) {
-                        Complex z = (norm * ddouble.CosPI(theta), norm * ddouble.SinPI(theta));
+                        Complex z = (norm * ddouble.CosPi(theta), norm * ddouble.SinPi(theta));
 
                         Complex z4 = Limit.BesselY(nu, z);
 
@@ -92,7 +92,7 @@ namespace DDoubleComplexBesselBenchmark {
                     bool is_convergence = true;
 
                     for (double theta = 0; theta <= 0.5; theta += 1d / 64) {
-                        Complex z = (norm * ddouble.CosPI(theta), norm * ddouble.SinPI(theta));
+                        Complex z = (norm * ddouble.CosPi(theta), norm * ddouble.SinPi(theta));
 
                         Complex z4 = Limit.BesselI(nu, z);
 
@@ -128,7 +128,7 @@ namespace DDoubleComplexBesselBenchmark {
                     bool is_convergence = true;
 
                     for (double theta = 0; theta <= 0.5; theta += 1d / 64) {
-                        Complex z = (norm * ddouble.CosPI(theta), norm * ddouble.SinPI(theta));
+                        Complex z = (norm * ddouble.CosPi(theta), norm * ddouble.SinPi(theta));
 
                         Complex z4 = Limit.BesselK(nu, z);
 
