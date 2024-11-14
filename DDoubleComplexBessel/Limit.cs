@@ -1,10 +1,11 @@
 ﻿using DoubleDouble;
 using DoubleDoubleComplex;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 
 namespace DDoubleComplexBessel {
     public static class Limit {
-        static readonly Dictionary<ddouble, HankelExpansion> table = [];
+        static readonly ConcurrentDictionary<ddouble, HankelExpansion> table = [];
 
         public static Complex BesselJ(ddouble nu, Complex z) {
             Debug.Assert(ddouble.IsPositive(z.R));
@@ -12,7 +13,7 @@ namespace DDoubleComplexBessel {
 
             if (!table.TryGetValue(nu, out HankelExpansion hankel)) {
                 hankel = new HankelExpansion(nu);
-                table.Add(nu, hankel);
+                table[nu] = hankel;
             }
 
             (Complex c_even, Complex c_odd) = hankel.BesselJYCoef(z);
@@ -32,7 +33,7 @@ namespace DDoubleComplexBessel {
 
             if (!table.TryGetValue(nu, out HankelExpansion hankel)) {
                 hankel = new HankelExpansion(nu);
-                table.Add(nu, hankel);
+                table[nu] = hankel;
             }
 
             (Complex c_even, Complex c_odd) = hankel.BesselJYCoef(z);
@@ -52,7 +53,7 @@ namespace DDoubleComplexBessel {
 
             if (!table.TryGetValue(nu, out HankelExpansion hankel)) {
                 hankel = new HankelExpansion(nu);
-                table.Add(nu, hankel);
+                table[nu] = hankel;
             }
 
             Complex ci = hankel.BesselICoef(z), ck = hankel.BesselKCoef(z);
@@ -72,7 +73,7 @@ namespace DDoubleComplexBessel {
 
             if (!table.TryGetValue(nu, out HankelExpansion hankel)) {
                 hankel = new HankelExpansion(nu);
-                table.Add(nu, hankel);
+                table[nu] = hankel;
             }
 
             Complex c = hankel.BesselKCoef(z);
@@ -93,12 +94,18 @@ namespace DDoubleComplexBessel {
             }
 
             private ddouble ACoef(int n) {
-                for (int k = a_coef.Count; k <= n; k++) {
-                    ddouble a = a_coef.Last() * (4d * Nu * Nu - checked((2 * k - 1) * (2 * k - 1))) / (k * 8);
-                    a_coef.Add(a);
+                if (n < a_coef.Count) {
+                    return a_coef[n];
                 }
 
-                return a_coef[n];
+                lock (a_coef) {
+                    for (int k = a_coef.Count; k <= n; k++) {
+                        ddouble a = a_coef.Last() * (4d * Nu * Nu - checked((2 * k - 1) * (2 * k - 1))) / (k * 8);
+                        a_coef.Add(a);
+                    }
+
+                    return a_coef[n];
+                }
             }
 
             public Complex Omega(Complex z) {

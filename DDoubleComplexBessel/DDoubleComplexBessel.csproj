@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TYoshimura.DoubleDouble" Version="4.0.1" />
-    <PackageReference Include="TYoshimura.DoubleDouble.Complex" Version="1.6.0" />
-    <PackageReference Include="TYoshimura.MultiPrecision" Version="6.4.0" />
+    <PackageReference Include="TYoshimura.DoubleDouble" Version="4.2.0" />
+    <PackageReference Include="TYoshimura.DoubleDouble.Complex" Version="1.6.3" />
+    <PackageReference Include="TYoshimura.MultiPrecision" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>

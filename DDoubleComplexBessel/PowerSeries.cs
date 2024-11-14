@@ -1,19 +1,20 @@
 ﻿using DoubleDouble;
 using DoubleDoubleComplex;
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
 namespace DDoubleComplexBessel {
     public class PowerSeries {
-        private static readonly Dictionary<ddouble, DoubleFactDenomTable> dfactdenom_coef_table = [];
-        private static readonly Dictionary<ddouble, X2DenomTable> x2denom_coef_table = [];
-        private static readonly Dictionary<ddouble, GammaDenomTable> gammadenom_coef_table = [];
-        private static readonly Dictionary<ddouble, GammaTable> gamma_coef_table = [];
-        private static readonly Dictionary<ddouble, GammaPNTable> gammapn_coef_table = [];
+        private static readonly ConcurrentDictionary<ddouble, DoubleFactDenomTable> dfactdenom_coef_table = [];
+        private static readonly ConcurrentDictionary<ddouble, X2DenomTable> x2denom_coef_table = [];
+        private static readonly ConcurrentDictionary<ddouble, GammaDenomTable> gammadenom_coef_table = [];
+        private static readonly ConcurrentDictionary<ddouble, GammaTable> gamma_coef_table = [];
+        private static readonly ConcurrentDictionary<ddouble, GammaPNTable> gammapn_coef_table = [];
         private static readonly YCoefTable y_coef_table = new();
         private static readonly Y0CoefTable y0_coef_table = new();
-        private static readonly Dictionary<int, YNCoefTable> yn_coef_table = [];
-        private static readonly Dictionary<int, ReadOnlyCollection<ddouble>> yn_finitecoef_table = [];
+        private static readonly ConcurrentDictionary<int, YNCoefTable> yn_coef_table = [];
+        private static readonly ConcurrentDictionary<int, ReadOnlyCollection<ddouble>> yn_finitecoef_table = [];
         private static readonly KCoefTable k_coef_table = new();
         private static readonly K0CoefTable k0_coef_table = new();
         private static readonly K1CoefTable k1_coef_table = new();
@@ -85,11 +86,11 @@ namespace DDoubleComplexBessel {
         private static Complex BesselJKernel(ddouble nu, Complex z, int terms) {
             if (!dfactdenom_coef_table.TryGetValue(nu, out DoubleFactDenomTable r)) {
                 r = new DoubleFactDenomTable(nu);
-                dfactdenom_coef_table.Add(nu, r);
+                dfactdenom_coef_table[nu] = r;
             }
             if (!x2denom_coef_table.TryGetValue(nu, out X2DenomTable d)) {
                 d = new X2DenomTable(nu);
-                x2denom_coef_table.Add(nu, d);
+                x2denom_coef_table[nu] = d;
             }
 
             Complex z2 = z * z, z4 = z2 * z2;
@@ -118,11 +119,11 @@ namespace DDoubleComplexBessel {
         private static Complex BesselYKernel(ddouble nu, Complex z, int terms) {
             if (!gamma_coef_table.TryGetValue(nu, out GammaTable g)) {
                 g = new GammaTable(nu);
-                gamma_coef_table.Add(nu, g);
+                gamma_coef_table[nu] = g;
             }
             if (!gammapn_coef_table.TryGetValue(nu, out GammaPNTable gpn)) {
                 gpn = new GammaPNTable(nu);
-                gammapn_coef_table.Add(nu, gpn);
+                gammapn_coef_table[nu] = gpn;
             }
 
             YCoefTable r = y_coef_table;
@@ -177,11 +178,11 @@ namespace DDoubleComplexBessel {
         private static Complex BesselY0Kernel(Complex z, int terms) {
             if (!dfactdenom_coef_table.TryGetValue(0, out DoubleFactDenomTable r)) {
                 r = new DoubleFactDenomTable(0);
-                dfactdenom_coef_table.Add(0, r);
+                dfactdenom_coef_table[0] = r;
             }
             if (!x2denom_coef_table.TryGetValue(0, out X2DenomTable d)) {
                 d = new X2DenomTable(0);
-                x2denom_coef_table.Add(0, d);
+                x2denom_coef_table[0] = d;
             }
 
             Y0CoefTable q = y0_coef_table;
@@ -212,15 +213,15 @@ namespace DDoubleComplexBessel {
         private static Complex BesselY1Kernel(Complex z, int terms) {
             if (!dfactdenom_coef_table.TryGetValue(1, out DoubleFactDenomTable r)) {
                 r = new DoubleFactDenomTable(1);
-                dfactdenom_coef_table.Add(1, r);
+                dfactdenom_coef_table[1] = r;
             }
             if (!x2denom_coef_table.TryGetValue(1, out X2DenomTable d)) {
                 d = new X2DenomTable(1);
-                x2denom_coef_table.Add(1, d);
+                x2denom_coef_table[1] = d;
             }
             if (!yn_coef_table.TryGetValue(1, out YNCoefTable q)) {
                 q = new YNCoefTable(1);
-                yn_coef_table.Add(1, q);
+                yn_coef_table[1] = q;
             }
 
             Complex h = Complex.Ldexp(Complex.Log(Complex.Ldexp(z, -1)) + ddouble.EulerGamma, 1);
@@ -249,19 +250,19 @@ namespace DDoubleComplexBessel {
         private static Complex BesselYNKernel(int n, Complex z, int terms) {
             if (!dfactdenom_coef_table.TryGetValue(n, out DoubleFactDenomTable r)) {
                 r = new DoubleFactDenomTable(n);
-                dfactdenom_coef_table.Add(n, r);
+                dfactdenom_coef_table[n] = r;
             }
             if (!x2denom_coef_table.TryGetValue(n, out X2DenomTable d)) {
                 d = new X2DenomTable(n);
-                x2denom_coef_table.Add(n, d);
+                x2denom_coef_table[n] = d;
             }
             if (!yn_coef_table.TryGetValue(n, out YNCoefTable q)) {
                 q = new YNCoefTable(n);
-                yn_coef_table.Add(n, q);
+                yn_coef_table[n] = q;
             }
             if (!yn_finitecoef_table.TryGetValue(n, out ReadOnlyCollection<ddouble> f)) {
                 f = YNFiniteCoefTable.Value(n);
-                yn_finitecoef_table.Add(n, f);
+                yn_finitecoef_table[n] = f;
             }
 
             Complex c = 0d;
@@ -298,11 +299,11 @@ namespace DDoubleComplexBessel {
         private static Complex BesselIKernel(ddouble nu, Complex z, int terms) {
             if (!dfactdenom_coef_table.TryGetValue(nu, out DoubleFactDenomTable r)) {
                 r = new DoubleFactDenomTable(nu);
-                dfactdenom_coef_table.Add(nu, r);
+                dfactdenom_coef_table[nu] = r;
             }
             if (!x2denom_coef_table.TryGetValue(nu, out X2DenomTable d)) {
                 d = new X2DenomTable(nu);
-                x2denom_coef_table.Add(nu, d);
+                x2denom_coef_table[nu] = d;
             }
 
             Complex z2 = z * z, z4 = z2 * z2;
@@ -331,11 +332,11 @@ namespace DDoubleComplexBessel {
         private static Complex BesselKKernel(ddouble nu, Complex z, int terms) {
             if (!gammadenom_coef_table.TryGetValue(nu, out GammaDenomTable gp)) {
                 gp = new GammaDenomTable(nu);
-                gammadenom_coef_table.Add(nu, gp);
+                gammadenom_coef_table[nu] = gp;
             }
             if (!gammadenom_coef_table.TryGetValue(-nu, out GammaDenomTable gn)) {
                 gn = new GammaDenomTable(-nu);
-                gammadenom_coef_table.Add(-nu, gn);
+                gammadenom_coef_table[-nu] = gn;
             }
 
             KCoefTable r = k_coef_table;
@@ -455,13 +456,15 @@ namespace DDoubleComplexBessel {
                     return table[k];
                 }
 
-                for (long i = table.Count; i <= k; i++) {
-                    c *= checked((nu + 2 * i) * (nu + (2 * i - 1)) * (32 * i * (2 * i - 1)));
+                lock (table) {
+                    for (long i = table.Count; i <= k; i++) {
+                        c *= checked((nu + 2 * i) * (nu + (2 * i - 1)) * (32 * i * (2 * i - 1)));
 
-                    table.Add(ddouble.Rcp(c));
+                        table.Add(ddouble.Rcp(c));
+                    }
+
+                    return table[k];
                 }
-
-                return table[k];
             }
         }
 
@@ -485,13 +488,15 @@ namespace DDoubleComplexBessel {
                     return table[k];
                 }
 
-                for (long i = table.Count; i <= k; i++) {
-                    ddouble a = ddouble.Rcp(checked(4d * (2 * i + 1) * (2 * i + 1 + nu)));
+                lock (table) {
+                    for (long i = table.Count; i <= k; i++) {
+                        ddouble a = ddouble.Rcp(checked(4d * (2 * i + 1) * (2 * i + 1 + nu)));
 
-                    table.Add(a);
+                        table.Add(a);
+                    }
+
+                    return table[k];
                 }
-
-                return table[k];
             }
         }
 
@@ -515,13 +520,15 @@ namespace DDoubleComplexBessel {
                     return table[k];
                 }
 
-                for (int i = table.Count; i <= k; i++) {
-                    c *= nu + i;
+                lock (table) {
+                    for (int i = table.Count; i <= k; i++) {
+                        c *= nu + i;
 
-                    table.Add(ddouble.Rcp(c));
+                        table.Add(ddouble.Rcp(c));
+                    }
+
+                    return table[k];
                 }
-
-                return table[k];
             }
         }
 
@@ -545,13 +552,15 @@ namespace DDoubleComplexBessel {
                     return table[k];
                 }
 
-                for (int i = table.Count; i <= k; i++) {
-                    c *= nu + i;
+                lock (table) {
+                    for (int i = table.Count; i <= k; i++) {
+                        c *= nu + i;
 
-                    table.Add(c);
+                        table.Add(c);
+                    }
+
+                    return table[k];
                 }
-
-                return table[k];
             }
         }
 
@@ -575,13 +584,15 @@ namespace DDoubleComplexBessel {
                     return table[k];
                 }
 
-                for (int i = table.Count; i <= k; i++) {
-                    ddouble c = r * positive_table[i] / negative_table[i];
+                lock (table) {
+                    for (int i = table.Count; i <= k; i++) {
+                        ddouble c = r * positive_table[i] / negative_table[i];
 
-                    table.Add(c);
+                        table.Add(c);
+                    }
+
+                    return table[k];
                 }
-
-                return table[k];
             }
         }
 
@@ -603,13 +614,15 @@ namespace DDoubleComplexBessel {
                     return table[k];
                 }
 
-                for (long i = table.Count; i <= k; i++) {
-                    c *= checked(32 * i * (2 * i - 1));
+                lock (table) {
+                    for (long i = table.Count; i <= k; i++) {
+                        c *= checked(32 * i * (2 * i - 1));
 
-                    table.Add(ddouble.Rcp(c));
+                        table.Add(ddouble.Rcp(c));
+                    }
+
+                    return table[k];
                 }
-
-                return table[k];
             }
         }
 
@@ -629,13 +642,15 @@ namespace DDoubleComplexBessel {
                     return table[k];
                 }
 
-                for (long i = table.Count; i <= k; i++) {
-                    ddouble c = ddouble.Rcp(checked(4 * (2 * i + 1) * (2 * i + 1) * (2 * i + 1)));
+                lock (table) {
+                    for (long i = table.Count; i <= k; i++) {
+                        ddouble c = ddouble.Rcp(checked(4 * (2 * i + 1) * (2 * i + 1) * (2 * i + 1)));
 
-                    table.Add(c);
+                        table.Add(c);
+                    }
+
+                    return table[k];
                 }
-
-                return table[k];
             }
         }
 
@@ -656,14 +671,16 @@ namespace DDoubleComplexBessel {
                     return table[k];
                 }
 
-                for (long i = table.Count; i <= k; i++) {
-                    ddouble c = (ddouble)(n + 4 * i + 2) /
-                        (ddouble)checked(4 * (2 * i + 1) * (2 * i + 1) * (n + 2 * i + 1) * (n + 2 * i + 1));
+                lock (table) {
+                    for (long i = table.Count; i <= k; i++) {
+                        ddouble c = (ddouble)(n + 4 * i + 2) /
+                            (ddouble)checked(4 * (2 * i + 1) * (2 * i + 1) * (n + 2 * i + 1) * (n + 2 * i + 1));
 
-                    table.Add(c);
+                        table.Add(c);
+                    }
+
+                    return table[k];
                 }
-
-                return table[k];
             }
         }
 
@@ -703,13 +720,15 @@ namespace DDoubleComplexBessel {
                     return table[k];
                 }
 
-                for (long i = table.Count; i <= k; i++) {
-                    c *= 4 * i;
+                lock (table) {
+                    for (long i = table.Count; i <= k; i++) {
+                        c *= 4 * i;
 
-                    table.Add(ddouble.Rcp(c));
+                        table.Add(ddouble.Rcp(c));
+                    }
+
+                    return table[k];
                 }
-
-                return table[k];
             }
         }
 
@@ -731,13 +750,15 @@ namespace DDoubleComplexBessel {
                     return table[k];
                 }
 
-                for (long i = table.Count; i <= k; i++) {
-                    c *= checked(4 * i * i);
+                lock (table) {
+                    for (long i = table.Count; i <= k; i++) {
+                        c *= checked(4 * i * i);
 
-                    table.Add(ddouble.Rcp(c));
+                        table.Add(ddouble.Rcp(c));
+                    }
+
+                    return table[k];
                 }
-
-                return table[k];
             }
         }
 
@@ -759,13 +780,15 @@ namespace DDoubleComplexBessel {
                     return table[k];
                 }
 
-                for (int i = table.Count; i <= k; i++) {
-                    c *= checked(4 * i * (i + 1));
+                lock (table) {
+                    for (int i = table.Count; i <= k; i++) {
+                        c *= checked(4 * i * (i + 1));
 
-                    table.Add(ddouble.Rcp(c));
+                        table.Add(ddouble.Rcp(c));
+                    }
+
+                    return table[k];
                 }
-
-                return table[k];
             }
         }
     }

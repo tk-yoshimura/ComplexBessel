@@ -2,6 +2,7 @@
 using DoubleDouble;
 using DoubleDoubleComplex;
 using MultiPrecision;
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 
 namespace DDoubleComplexBessel {
@@ -10,7 +11,7 @@ namespace DDoubleComplexBessel {
         const int m = 38;
 
         private static readonly ReadOnlyCollection<ReadOnlyCollection<ddouble>> ess_coef_table;
-        private static readonly Dictionary<ddouble, ReadOnlyCollection<(ddouble c, ddouble s)>> cds_coef_table = [];
+        private static readonly ConcurrentDictionary<ddouble, ReadOnlyCollection<(ddouble c, ddouble s)>> cds_coef_table = [];
 
         static YoshidaPade() {
             MultiPrecision<Pow2.N4>[][] dss_mp4 = YoshidaCoef<Pow2.N4>.Table(m);
@@ -28,12 +29,10 @@ namespace DDoubleComplexBessel {
 
         public static Complex BesselK(ddouble nu, Complex z) {
             if (nu < 2d) {
-                if (!cds_coef_table.TryGetValue(nu, out ReadOnlyCollection<(ddouble c, ddouble s)> cds_table)) {
-                    cds_table = Table(nu);
-                    cds_coef_table.Add(nu, cds_table);
+                if (!cds_coef_table.TryGetValue(nu, out ReadOnlyCollection<(ddouble c, ddouble s)> cds)) {
+                    cds = Table(nu);
+                    cds_coef_table[nu] = cds;
                 }
-
-                ReadOnlyCollection<(ddouble, ddouble)> cds = cds_table;
 
                 Complex y = Value(z, cds);
 

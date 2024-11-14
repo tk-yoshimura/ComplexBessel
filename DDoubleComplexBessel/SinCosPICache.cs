@@ -1,9 +1,9 @@
 ﻿using DoubleDouble;
+using System.Collections.Concurrent;
 
 namespace DDoubleComplexBessel {
     static class SinCosPiCache {
-        private static readonly Dictionary<ddouble, ddouble> cospi_table = [];
-        private static readonly Dictionary<ddouble, ddouble> sinpi_table = [];
+        private static readonly ConcurrentDictionary<ddouble, ddouble> cospi_table = [], sinpi_table = [];
 
         public static ddouble CosPi(ddouble theta) {
             if (!cospi_table.TryGetValue(theta, out ddouble cospi)) {

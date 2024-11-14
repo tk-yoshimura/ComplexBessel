@@ -8,9 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TYoshimura.DoubleDouble" Version="3.2.8" />
-    <PackageReference Include="TYoshimura.MultiPrecision" Version="6.3.4" />
-    <PackageReference Include="TYoshimura.MultiPrecision.Complex" Version="1.2.0" />
+    <PackageReference Include="TYoshimura.DoubleDouble" Version="4.2.0" />
+    <PackageReference Include="TYoshimura.MultiPrecision" Version="6.5.0" />
+    <PackageReference Include="TYoshimura.MultiPrecision.Complex" Version="1.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DDoubleOptimizedBessel">
+      <HintPath>..\DDoubleOptimizedBessel\bin\Debug\net8.0\DDoubleOptimizedBessel.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

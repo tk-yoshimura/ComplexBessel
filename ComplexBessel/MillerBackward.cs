@@ -1,5 +1,6 @@
 ﻿using MultiPrecision;
 using MultiPrecisionComplex;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 
 namespace ComplexBessel {
@@ -8,10 +9,10 @@ namespace ComplexBessel {
             public readonly int Value => checked(default(N).Value * 2);
         }
 
-        private static readonly Dictionary<MultiPrecision<N>, BesselJPhiTable> phi_coef_table = [];
-        private static readonly Dictionary<MultiPrecision<N>, BesselIPsiTable> psi_coef_table = [];
-        private static readonly Dictionary<MultiPrecision<N>, BesselYEtaTable> eta_coef_table = [];
-        private static readonly Dictionary<MultiPrecision<N>, BesselYXiTable> xi_coef_table = [];
+        private static readonly ConcurrentDictionary<MultiPrecision<N>, BesselJPhiTable> phi_coef_table = [];
+        private static readonly ConcurrentDictionary<MultiPrecision<N>, BesselIPsiTable> psi_coef_table = [];
+        private static readonly ConcurrentDictionary<MultiPrecision<N>, BesselYEtaTable> eta_coef_table = [];
+        private static readonly ConcurrentDictionary<MultiPrecision<N>, BesselYXiTable> xi_coef_table = [];
 
         public static Complex<N> BesselJ(int n, Complex<N> z) {
             Debug.Assert(MultiPrecision<N>.IsPositive(z.R));
@@ -137,7 +138,7 @@ namespace ComplexBessel {
 
             if (!phi_coef_table.TryGetValue(alpha, out BesselJPhiTable phi)) {
                 phi = new BesselJPhiTable(alpha);
-                phi_coef_table.Add(alpha, phi);
+                phi_coef_table[alpha] = phi;
             }
 
             Complex<N> f0 = 1e-256d, f1 = 0d, lambda = 0d;
@@ -281,15 +282,15 @@ namespace ComplexBessel {
 
             if (!eta_coef_table.TryGetValue(alpha, out BesselYEtaTable eta)) {
                 eta = new BesselYEtaTable(alpha);
-                eta_coef_table.Add(alpha, eta);
+                eta_coef_table[alpha] = eta;
             }
             if (!xi_coef_table.TryGetValue(alpha, out BesselYXiTable xi)) {
                 xi = new BesselYXiTable(alpha, eta);
-                xi_coef_table.Add(alpha, xi);
+                xi_coef_table[alpha] = xi;
             }
             if (!phi_coef_table.TryGetValue(alpha, out BesselJPhiTable phi)) {
                 phi = new BesselJPhiTable(alpha);
-                phi_coef_table.Add(alpha, phi);
+                phi_coef_table[alpha] = phi;
             }
 
             Complex<N> f0 = 1e-256, f1 = 0d, lambda = 0d;
@@ -363,7 +364,7 @@ namespace ComplexBessel {
 
             if (!eta_coef_table.TryGetValue(0, out BesselYEtaTable eta)) {
                 eta = new BesselYEtaTable(0);
-                eta_coef_table.Add(0, eta);
+                eta_coef_table[0] = eta;
             }
 
             Complex<N> f0 = 1e-256, f1 = 0d, lambda = 0d;
@@ -393,11 +394,11 @@ namespace ComplexBessel {
             if (!xi_coef_table.TryGetValue(0, out BesselYXiTable xi)) {
                 if (!eta_coef_table.TryGetValue(0, out BesselYEtaTable eta)) {
                     eta = new BesselYEtaTable(0);
-                    eta_coef_table.Add(0, eta);
+                    eta_coef_table[0] = eta;
                 }
 
                 xi = new BesselYXiTable(0, eta);
-                xi_coef_table.Add(0, xi);
+                xi_coef_table[0] = xi;
             }
 
             Complex<N> f0 = 1e-256, f1 = 0d, lambda = 0d;
@@ -425,12 +426,12 @@ namespace ComplexBessel {
         private static Complex<N> BesselYNKernel(int n, Complex<N> z, int m) {
             if (!eta_coef_table.TryGetValue(0, out BesselYEtaTable eta)) {
                 eta = new BesselYEtaTable(0);
-                eta_coef_table.Add(0, eta);
+                eta_coef_table[0] = eta;
             }
 
             if (!xi_coef_table.TryGetValue(0, out BesselYXiTable xi)) {
                 xi = new BesselYXiTable(0, eta);
-                xi_coef_table.Add(0, xi);
+                xi_coef_table[0] = xi;
             }
 
             Complex<N> f0 = 1e-256, f1 = 0d, lambda = 0d;
@@ -494,7 +495,7 @@ namespace ComplexBessel {
 
             if (!psi_coef_table.TryGetValue(alpha, out BesselIPsiTable psi)) {
                 psi = new BesselIPsiTable(alpha);
-                psi_coef_table.Add(alpha, psi);
+                psi_coef_table[alpha] = psi;
             }
 
             Complex<N> g0 = 1e-256, g1 = 0d, lambda = 0d;
@@ -638,15 +639,17 @@ namespace ComplexBessel {
                     return table[k];
                 }
 
-                for (int i = table.Count; i <= k; i++) {
-                    g = g * (alpha + i - 1d) / i;
+                lock (table) {
+                    for (int i = table.Count; i <= k; i++) {
+                        g = g * (alpha + i - 1d) / i;
 
-                    MultiPrecision<N> phi = g * (alpha + 2 * i);
+                        MultiPrecision<N> phi = g * (alpha + 2 * i);
 
-                    table.Add(phi);
+                        table.Add(phi);
+                    }
+
+                    return table[k];
                 }
-
-                return table[k];
             }
         }
 
@@ -678,15 +681,17 @@ namespace ComplexBessel {
                     return table[k];
                 }
 
-                for (int i = table.Count; i <= k; i++) {
-                    g = g * (MultiPrecision<N>.Ldexp(alpha, 1) + i - 1d) / i;
+                lock (table) {
+                    for (int i = table.Count; i <= k; i++) {
+                        g = g * (MultiPrecision<N>.Ldexp(alpha, 1) + i - 1d) / i;
 
-                    MultiPrecision<N> phi = g * (alpha + i);
+                        MultiPrecision<N> phi = g * (alpha + i);
 
-                    table.Add(phi);
+                        table.Add(phi);
+                    }
+
+                    return table[k];
                 }
-
-                return table[k];
             }
         }
 
@@ -722,22 +727,24 @@ namespace ComplexBessel {
                     return table[k];
                 }
 
-                for (int i = table.Count; i <= k; i++) {
-                    if (alpha != 0d) {
-                        g = -g * (alpha + i - 1) * (MultiPrecision<N>.Ldexp(alpha, 1) + i - 1d) / (i * (i - alpha));
+                lock (table) {
+                    for (int i = table.Count; i <= k; i++) {
+                        if (alpha != 0d) {
+                            g = -g * (alpha + i - 1) * (MultiPrecision<N>.Ldexp(alpha, 1) + i - 1d) / (i * (i - alpha));
 
-                        MultiPrecision<N> eta = g * (alpha + 2 * i);
+                            MultiPrecision<N> eta = g * (alpha + 2 * i);
 
-                        table.Add(eta);
+                            table.Add(eta);
+                        }
+                        else {
+                            MultiPrecision<N> eta = (MultiPrecision<N>)2d / i;
+
+                            table.Add((i & 1) == 1 ? eta : -eta);
+                        }
                     }
-                    else {
-                        MultiPrecision<N> eta = (MultiPrecision<N>)2d / i;
 
-                        table.Add((i & 1) == 1 ? eta : -eta);
-                    }
+                    return table[k];
                 }
-
-                return table[k];
             }
         }
 
@@ -765,27 +772,29 @@ namespace ComplexBessel {
                     return table[k];
                 }
 
-                for (int i = table.Count; i <= k; i++) {
-                    if (alpha != 0d) {
-                        if ((i & 1) == 0) {
-                            table.Add(eta[i / 2]);
+                lock (table) {
+                    for (int i = table.Count; i <= k; i++) {
+                        if (alpha != 0d) {
+                            if ((i & 1) == 0) {
+                                table.Add(eta[i / 2]);
+                            }
+                            else {
+                                table.Add((eta[i / 2] - eta[i / 2 + 1]) / 2);
+                            }
                         }
                         else {
-                            table.Add((eta[i / 2] - eta[i / 2 + 1]) / 2);
+                            if ((i & 1) == 1) {
+                                MultiPrecision<N> xi = (MultiPrecision<N>)(2 * (i / 2) + 1) / (i / 2 * (i / 2 + 1));
+                                table.Add((i & 2) > 0 ? xi : -xi);
+                            }
+                            else {
+                                table.Add(MultiPrecision<N>.NaN);
+                            }
                         }
                     }
-                    else {
-                        if ((i & 1) == 1) {
-                            MultiPrecision<N> xi = (MultiPrecision<N>)(2 * (i / 2) + 1) / (i / 2 * (i / 2 + 1));
-                            table.Add((i & 2) > 0 ? xi : -xi);
-                        }
-                        else {
-                            table.Add(MultiPrecision<N>.NaN);
-                        }
-                    }
-                }
 
-                return table[k];
+                    return table[k];
+                }
             }
         }
     }

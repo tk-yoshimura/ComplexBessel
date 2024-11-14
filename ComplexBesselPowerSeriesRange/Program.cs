@@ -34,7 +34,7 @@ namespace ComplexBesselPowerSeriesRange {
                 Vector nu = nus.ToArray();
                 Vector y = ys.ToArray();
 
-                RobustRegressor fitter = new([nu, nu * nu, x, x * nu], y - 7.5, intercept: false);
+                RobustRegressor fitter = new([nu, nu * nu, x, x * nu], y, intercept: 7.5);
 
                 Vector param = fitter.Fit();
 

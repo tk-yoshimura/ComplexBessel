@@ -1,9 +1,10 @@
 ﻿using MultiPrecision;
+using System.Collections.Concurrent;
 
 namespace ComplexBessel {
     static class SinCosPiCache<N> where N : struct, IConstant {
-        private static readonly Dictionary<MultiPrecision<N>, MultiPrecision<N>> cospi_table = [];
-        private static readonly Dictionary<MultiPrecision<N>, MultiPrecision<N>> sinpi_table = [];
+        private static readonly ConcurrentDictionary<MultiPrecision<N>, MultiPrecision<N>> cospi_table = [];
+        private static readonly ConcurrentDictionary<MultiPrecision<N>, MultiPrecision<N>> sinpi_table = [];
 
         public static MultiPrecision<N> CosPi(MultiPrecision<N> theta) {
             if (!cospi_table.TryGetValue(theta, out MultiPrecision<N> cospi)) {

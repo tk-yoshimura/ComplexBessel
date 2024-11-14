@@ -1,10 +1,11 @@
 ﻿using MultiPrecision;
 using MultiPrecisionComplex;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 
 namespace ComplexBessel {
     public static class Limit<N> where N : struct, IConstant {
-        static readonly Dictionary<MultiPrecision<N>, HankelExpansion> table = [];
+        static readonly ConcurrentDictionary<MultiPrecision<N>, HankelExpansion> table = [];
 
         public static Complex<N> BesselJ(MultiPrecision<N> nu, Complex<N> z) {
             Debug.Assert(MultiPrecision<N>.IsPositive(z.R));
@@ -12,7 +13,7 @@ namespace ComplexBessel {
 
             if (!table.TryGetValue(nu, out HankelExpansion hankel)) {
                 hankel = new HankelExpansion(nu);
-                table.Add(nu, hankel);
+                table[nu] = hankel;
             }
 
             (Complex<N> c_even, Complex<N> c_odd) = hankel.BesselJYCoef(z);
@@ -32,7 +33,7 @@ namespace ComplexBessel {
 
             if (!table.TryGetValue(nu, out HankelExpansion hankel)) {
                 hankel = new HankelExpansion(nu);
-                table.Add(nu, hankel);
+                table[nu] = hankel;
             }
 
 
@@ -53,7 +54,7 @@ namespace ComplexBessel {
 
             if (!table.TryGetValue(nu, out HankelExpansion hankel)) {
                 hankel = new HankelExpansion(nu);
-                table.Add(nu, hankel);
+                table[nu] = hankel;
             }
 
             Complex<N> ci = hankel.BesselICoef(z), ck = hankel.BesselKCoef(z);
@@ -73,7 +74,7 @@ namespace ComplexBessel {
 
             if (!table.TryGetValue(nu, out HankelExpansion hankel)) {
                 hankel = new HankelExpansion(nu);
-                table.Add(nu, hankel);
+                table[nu] = hankel;
             }
 
             Complex<N> c = hankel.BesselKCoef(z);
@@ -94,12 +95,18 @@ namespace ComplexBessel {
             }
 
             public MultiPrecision<N> ACoef(int n) {
-                for (int k = a_coef.Count; k <= n; k++) {
-                    MultiPrecision<N> a = a_coef.Last() * (4d * Nu * Nu - checked((2 * k - 1) * (2 * k - 1))) / (k * 8);
-                    a_coef.Add(a);
+                if (n < a_coef.Count) {
+                    return a_coef[n];
                 }
 
-                return a_coef[n];
+                lock (a_coef) {
+                    for (int k = a_coef.Count; k <= n; k++) {
+                        MultiPrecision<N> a = a_coef.Last() * (4d * Nu * Nu - checked((2 * k - 1) * (2 * k - 1))) / (k * 8);
+                        a_coef.Add(a);
+                    }
+
+                    return a_coef[n];
+                }
             }
 
             public Complex<N> Omega(Complex<N> z) {

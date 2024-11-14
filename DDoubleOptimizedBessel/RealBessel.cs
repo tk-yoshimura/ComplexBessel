@@ -1,4 +1,5 @@
 ﻿using DoubleDouble;
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using static DDoubleOptimizedBessel.RealBesselUtil;
@@ -146,8 +147,8 @@ namespace DDoubleOptimizedBessel {
         }
 
         public static class SinCosPiCache {
-            private static readonly Dictionary<ddouble, ddouble> cospi_table = [];
-            private static readonly Dictionary<ddouble, ddouble> sinpi_table = [];
+            private static readonly ConcurrentDictionary<ddouble, ddouble> cospi_table = [];
+            private static readonly ConcurrentDictionary<ddouble, ddouble> sinpi_table = [];
 
             public static ddouble CosPi(ddouble theta) {
                 if (!cospi_table.TryGetValue(theta, out ddouble cospi)) {
@@ -170,15 +171,15 @@ namespace DDoubleOptimizedBessel {
 
         public class PowerSeries {
             public static readonly int NearZeroExponent = -950;
-            private static readonly Dictionary<ddouble, DoubleFactDenomTable> dfactdenom_coef_table = [];
-            private static readonly Dictionary<ddouble, X2DenomTable> x2denom_coef_table = [];
-            private static readonly Dictionary<ddouble, GammaDenomTable> gammadenom_coef_table = [];
-            private static readonly Dictionary<ddouble, GammaTable> gamma_coef_table = [];
-            private static readonly Dictionary<ddouble, GammaPNTable> gammapn_coef_table = [];
+            private static readonly ConcurrentDictionary<ddouble, DoubleFactDenomTable> dfactdenom_coef_table = [];
+            private static readonly ConcurrentDictionary<ddouble, X2DenomTable> x2denom_coef_table = [];
+            private static readonly ConcurrentDictionary<ddouble, GammaDenomTable> gammadenom_coef_table = [];
+            private static readonly ConcurrentDictionary<ddouble, GammaTable> gamma_coef_table = [];
+            private static readonly ConcurrentDictionary<ddouble, GammaPNTable> gammapn_coef_table = [];
             private static readonly YCoefTable y_coef_table = new();
             private static readonly Y0CoefTable y0_coef_table = new();
-            private static readonly Dictionary<int, YNCoefTable> yn_coef_table = [];
-            private static readonly Dictionary<int, ReadOnlyCollection<ddouble>> yn_finitecoef_table = [];
+            private static readonly ConcurrentDictionary<int, YNCoefTable> yn_coef_table = [];
+            private static readonly ConcurrentDictionary<int, ReadOnlyCollection<ddouble>> yn_finitecoef_table = [];
             private static readonly KCoefTable k_coef_table = new();
             private static readonly K0CoefTable k0_coef_table = new();
             private static readonly K1CoefTable k1_coef_table = new();
@@ -269,11 +270,11 @@ namespace DDoubleOptimizedBessel {
             private static ddouble BesselJKernel(ddouble nu, ddouble x, int terms) {
                 if (!dfactdenom_coef_table.TryGetValue(nu, out DoubleFactDenomTable r)) {
                     r = new DoubleFactDenomTable(nu);
-                    dfactdenom_coef_table.Add(nu, r);
+                    dfactdenom_coef_table[nu] = r;
                 }
                 if (!x2denom_coef_table.TryGetValue(nu, out X2DenomTable d)) {
                     d = new X2DenomTable(nu);
-                    x2denom_coef_table.Add(nu, d);
+                    x2denom_coef_table[nu] = d;
                 }
 
                 ddouble x2 = x * x, x4 = x2 * x2;
@@ -310,11 +311,11 @@ namespace DDoubleOptimizedBessel {
             private static ddouble BesselYKernel(ddouble nu, ddouble x, int terms) {
                 if (!gamma_coef_table.TryGetValue(nu, out GammaTable g)) {
                     g = new GammaTable(nu);
-                    gamma_coef_table.Add(nu, g);
+                    gamma_coef_table[nu] = g;
                 }
                 if (!gammapn_coef_table.TryGetValue(nu, out GammaPNTable gpn)) {
                     gpn = new GammaPNTable(nu);
-                    gammapn_coef_table.Add(nu, gpn);
+                    gammapn_coef_table[nu] = gpn;
                 }
 
                 YCoefTable r = y_coef_table;
@@ -382,11 +383,11 @@ namespace DDoubleOptimizedBessel {
             private static ddouble BesselY0Kernel(ddouble x, int terms) {
                 if (!dfactdenom_coef_table.TryGetValue(0, out DoubleFactDenomTable r)) {
                     r = new DoubleFactDenomTable(0);
-                    dfactdenom_coef_table.Add(0, r);
+                    dfactdenom_coef_table[0] = r;
                 }
                 if (!x2denom_coef_table.TryGetValue(0, out X2DenomTable d)) {
                     d = new X2DenomTable(0);
-                    x2denom_coef_table.Add(0, d);
+                    x2denom_coef_table[0] = d;
                 }
 
                 Y0CoefTable q = y0_coef_table;
@@ -418,15 +419,15 @@ namespace DDoubleOptimizedBessel {
             private static ddouble BesselY1Kernel(ddouble x, int terms) {
                 if (!dfactdenom_coef_table.TryGetValue(1, out DoubleFactDenomTable r)) {
                     r = new DoubleFactDenomTable(1);
-                    dfactdenom_coef_table.Add(1, r);
+                    dfactdenom_coef_table[1] = r;
                 }
                 if (!x2denom_coef_table.TryGetValue(1, out X2DenomTable d)) {
                     d = new X2DenomTable(1);
-                    x2denom_coef_table.Add(1, d);
+                    x2denom_coef_table[1] = d;
                 }
                 if (!yn_coef_table.TryGetValue(1, out YNCoefTable q)) {
                     q = new YNCoefTable(1);
-                    yn_coef_table.Add(1, q);
+                    yn_coef_table[1] = q;
                 }
 
                 ddouble h = ddouble.Ldexp(ddouble.Log(ddouble.Ldexp(x, -1)) + ddouble.EulerGamma, 1);
@@ -456,19 +457,19 @@ namespace DDoubleOptimizedBessel {
             private static ddouble BesselYNKernel(int n, ddouble x, int terms) {
                 if (!dfactdenom_coef_table.TryGetValue(n, out DoubleFactDenomTable r)) {
                     r = new DoubleFactDenomTable(n);
-                    dfactdenom_coef_table.Add(n, r);
+                    dfactdenom_coef_table[n] = r;
                 }
                 if (!x2denom_coef_table.TryGetValue(n, out X2DenomTable d)) {
                     d = new X2DenomTable(n);
-                    x2denom_coef_table.Add(n, d);
+                    x2denom_coef_table[n] = d;
                 }
                 if (!yn_coef_table.TryGetValue(n, out YNCoefTable q)) {
                     q = new YNCoefTable(n);
-                    yn_coef_table.Add(n, q);
+                    yn_coef_table[n] = q;
                 }
                 if (!yn_finitecoef_table.TryGetValue(n, out ReadOnlyCollection<ddouble> f)) {
                     f = YNFiniteCoefTable.Value(n);
-                    yn_finitecoef_table.Add(n, f);
+                    yn_finitecoef_table[n] = f;
                 }
 
                 ddouble h = ddouble.Ldexp(ddouble.Log(ddouble.Ldexp(x, -1)) + ddouble.EulerGamma, 1);
@@ -511,11 +512,11 @@ namespace DDoubleOptimizedBessel {
             private static ddouble BesselIKernel(ddouble nu, ddouble x, int terms) {
                 if (!dfactdenom_coef_table.TryGetValue(nu, out DoubleFactDenomTable r)) {
                     r = new DoubleFactDenomTable(nu);
-                    dfactdenom_coef_table.Add(nu, r);
+                    dfactdenom_coef_table[nu] = r;
                 }
                 if (!x2denom_coef_table.TryGetValue(nu, out X2DenomTable d)) {
                     d = new X2DenomTable(nu);
-                    x2denom_coef_table.Add(nu, d);
+                    x2denom_coef_table[nu] = d;
                 }
 
                 ddouble x2 = x * x, x4 = x2 * x2;
@@ -552,11 +553,11 @@ namespace DDoubleOptimizedBessel {
             private static ddouble BesselKKernel(ddouble nu, ddouble x, int terms) {
                 if (!gammadenom_coef_table.TryGetValue(nu, out GammaDenomTable gp)) {
                     gp = new GammaDenomTable(nu);
-                    gammadenom_coef_table.Add(nu, gp);
+                    gammadenom_coef_table[nu] = gp;
                 }
                 if (!gammadenom_coef_table.TryGetValue(-nu, out GammaDenomTable gn)) {
                     gn = new GammaDenomTable(-nu);
-                    gammadenom_coef_table.Add(-nu, gn);
+                    gammadenom_coef_table[-nu] = gn;
                 }
 
                 KCoefTable r = k_coef_table;
@@ -690,13 +691,15 @@ namespace DDoubleOptimizedBessel {
                         return table[k];
                     }
 
-                    for (long i = table.Count; i <= k; i++) {
-                        c *= checked((nu + 2 * i) * (nu + (2 * i - 1)) * (32 * i * (2 * i - 1)));
+                    lock (table) {
+                        for (long i = table.Count; i <= k; i++) {
+                            c *= checked((nu + 2 * i) * (nu + (2 * i - 1)) * (32 * i * (2 * i - 1)));
 
-                        table.Add(ddouble.Rcp(c));
+                            table.Add(ddouble.Rcp(c));
+                        }
+
+                        return table[k];
                     }
-
-                    return table[k];
                 }
             }
 
@@ -720,13 +723,15 @@ namespace DDoubleOptimizedBessel {
                         return table[k];
                     }
 
-                    for (long i = table.Count; i <= k; i++) {
-                        ddouble a = ddouble.Rcp(checked(4d * (2 * i + 1) * (2 * i + 1 + nu)));
+                    lock (table) {
+                        for (long i = table.Count; i <= k; i++) {
+                            ddouble a = ddouble.Rcp(checked(4d * (2 * i + 1) * (2 * i + 1 + nu)));
 
-                        table.Add(a);
+                            table.Add(a);
+                        }
+
+                        return table[k];
                     }
-
-                    return table[k];
                 }
             }
 
@@ -750,13 +755,15 @@ namespace DDoubleOptimizedBessel {
                         return table[k];
                     }
 
-                    for (int i = table.Count; i <= k; i++) {
-                        c *= nu + i;
+                    lock (table) {
+                        for (int i = table.Count; i <= k; i++) {
+                            c *= nu + i;
 
-                        table.Add(ddouble.Rcp(c));
+                            table.Add(ddouble.Rcp(c));
+                        }
+
+                        return table[k];
                     }
-
-                    return table[k];
                 }
             }
 
@@ -780,13 +787,15 @@ namespace DDoubleOptimizedBessel {
                         return table[k];
                     }
 
-                    for (int i = table.Count; i <= k; i++) {
-                        c *= nu + i;
+                    lock (table) {
+                        for (int i = table.Count; i <= k; i++) {
+                            c *= nu + i;
 
-                        table.Add(c);
+                            table.Add(c);
+                        }
+
+                        return table[k];
                     }
-
-                    return table[k];
                 }
             }
 
@@ -810,13 +819,15 @@ namespace DDoubleOptimizedBessel {
                         return table[k];
                     }
 
-                    for (int i = table.Count; i <= k; i++) {
-                        ddouble c = r * positive_table[i] / negative_table[i];
+                    lock (table) {
+                        for (int i = table.Count; i <= k; i++) {
+                            ddouble c = r * positive_table[i] / negative_table[i];
 
-                        table.Add(c);
+                            table.Add(c);
+                        }
+
+                        return table[k];
                     }
-
-                    return table[k];
                 }
             }
 
@@ -838,13 +849,15 @@ namespace DDoubleOptimizedBessel {
                         return table[k];
                     }
 
-                    for (long i = table.Count; i <= k; i++) {
-                        c *= checked(32 * i * (2 * i - 1));
+                    lock (table) {
+                        for (long i = table.Count; i <= k; i++) {
+                            c *= checked(32 * i * (2 * i - 1));
 
-                        table.Add(ddouble.Rcp(c));
+                            table.Add(ddouble.Rcp(c));
+                        }
+
+                        return table[k];
                     }
-
-                    return table[k];
                 }
             }
 
@@ -864,13 +877,15 @@ namespace DDoubleOptimizedBessel {
                         return table[k];
                     }
 
-                    for (long i = table.Count; i <= k; i++) {
-                        ddouble c = ddouble.Rcp(checked(4 * (2 * i + 1) * (2 * i + 1) * (2 * i + 1)));
+                    lock (table) {
+                        for (long i = table.Count; i <= k; i++) {
+                            ddouble c = ddouble.Rcp(checked(4 * (2 * i + 1) * (2 * i + 1) * (2 * i + 1)));
 
-                        table.Add(c);
+                            table.Add(c);
+                        }
+
+                        return table[k];
                     }
-
-                    return table[k];
                 }
             }
 
@@ -891,14 +906,16 @@ namespace DDoubleOptimizedBessel {
                         return table[k];
                     }
 
-                    for (long i = table.Count; i <= k; i++) {
-                        ddouble c = (ddouble)(n + 4 * i + 2) /
-                            (ddouble)checked(4 * (2 * i + 1) * (2 * i + 1) * (n + 2 * i + 1) * (n + 2 * i + 1));
+                    lock (table) {
+                        for (long i = table.Count; i <= k; i++) {
+                            ddouble c = (ddouble)(n + 4 * i + 2) /
+                                (ddouble)checked(4 * (2 * i + 1) * (2 * i + 1) * (n + 2 * i + 1) * (n + 2 * i + 1));
 
-                        table.Add(c);
+                            table.Add(c);
+                        }
+
+                        return table[k];
                     }
-
-                    return table[k];
                 }
             }
 
@@ -938,13 +955,15 @@ namespace DDoubleOptimizedBessel {
                         return table[k];
                     }
 
-                    for (long i = table.Count; i <= k; i++) {
-                        c *= 4 * i;
+                    lock (table) {
+                        for (long i = table.Count; i <= k; i++) {
+                            c *= 4 * i;
 
-                        table.Add(ddouble.Rcp(c));
+                            table.Add(ddouble.Rcp(c));
+                        }
+
+                        return table[k];
                     }
-
-                    return table[k];
                 }
             }
 
@@ -966,13 +985,15 @@ namespace DDoubleOptimizedBessel {
                         return table[k];
                     }
 
-                    for (long i = table.Count; i <= k; i++) {
-                        c *= checked(4 * i * i);
+                    lock (table) {
+                        for (long i = table.Count; i <= k; i++) {
+                            c *= checked(4 * i * i);
 
-                        table.Add(ddouble.Rcp(c));
+                            table.Add(ddouble.Rcp(c));
+                        }
+
+                        return table[k];
                     }
-
-                    return table[k];
                 }
             }
 
@@ -994,26 +1015,28 @@ namespace DDoubleOptimizedBessel {
                         return table[k];
                     }
 
-                    for (int i = table.Count; i <= k; i++) {
-                        c *= checked(4 * i * (i + 1));
+                    lock (table) {
+                        for (int i = table.Count; i <= k; i++) {
+                            c *= checked(4 * i * (i + 1));
 
-                        table.Add(ddouble.Rcp(c));
+                            table.Add(ddouble.Rcp(c));
+                        }
+
+                        return table[k];
                     }
-
-                    return table[k];
                 }
             }
         }
 
         public static class Limit {
-            static readonly Dictionary<ddouble, HankelExpansion> table = [];
+            static readonly ConcurrentDictionary<ddouble, HankelExpansion> table = [];
 
             public static ddouble BesselJ(ddouble nu, ddouble x) {
                 Debug.Assert(ddouble.IsPositive(x));
 
                 if (!table.TryGetValue(nu, out HankelExpansion hankel)) {
                     hankel = new HankelExpansion(nu);
-                    table.Add(nu, hankel);
+                    table[nu] = hankel;
                 }
 
                 if (ddouble.IsPositiveInfinity(x)) {
@@ -1036,7 +1059,7 @@ namespace DDoubleOptimizedBessel {
 
                 if (!table.TryGetValue(nu, out HankelExpansion hankel)) {
                     hankel = new HankelExpansion(nu);
-                    table.Add(nu, hankel);
+                    table[nu] = hankel;
                 }
 
                 if (ddouble.IsPositiveInfinity(x)) {
@@ -1059,7 +1082,7 @@ namespace DDoubleOptimizedBessel {
 
                 if (!table.TryGetValue(nu, out HankelExpansion hankel)) {
                     hankel = new HankelExpansion(nu);
-                    table.Add(nu, hankel);
+                    table[nu] = hankel;
                 }
 
                 ddouble c = hankel.BesselICoef(x);
@@ -1083,7 +1106,7 @@ namespace DDoubleOptimizedBessel {
 
                 if (!table.TryGetValue(nu, out HankelExpansion hankel)) {
                     hankel = new HankelExpansion(nu);
-                    table.Add(nu, hankel);
+                    table[nu] = hankel;
                 }
 
                 ddouble c = hankel.BesselKCoef(x);
@@ -1112,12 +1135,18 @@ namespace DDoubleOptimizedBessel {
                 }
 
                 private ddouble ACoef(int n) {
-                    for (int k = a_coef.Count; k <= n; k++) {
-                        ddouble a = a_coef.Last() * (4d * Nu * Nu - checked((2 * k - 1) * (2 * k - 1))) / (k * 8);
-                        a_coef.Add(a);
+                    if (n < a_coef.Count) {
+                        return a_coef[n];
                     }
 
-                    return a_coef[n];
+                    lock (a_coef) {
+                        for (int k = a_coef.Count; k <= n; k++) {
+                            ddouble a = a_coef.Last() * (4d * Nu * Nu - checked((2 * k - 1) * (2 * k - 1))) / (k * 8);
+                            a_coef.Add(a);
+                        }
+
+                        return a_coef[n];
+                    }
                 }
 
                 public ddouble Omega(ddouble x) {
@@ -1195,9 +1224,9 @@ namespace DDoubleOptimizedBessel {
         public class MillerBackward {
             public static readonly int BesselYEpsExponent = -12;
 
-            private static readonly Dictionary<ddouble, BesselJPhiTable> phi_coef_table = [];
-            private static readonly Dictionary<ddouble, BesselYEtaTable> eta_coef_table = [];
-            private static readonly Dictionary<ddouble, BesselYXiTable> xi_coef_table = [];
+            private static readonly ConcurrentDictionary<ddouble, BesselJPhiTable> phi_coef_table = [];
+            private static readonly ConcurrentDictionary<ddouble, BesselYEtaTable> eta_coef_table = [];
+            private static readonly ConcurrentDictionary<ddouble, BesselYXiTable> xi_coef_table = [];
             private static readonly ReadOnlyCollection<ddouble> eta0_coef = new(MillerBackwardCoef.Eta0.Reverse().ToArray());
             private static readonly ReadOnlyCollection<ddouble> xi1_coef = new(MillerBackwardCoef.Xi1.Reverse().ToArray());
 
@@ -1302,7 +1331,7 @@ namespace DDoubleOptimizedBessel {
 
                 if (!phi_coef_table.TryGetValue(alpha, out BesselJPhiTable phi)) {
                     phi = new BesselJPhiTable(alpha);
-                    phi_coef_table.Add(alpha, phi);
+                    phi_coef_table[alpha] = phi;
                 }
 
                 ddouble f0 = 1e-256d, f1 = 0d, lambda = 0d;
@@ -1444,15 +1473,15 @@ namespace DDoubleOptimizedBessel {
 
                 if (!eta_coef_table.TryGetValue(alpha, out BesselYEtaTable eta)) {
                     eta = new BesselYEtaTable(alpha);
-                    eta_coef_table.Add(alpha, eta);
+                    eta_coef_table[alpha] = eta;
                 }
                 if (!xi_coef_table.TryGetValue(alpha, out BesselYXiTable xi)) {
                     xi = new BesselYXiTable(alpha, eta);
-                    xi_coef_table.Add(alpha, xi);
+                    xi_coef_table[alpha] = xi;
                 }
                 if (!phi_coef_table.TryGetValue(alpha, out BesselJPhiTable phi)) {
                     phi = new BesselJPhiTable(alpha);
-                    phi_coef_table.Add(alpha, phi);
+                    phi_coef_table[alpha] = phi;
                 }
 
                 ddouble f0 = 1e-256, f1 = 0d, lambda = 0d;
@@ -1548,7 +1577,7 @@ namespace DDoubleOptimizedBessel {
 
                 if (!eta_coef_table.TryGetValue(0, out BesselYEtaTable eta)) {
                     eta = new BesselYEtaTable(0);
-                    eta_coef_table.Add(0, eta);
+                    eta_coef_table[0] = eta;
                 }
 
                 ddouble f0 = 1e-256, f1 = 0d, lambda = 0d;
@@ -1578,11 +1607,11 @@ namespace DDoubleOptimizedBessel {
                 if (!xi_coef_table.TryGetValue(0, out BesselYXiTable xi)) {
                     if (!eta_coef_table.TryGetValue(0, out BesselYEtaTable eta)) {
                         eta = new BesselYEtaTable(0);
-                        eta_coef_table.Add(0, eta);
+                        eta_coef_table[0] = eta;
                     }
 
                     xi = new BesselYXiTable(0, eta);
-                    xi_coef_table.Add(0, xi);
+                    xi_coef_table[0] = xi;
                 }
 
                 ddouble f0 = 1e-256, f1 = 0d, lambda = 0d;
@@ -1612,11 +1641,11 @@ namespace DDoubleOptimizedBessel {
 
                 if (!eta_coef_table.TryGetValue(0, out BesselYEtaTable eta)) {
                     eta = new BesselYEtaTable(0);
-                    eta_coef_table.Add(0, eta);
+                    eta_coef_table[0] = eta;
                 }
                 if (!xi_coef_table.TryGetValue(0, out BesselYXiTable xi)) {
                     xi = new BesselYXiTable(0, eta);
-                    xi_coef_table.Add(0, xi);
+                    xi_coef_table[0] = xi;
                 }
 
                 ddouble f0 = 1e-256, f1 = 0d, lambda = 0d;
@@ -1681,15 +1710,17 @@ namespace DDoubleOptimizedBessel {
                         return table[k];
                     }
 
-                    for (int i = table.Count; i <= k; i++) {
-                        g = g * (alpha + i - 1d) / i;
+                    lock (table) {
+                        for (int i = table.Count; i <= k; i++) {
+                            g = g * (alpha + i - 1d) / i;
 
-                        ddouble phi = g * (alpha + 2 * i);
+                            ddouble phi = g * (alpha + 2 * i);
 
-                        table.Add(phi);
+                            table.Add(phi);
+                        }
+
+                        return table[k];
                     }
-
-                    return table[k];
                 }
             }
 
@@ -1722,15 +1753,17 @@ namespace DDoubleOptimizedBessel {
                         return table[k];
                     }
 
-                    for (int i = table.Count; i <= k; i++) {
-                        g = g * (ddouble.Ldexp(alpha, 1) + i - 1d) / i;
+                    lock (table) {
+                        for (int i = table.Count; i <= k; i++) {
+                            g = g * (ddouble.Ldexp(alpha, 1) + i - 1d) / i;
 
-                        ddouble phi = g * (alpha + i);
+                            ddouble phi = g * (alpha + i);
 
-                        table.Add(phi);
+                            table.Add(phi);
+                        }
+
+                        return table[k];
                     }
-
-                    return table[k];
                 }
             }
 
@@ -1766,22 +1799,24 @@ namespace DDoubleOptimizedBessel {
                         return table[k];
                     }
 
-                    for (int i = table.Count; i <= k; i++) {
-                        if (alpha != 0d) {
-                            g = -g * (alpha + i - 1) * (ddouble.Ldexp(alpha, 1) + i - 1d) / (i * (i - alpha));
+                    lock (table) {
+                        for (int i = table.Count; i <= k; i++) {
+                            if (alpha != 0d) {
+                                g = -g * (alpha + i - 1) * (ddouble.Ldexp(alpha, 1) + i - 1d) / (i * (i - alpha));
 
-                            ddouble eta = g * (alpha + 2 * i);
+                                ddouble eta = g * (alpha + 2 * i);
 
-                            table.Add(eta);
+                                table.Add(eta);
+                            }
+                            else {
+                                ddouble eta = (ddouble)2d / i;
+
+                                table.Add((i & 1) == 1 ? eta : -eta);
+                            }
                         }
-                        else {
-                            ddouble eta = (ddouble)2d / i;
 
-                            table.Add((i & 1) == 1 ? eta : -eta);
-                        }
+                        return table[k];
                     }
-
-                    return table[k];
                 }
             }
 
@@ -1809,38 +1844,40 @@ namespace DDoubleOptimizedBessel {
                         return table[k];
                     }
 
-                    for (int i = table.Count; i <= k; i++) {
-                        if (alpha != 0d) {
-                            if ((i & 1) == 0) {
-                                table.Add(eta[i / 2]);
+                    lock (table) {
+                        for (int i = table.Count; i <= k; i++) {
+                            if (alpha != 0d) {
+                                if ((i & 1) == 0) {
+                                    table.Add(eta[i / 2]);
+                                }
+                                else {
+                                    table.Add((eta[i / 2] - eta[i / 2 + 1]) / 2);
+                                }
                             }
                             else {
-                                table.Add((eta[i / 2] - eta[i / 2 + 1]) / 2);
+                                if ((i & 1) == 1) {
+                                    ddouble xi = (ddouble)(2 * (i / 2) + 1) / (i / 2 * (i / 2 + 1));
+                                    table.Add((i & 2) > 0 ? xi : -xi);
+                                }
+                                else {
+                                    table.Add(ddouble.NaN);
+                                }
                             }
                         }
-                        else {
-                            if ((i & 1) == 1) {
-                                ddouble xi = (ddouble)(2 * (i / 2) + 1) / (i / 2 * (i / 2 + 1));
-                                table.Add((i & 2) > 0 ? xi : -xi);
-                            }
-                            else {
-                                table.Add(ddouble.NaN);
-                            }
-                        }
-                    }
 
-                    return table[k];
+                        return table[k];
+                    }
                 }
             }
         }
 
         public static class YoshidaPade {
             private static readonly ReadOnlyCollection<ReadOnlyCollection<ddouble>> ess_coef_table;
-            private static readonly Dictionary<ddouble, ReadOnlyCollection<(ddouble c, ddouble s)>> cds_coef_table = [];
+            private static readonly ConcurrentDictionary<ddouble, ReadOnlyCollection<(ddouble c, ddouble s)>> cds_coef_table = [];
 
             static YoshidaPade() {
-                cds_coef_table.Add(0, Array.AsReadOnly(YoshidaPadeCoefM32.Nu0.Reverse().ToArray()));
-                cds_coef_table.Add(1, Array.AsReadOnly(YoshidaPadeCoefM32.Nu1.Reverse().ToArray()));
+                cds_coef_table[0] = Array.AsReadOnly(YoshidaPadeCoefM32.Nu0.Reverse().ToArray());
+                cds_coef_table[1] = Array.AsReadOnly(YoshidaPadeCoefM32.Nu1.Reverse().ToArray());
 
                 List<ReadOnlyCollection<ddouble>> es = [];
 
@@ -1853,12 +1890,10 @@ namespace DDoubleOptimizedBessel {
 
             public static ddouble BesselK(ddouble nu, ddouble x, bool scale = false) {
                 if (nu < 2d) {
-                    if (!cds_coef_table.TryGetValue(nu, out ReadOnlyCollection<(ddouble c, ddouble s)> cds_table)) {
-                        cds_table = Table(nu);
-                        cds_coef_table.Add(nu, cds_table);
+                    if (!cds_coef_table.TryGetValue(nu, out ReadOnlyCollection<(ddouble c, ddouble s)> cds)) {
+                        cds = Table(nu);
+                        cds_coef_table[nu] = cds;
                     }
-
-                    ReadOnlyCollection<(ddouble, ddouble)> cds = cds_table;
 
                     ddouble y = Value(x, cds, scale);
 
@@ -1941,8 +1976,8 @@ namespace DDoubleOptimizedBessel {
         public static class AmosPowerSeries {
             private static readonly ReadOnlyCollection<ddouble> g1_coef = new(AmosPowerSeriesG1Coef.G1.Reverse().ToArray());
 
-            private static readonly Dictionary<ddouble, (ddouble, ddouble)> gammapm_table = [];
-            private static readonly Dictionary<ddouble, (ddouble, ddouble)> gamma12_table = [];
+            private static readonly ConcurrentDictionary<ddouble, (ddouble, ddouble)> gammapm_table = [];
+            private static readonly ConcurrentDictionary<ddouble, (ddouble, ddouble)> gamma12_table = [];
 
             public static ddouble BesselK(ddouble nu, ddouble x, bool scale) {
                 ddouble y = BesselKKernel(nu, x);
@@ -2092,7 +2127,7 @@ namespace DDoubleOptimizedBessel {
 
                     g = (g1, g2);
 
-                    gamma12_table.Add(nu, g);
+                    gamma12_table[nu] = g;
                 }
 
                 return g;
@@ -2104,7 +2139,7 @@ namespace DDoubleOptimizedBessel {
                 if (!gammapm_table.TryGetValue(nu, out (ddouble gp, ddouble gm) g)) {
                     g = (ddouble.Gamma(1d + nu), ddouble.Gamma(1d - nu));
 
-                    gammapm_table.Add(nu, g);
+                    gammapm_table[nu] = g;
                 }
 
                 return g;
