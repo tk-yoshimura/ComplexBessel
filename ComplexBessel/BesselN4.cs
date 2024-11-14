@@ -119,7 +119,7 @@ namespace ComplexBessel {
             if (z.Magnitude >= 44.5) {
                 return Limit<Pow2.N4>.BesselK(nu, z);
             }
-            else if (z.Magnitude <= 2) {
+            else if (z.Magnitude <= 4) {
                 if (MP4.Round(nu) == nu || (MP4.Round(nu) - nu).Exponent >= -4) {
                     return PowerSeries<Pow2.N4>.BesselK(nu, z);
                 }
